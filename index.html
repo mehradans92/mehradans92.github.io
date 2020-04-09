@@ -97,29 +97,7 @@
             textarea:hover {
                 box-shadow: 0 0 5px 0 #095484;
             }
-            input[type="date"]::-webkit-inner-spin-button {
-                display: none;
-            }
-            input[type="time"]::-webkit-inner-spin-button {
-                margin: 2px 22px 0 0;
-            }
-            .item i,
-            input[type="date"]::-webkit-calendar-picker-indicator {
-                position: absolute;
-                font-size: 20px;
-                color: #a9a9a9;
-            }
-            .item i {
-                right: 1%;
-                top: 30px;
-                z-index: 1;
-            }
-            [type="date"]::-webkit-calendar-picker-indicator {
-                right: 0;
-                z-index: 2;
-                opacity: 0;
-                cursor: pointer;
-            }
+
             .btn-block {
                 margin-top: 20px;
                 text-align: center;
@@ -156,6 +134,22 @@
                 }
 
             }
+            option,
+            select {
+                width: 180px;
+            }
+            select:invalid {
+                background-color: #fffee3;
+            }
+            select option[value="anionic"] {
+                background: #ffffff;
+            }
+            select:valid {
+                border: 2px solid black;
+            }
+            select option[value="cationic"] {
+                background: #ffffff;
+            }
         </style>
     </head>
     <body bgcolor="#2482bd">
@@ -165,80 +159,79 @@
                 <h1 font="font" size="40">Gelator Transparency Predictor</h1>
                 <div class="item">
                     <h3>
+                        <p>Gelator Type</p>
                         <div class="name-item">
-
-                            <p>Gelator Type</p>
-                            <select id="cars" required="required">
-                                <option disabled="disabled" selected="selected" value="" hidden="hidden">
+                            <select id="new_gel_type" required="required">
+                                <option disabled="disabled" selected="selected" value="none" hidden="hidden">
                                     -- select gelator type --
                                 </option>
                                 <option value="anionic">Anionic</option>
                                 <option value="cationic">Cationic</option>
-
                             </select>
                         </div>
                     </h3>
-
-                    <div class="item">
-                        <h3>
-                            <p>Chemical Structure</p>
-                            <div class="name-item">
-                                <input
-                                    type="text"
-                                    name="new_struct_anionic"
-                                    id="new_chem_struct_anionic"
-                                    placeholder="example: Fmoc-4-NO2-Phe-OH"
-                                    required="required"
-                                    title="This field can not be empty"
-                                    value=""/>
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <h3>
-                            <p>[Gelator] (mM)</p>
+                </div>
+                <div class="item">
+                    <h3>
+                        <p>Chemical Structure</p>
+                        <div class="name-item">
                             <input
-                                type="number"
-                                min="0"
-                                name="new_concentration_anionic"
-                                id="new_gel_conc_anionic"
-                                placeholder="example: 10"
+                                type="text"
+                                name="new_struct_anionic"
+                                id="new_chem_struct_anionic"
+                                placeholder="example: Fmoc-4-NO2-Phe-OH"
                                 required="required"
-                                step="0.25"
-                                value=""/></h3>
+                                title="This field can not be empty"
+                                value=""/>
 
-                    </div>
-                    <div class="item">
-                        <h3>
-                            <p>Equivalents of GdL Added</p>
-                            <input
-                                type="number"
-                                min="0"
-                                name="new_Gdl_anionic"
-                                id="new_Gdl_added_anionic"
-                                placeholder="example: 1"
-                                required="required"
-                                value=""
-                                step="0.25"/>
-                        </h3>
-                    </div>
-                    <div id="prediction_box">
-                        <div >
-                            <h2 id="prediction_transparency"></h2>
-                            <h2 id="prediction_score"></h2>
                         </div>
+                    </h3>
+                </div>
+                <div class="item">
+                    <h3>
+                        <p>[Gelator] (mM)</p>
+                        <input
+                            type="number"
+                            min="0"
+                            name="new_concentration_anionic"
+                            id="new_gel_conc_anionic"
+                            placeholder="example: 10"
+                            required="required"
+                            step="0.25"
+                            value=""/>
+                    </h3>
+                </div>
 
-                    </div>
-                    <div class="btn-block" style="position:absolute; top:280px; left: 385px">
-                        <button type='Reset' value="Reset" onclick="window.location.reload()" href="/">reset</button>
-                    </div>
-                    <div class="btn-block" style="position:absolute; top:280px; left: 465px">
-                        <button id="getDataBtn" href="/">Predict</button>
-                    </div>
-                    <p id="message" style='position: relative; top: 0px'></p>
-                </form>
+                <div class="item">
+                    <h3>
+                        <p>Equivalents of GdL Added</p>
+                        <input
+                            type="number"
+                            min="0"
+                            name="new_Gdl_anionic"
+                            id="new_Gdl_added_anionic"
+                            placeholder="example: 1"
+                            required="required"
+                            value=""
+                            step="0.25"/>
+                    </h3>
+                </div>
+                <div id="prediction_box">
 
-            </div>
-            <script src="./index.js"></script>
-        </body>
-    </html>
+                    <h2 id="prediction_transparency"></h2>
+                    <h2 id="prediction_score"></h2>
+
+                </div>
+                <div class="btn-block" style="position:absolute; top:280px; left: 385px">
+                    <button type='reset' value="Reset" onclick="window.location.reload()" href="/">Reset</button>
+                </div>
+                <div class="btn-block" style="position:absolute; top:280px; left: 465px">
+                    <button id="getDataBtn" href="/">Predict</button>
+                </div>
+                <p id="message" style='position: relative; top: 0px'></p>
+            </form>
+
+        </div>
+        <script src="./index.js"></script>
+    </body>
+</html>

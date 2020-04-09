@@ -289,6 +289,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var el = document.getElementById('prediction_box');
         //el.style.backgroundColor = "#ff0000";
         el.style.cssText = 'position: absolute; left: 350px; width:300px; top: 160px; background-color: #fffccc; padding:5px 10px 5px 20px; border: 3px solid #ffb99c; border-radius: 10px;'
+        console.log(document.getElementById("new_gel_type").value)
     }, false);
 
 });
