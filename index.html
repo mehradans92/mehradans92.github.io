@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+        <title>Gelator Transparency predictor</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.11.2"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+        <link
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
+            rel="stylesheet">
+        <link
+            rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+            integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+            crossorigin="anonymous">
+
+        <meta charset="UTF-8">
+        <style>
+            input:invalid:required {
+                background-color: #fffee3;
+            }
+
+            input:valid {
+                border: 2px solid black;
+            }
+            body,
+            html {
+                min-height: 100%;
+            }
+            body,
+            div,
+            form,
+            input,
+            p,
+            select {
+                padding: 0;
+                margin: 0;
+                outline: none;
+                font-family: Roboto, Arial, sans-serif;
+                font-size: 14px;
+                color: #666;
+                line-height: 22px;
+            }
+            h1 {
+                margin: 15px 0;
+                font-weight: 400;
+            }
+            .testbox {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: inherit;
+                padding: 3px;
+            }
+            form {
+                position: absolute;
+                top: 25%;
+                height: 45%;
+                width: 40%;
+                padding: 30px;
+                background: #fff;
+                box-shadow: 0 4px 30px #ccc;
+                border-radius: 10px;
+            }
+            input,
+            select,
+            textarea {
+                margin-bottom: 10px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+            }
+            <!-- change calc% for change in textbox width% -- > input {
+                width: calc(10% - 10px);
+                padding: 5px;
+            }
+            select {
+                width: 100%;
+                padding: 7px 0;
+                background: transparent;
+            }
+            textarea {
+                width: calc(100% - 6px);
+            }
+            .item {
+                position: relative;
+                margin: 10px 0;
+            }
+            .item:hover i,
+            .item:hover p {
+                color: #095484;
+            }
+            input:hover,
+            select:hover,
+            textarea:hover {
+                box-shadow: 0 0 5px 0 #095484;
+            }
+            input[type="date"]::-webkit-inner-spin-button {
+                display: none;
+            }
+            input[type="time"]::-webkit-inner-spin-button {
+                margin: 2px 22px 0 0;
+            }
+            .item i,
+            input[type="date"]::-webkit-calendar-picker-indicator {
+                position: absolute;
+                font-size: 20px;
+                color: #a9a9a9;
+            }
+            .item i {
+                right: 1%;
+                top: 30px;
+                z-index: 1;
+            }
+            [type="date"]::-webkit-calendar-picker-indicator {
+                right: 0;
+                z-index: 2;
+                opacity: 0;
+                cursor: pointer;
+            }
+            .btn-block {
+                margin-top: 20px;
+                text-align: center;
+            }
+            button {
+                width: auto;
+                padding: 10px;
+                border: none;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                border-radius: 5px;
+                background-color: #095484;
+                font-size: 18px;
+                color: #fff;
+                cursor: pointer;
+            }
+            button:hover {
+                background-color: #0666a3;
+            }
+
+            @media (min-width: 200px) {
+                .int-item,
+                .name-item {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+                }
+                .int-item input,
+                .name-item input {
+                    width: calc(40% - 20px);
+                }
+                .int-item select {
+                    width: calc(50% - 8px);
+                }
+
+            }
+        </style>
+    </head>
+    <body bgcolor="#2482bd">
+
+        <div class="testbox">
+            <form id="input">
+                <h1 font="font" size="35">Gelator Transparency Predictor</h1>
+                <div class="item">
+                    <h3><p>Chemical Structure</p>
+                    <div class="name-item">
+                        <input
+                            type="text"
+                            name="new_struct_anionic"
+                            id="new_chem_struct_anionic"
+                            placeholder="example: Fmoc-4-NO2-Phe-OH"
+                            required="required"
+                            title="This field can not be empty"
+                            value=""/><h3>
+
+                        <span id="error-struct"></div>
+                    </div>
+                    <div class="item">
+                        <h3><p>[Gelator] (mM)</p>
+                        <input
+                            type="number" min="0"
+                            name="new_concentration_anionic"
+                            id="new_gel_conc_anionic"
+                            placeholder="example: 10"
+                            required="required"
+                            step="0.25"
+                            value=""/></h3>
+
+                    </div>
+                    <div class="item">
+                        <h3><p>Equivalents of GdL Added</p>
+                        <input
+                            type="number" min="0"
+                            name="new_Gdl_anionic"
+                            id="new_Gdl_added_anionic"
+                            placeholder="example: 1"
+                            required="required"
+                            value=""
+                            step="0.25"/><h3>
+                    </div>
+                    <div id ="prediction_box">
+                    <div >
+                        <h2 id="prediction_transparency" ></h2>
+                    
+                    </div>
+                    <div >
+                        <h2 id="prediction_score" </h2>
+                    </div>
+                    
+                    </div>
+                    <div class="btn-block" style="position:absolute; top:260px; left: 385px">
+                        <button type='reset' value="Reset" onClick="window.location.reload()" href="/">Reset</button>
+                    </div>
+                    <div class="btn-block" style="position:absolute; top:260px; left: 465px">
+                        <button id="getDataBtn" href="/">Predict</button>
+                    </div>
+                    <p id="message" style='position: relative; top: 40px'></p>
+                    
+                    
+                </form>
+
+            </div>
+
+            <script src="./index.js"></script>
+        </body>
+    </html>
