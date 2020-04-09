@@ -288,7 +288,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("prediction_score").innerHTML = "Score: " + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + result[1]
         var el = document.getElementById('prediction_box');
         //el.style.backgroundColor = "#ff0000";
-        el.style.cssText = 'position: absolute; left: 300px; top: 145px; background-color: #fffccc; padding:5px 15px 5px 15px; border: 3px solid #ffb99c; border-radius: 10px;'
+        el.style.cssText = 'position: absolute; left: 350px; width:300px; top: 160px; background-color: #fffccc; padding:5px 10px 5px 20px; border: 3px solid #ffb99c; border-radius: 10px;'
     }, false);
 
 });
