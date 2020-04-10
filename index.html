@@ -58,7 +58,7 @@
             form {
                 position: absolute;
                 top: 30%;
-                height: 350px;
+                height: 450px;
                 width: 650px;
                 padding: 35px;
                 background: #fff;
@@ -136,7 +136,9 @@
             }
             option,
             select {
+                height: 25px;
                 width: 180px;
+                padding: 0;
             }
             select:invalid {
                 background-color: #fffee3;
@@ -171,7 +173,7 @@
                         </div>
                     </h3>
                 </div>
-                <div class="item">
+                <div class="item" id="chem_struc_anionic_field" style="display:none;">
                     <h3>
                         <p>Chemical Structure</p>
                         <div class="name-item">
@@ -180,14 +182,30 @@
                                 name="new_struct_anionic"
                                 id="new_chem_struct_anionic"
                                 placeholder="example: Fmoc-4-NO2-Phe-OH"
-                                required="required"
                                 title="This field can not be empty"
                                 value=""/>
 
                         </div>
                     </h3>
                 </div>
-                <div class="item">
+                <div class="item" id="chem_struc_cationic_field" style="display:none;">
+                    <h3>
+                        <p>Chemical Structure</p>
+                        <div class="name-item">
+                            <input
+                                type="text"
+                                name="new_struct_cationic"
+                                id="new_chem_struct_cationic"
+                                placeholder="example: 1-Nap-Phe-DAP"
+
+                                title="This field can not be empty"
+                                value=""/>
+
+                        </div>
+                    </h3>
+                </div>
+
+                <div class="item" id="gel_conc_anionic_field" style="display:none;">
                     <h3>
                         <p>[Gelator] (mM)</p>
                         <input
@@ -196,13 +214,26 @@
                             name="new_concentration_anionic"
                             id="new_gel_conc_anionic"
                             placeholder="example: 10"
-                            required="required"
+                            
                             step="0.25"
                             value=""/>
                     </h3>
                 </div>
-
-                <div class="item">
+                <div class="item" id="gel_conc_cationic_field" style="display:none;">
+                    <h3>
+                        <p>[Gelator] (mM)</p>
+                        <input
+                            type="number"
+                            min="0"
+                            name="new_concentration_cationic"
+                            id="new_gel_conc_cationic"
+                            placeholder="example: 10"
+                            
+                            step="0.25"
+                            value=""/>
+                    </h3>
+                </div>
+                <div class="item" id="equivalent_gdl_field" style="display:none;">
                     <h3>
                         <p>Equivalents of GdL Added</p>
                         <input
@@ -211,11 +242,48 @@
                             name="new_Gdl_anionic"
                             id="new_Gdl_added_anionic"
                             placeholder="example: 1"
-                            required="required"
+                            
                             value=""
                             step="0.25"/>
                     </h3>
                 </div>
+                <div class="item" id="salt_type_field" style="display:none;">
+                    <h3>
+                        <p>Salt Type</p>
+                        <div class="name-item">
+                            <select id="new_salt_type" >
+                                <option disabled="disabled" selected="selected" value="none" hidden="hidden">
+                                    -- select salt --
+                                </option>
+                                <option  value="NaCl">NaCl</option>
+                                <option value="Na2SO4">Na2SO4 </option>
+                                <option value="Na2HPO4">Na2HPO4 </option>
+                                <option value="NaBr">NaBr </option>
+                                <option value="NaNO3">NaNO3 </option>
+                                <option value="NaI">NaI </option>
+                                <option value="NaClO4">NaClO4 </option>
+                                <option value="NaSCN">NaSCN </option>
+                                <option value="sodium acetate">Sodium acetate </option>
+                                <option value="sodium citrate">Sodium citrate</option>
+                            </select>
+                        </div>
+                    </h3>
+                </div>
+                <div class="item" id="salt_conc_field" style="display:none;">
+                    <h3>
+                        <p>[Salt added] (mM)</p>
+                        <input
+                            type="number"
+                            min="0"
+                            name="new_saltadded_cationic"
+                            id="new_salt_added_cationic"
+                            placeholder="example: 10"
+                            
+                            step="0.25"
+                            value=""/>
+                    </h3>
+                </div>
+
                 <div id="prediction_box">
 
                     <h2 id="prediction_transparency"></h2>
@@ -229,6 +297,7 @@
                     <button id="getDataBtn" href="/">Predict</button>
                 </div>
                 <p id="message" style='position: relative; top: 0px'></p>
+
             </form>
 
         </div>

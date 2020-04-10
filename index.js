@@ -7,6 +7,20 @@ var math = require('mathjs');
 var $ = require('jquery');
 var dt = require('datatables.net')();
 
+// $('#chem_struc_field').hide();
+// $('#gel_conc_field').hide();
+// $('#equivalent_gdl_field').hide();
+// $('#salt_type_field').hide();
+// $('#salt_conc_field').hide();
+
+// if (document.getElementById("new_gel_type").value == "none") {
+//     document.getElementById("chem_struc_field").style.display = "none"
+//     document.getElementById("gel_conc_field").style.display = "none"
+//     document.getElementById("equivalent_gdl_field").style.display = "none"
+//     document.getElementById("salt_type_field").style.display = "none"
+//     document.getElementById("salt_conc_field").style.display = "none"
+// }
+
 function kernel_linear(a, b) {
     const dot_product = tf.mul(a, b);
     return dot_product; // The function returns the dot product of a and b
@@ -268,31 +282,101 @@ function toJSONString(form) {
 }
 
 
+$("#new_gel_type").change(function() {
+
+    $('#prediction_box').hide();
+    $('#message').hide();
+    var NEW_gel_type = document.getElementById("new_gel_type").value
+    if (NEW_gel_type == "anionic") {
+        $('#chem_struc_anionic_field').show();
+        $('#chem_struc_cationic_field').hide();
+        $('#gel_conc_anionic_field').show();
+        $('#gel_conc_cationic_field').hide();
+        $('#equivalent_gdl_field').show();
+        $('#salt_type_field').hide();
+        $('#salt_conc_field').hide();
+
+        document.getElementById("new_salt_type").required = false;
+        document.getElementById("new_salt_added_cationic").required = false;
+        document.getElementById("new_gel_conc_anionic").required = true;
+        document.getElementById("new_gel_conc_cationic").required = false;
+        document.getElementById("new_Gdl_added_anionic").required = true;
+        document.getElementById("new_chem_struct_anionic").required = true;
+        document.getElementById("new_chem_struct_cationic").required = false;
+
+    } else if (NEW_gel_type == "cationic") {
+        $('#chem_struc_anionic_field').hide();
+        $('#chem_struc_cationic_field').show();
+        $('#gel_conc_anionic_field').hide();
+        $('#gel_conc_cationic_field').show();
+        $('#salt_type_field').show();
+        $('#salt_conc_field').show();
+        $('#equivalent_gdl_field').hide();
+        document.getElementById("new_gel_conc_anionic").required = false;
+        document.getElementById("new_gel_conc_cationic").required = true;
+        document.getElementById("new_Gdl_added_anionic").required = true;
+        document.getElementById("new_salt_type").required = true;
+        document.getElementById("new_salt_added_cationic").required = true;
+        document.getElementById("new_Gdl_added_anionic").required = false;
+        document.getElementById("new_chem_struct_anionic").required = false;
+        document.getElementById("new_chem_struct_cationic").required = true;
+
+
+    } else {
+        document.getElementById("chem_struc_anionic_field").style.display = "none"
+        document.getElementById("chem_struc_cationic_field").style.display = "none"
+        document.getElementById("gel_conc_anionic_field").style.display = "none"
+        document.getElementById("gel_conc_cationic_field").style.display = "none"
+        document.getElementById("equivalent_gdl_field").style.display = "none"
+        document.getElementById("salt_type_field").style.display = "none"
+        document.getElementById("salt_conc_field").style.display = "none"
+
+    }
+});
+$("#new_gel_type").trigger("change");
+
+
 document.addEventListener("DOMContentLoaded", function() {
     var form = document.getElementById("input");
     var output = document.getElementById("output");
     var button = document.getElementById("getDataBtn");
-    //var prediction_score = document.getElementById("prediction_score");
-    //var prediction_trancparency = document.getElementById("prediction_transparency");
+    var new_gel_type = document.getElementById("new_gel_type").value
+    console.log(new_gel_type)
+        //var prediction_score = document.getElementById("prediction_score");
+        //var prediction_trancparency = document.getElementById("prediction_transparency");
     form.addEventListener("submit", function(e) {
         e.preventDefault();
         //e.stopPropagation();
-        var new_struct_anionic = document.getElementById("new_chem_struct_anionic").value;
-        var new_concentration_anionic = document.getElementById("new_gel_conc_anionic").value;
-        var new_Gdl_anionic = document.getElementById("new_Gdl_added_anionic").value;
-        var result = GTP_anionic_api(new_struct_anionic, new_concentration_anionic, new_Gdl_anionic);
-        //prediction_score.innerHTML = result[1];
-        //prediction_trancparency.innerHTML = result[0];
-        document.getElementById("message").innerHTML = "Score shows the certainty of the model on new predictions on the scale of 0 to 1.";
-        document.getElementById("prediction_transparency").innerHTML = "Prediction: " + "&nbsp" + "&nbsp" + "&nbsp" + result[0]
-        document.getElementById("prediction_score").innerHTML = "Score: " + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + result[1]
-        var el = document.getElementById('prediction_box');
-        //el.style.backgroundColor = "#ff0000";
-        el.style.cssText = 'position: absolute; left: 350px; width:300px; top: 160px; background-color: #fffccc; padding:5px 10px 5px 20px; border: 3px solid #ffb99c; border-radius: 10px;'
-        console.log(document.getElementById("new_gel_type").value)
+        var new_gel_type = document.getElementById("new_gel_type").value
+
+        if (new_gel_type == 'anionic') {
+            document.getElementById("salt_type_field").required = false;
+            //document.getElementById("salt_conc_field").required = false;
+            //$("#salt_conc_field").attr('required', ''); 
+            $("#salt_conc_field").removeAttr('required');
+            var new_struct_anionic = document.getElementById("new_chem_struct_anionic").value;
+            var new_concentration_anionic = document.getElementById("new_gel_conc_anionic").value;
+            var new_Gdl_anionic = document.getElementById("new_Gdl_added_anionic").value;
+            var result = GTP_anionic_api(new_struct_anionic, new_concentration_anionic, new_Gdl_anionic);
+            //prediction_score.innerHTML = result[1];
+            //prediction_trancparency.innerHTML = result[0];
+            document.getElementById("message").innerHTML = "Score shows the certainty of the model on new predictions on the scale of 0 to 1.";
+            document.getElementById("prediction_transparency").innerHTML = "Prediction: " + "&nbsp" + "&nbsp" + "&nbsp" + result[0]
+            document.getElementById("prediction_score").innerHTML = "Score: " + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + result[1]
+            var el = document.getElementById('prediction_box');
+            //el.style.backgroundColor = "#ff0000";
+            el.style.cssText = 'position: absolute; left: 350px; width:300px; top: 160px; background-color: #fffccc; padding:5px 10px 5px 20px; border: 3px solid #ffb99c; border-radius: 10px;'
+                //document.getElementById("prediction_box").style.display = "none"
+            $('#prediction_box').show();
+            $('#message').show();
+        }
     }, false);
 
 });
+
+
+
+
 
 // document.addEventListener("DOMContentLoaded", function() {
 //     var form = document.getElementById("input");
