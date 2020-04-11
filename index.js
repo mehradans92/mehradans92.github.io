@@ -61,6 +61,7 @@ function GTP_cationic_api(new_struct_cationic, new_salt_added_cationic, new_salt
     var ohe_peptides_cationic = ohe_pep_encoder(divided_peptides_cationic)
     var ohe_salt_added_cationic = ohe_salt_encoder(salt_added_cationic)
     var normalized_h_dist_cationic = normalized_hamming_dist_finder(ohe_peptides_cationic)
+
     var normalized_cg_dist_cationic = normalized_conc_dist_finder(concentration_gel_list_cationic)
     var normalized_cs_dist_cationic = normalized_conc_dist_finder(concentration_salt_list_cationic)
     var normalized_ts_dist_cationic = normalized_hamming_dist_finder(ohe_salt_added_cationic)
@@ -68,25 +69,35 @@ function GTP_cationic_api(new_struct_cationic, new_salt_added_cationic, new_salt
     var normalized_cg_dist_cationic = normalized_cg_dist_cationic[normalized_cg_dist_cationic.length - 1].slice(0, normalized_cg_dist_cationic.length - 1)
     var normalized_cs_dist_cationic = normalized_cs_dist_cationic[normalized_cs_dist_cationic.length - 1].slice(0, normalized_cs_dist_cationic.length - 1)
     var normalized_ts_dist_cationic = normalized_ts_dist_cationic[normalized_ts_dist_cationic.length - 1].slice(0, normalized_ts_dist_cationic.length - 1)
+        // console.log('h_dist', normalized_h_dist_cationic)
+        // console.log('conc_gel_dist', normalized_cg_dist_cationic)
+        // console.log('conc_salt_dist', normalized_cs_dist_cationic)
+        // console.log('type_salt_dist', normalized_ts_dist_cationic)
     var overall_distance_test_cationic = math.sqrt(math.add(math.dotMultiply(normalized_h_dist_cationic, normalized_h_dist_cationic),
-        math.dotMultiply(normalized_cg_dist_cationic, normalized_cg_dist_cationic), math.dotMultiply(normalized_cs_dist_cationic, normalized_cs_dist_cationic), math.dotMultiply(normalized_ts_dist_cationic, normalized_ts_dist_cationic)))
-    console.log(overall_distance_test_cationic)
+            math.dotMultiply(normalized_cg_dist_cationic, normalized_cg_dist_cationic), math.dotMultiply(normalized_cs_dist_cationic, normalized_cs_dist_cationic), math.dotMultiply(normalized_ts_dist_cationic, normalized_ts_dist_cationic)))
+        //console.log('overall_distance_test', overall_distance_test_cationic)
+        // tf.print(overall_distance_train_cationic)
     var overall_distance_test_cationic = tf.tensor1d(overall_distance_test_cationic)
     var overall_distance_test_cationic = tf.reshape(overall_distance_test_cationic, [1, chem_struct_cationic.length - 1])
         //console.log(overall_distance_test_anionic.shape[0])
     var train_cationic_Data = require('./json/cationic_fit_data.json');
     const weights_cationic = tf.tensor2d(train_cationic_Data['weights']);
+    // tf.print(overall_distance_train_cationic)
     var result = KRR(overall_distance_test_cationic, overall_distance_train_cationic, weights_cationic)
     console.log(result)
     return result
 }
 var new_struct_cationic = "Fmoc-Phe-DAP"
-var new_salt_concentration_cationic = 500
-var new_gel_concentration_cationic = 10
+var new_gel_concentration_cationic = 20
+var new_salt_concentration_cationic = 114
 var new_salt_added_cationic = "NaCl"
 
 var result = GTP_cationic_api(new_struct_cationic, new_salt_added_cationic, new_salt_concentration_cationic, new_gel_concentration_cationic)
 
+var new_struct_cationic = "Fmoc-Phe-OH"
+var new_gel_concentration_cationic = 7.5
+var new_gdl_added = 2
+var result = GTP_anionic_api(new_struct_cationic, new_gel_concentration_cationic, new_gdl_added)
 
 function kernel_linear(a, b) {
     const dot_product = tf.mul(a, b);
@@ -117,19 +128,28 @@ function compute_kernel(a, b) {
 
 function KRR(overall_distance_test, overall_distance_train, weights) {
     //console.log(overall_distance_test.shape[0])
-    var length_test_data = overall_distance_test.shape[0]
+    console.log('overall_distance_train')
+    tf.print(overall_distance_train.shape)
+    console.log('overall_distance_test')
+    tf.print(overall_distance_test.shape)
+    console.log('weights')
+    tf.print(weights.shape)
+    var O_distance_test = overall_distance_test
+    var O_distance_train = overall_distance_train
+    var length_test_data = O_distance_test.shape[0]
+    var W = weights
     var i;
     for (i = 0; i < length_test_data; i++) {
         var K = tf.matMul(
-            tf.gather(overall_distance_test, [i]),
-            overall_distance_train
+            tf.gather(O_distance_test, [i]),
+            O_distance_train
         )
-        var prediction = tf.matMul(K, weights)
+        tf.print(K)
+        var prediction = tf.matMul(K, W)
             //console.log(prediction.dataSync())
         var max_index = prediction
             .argMax(1)
             .dataSync()
-
         var index_m = 1
             //tf.gatherND(prediction, [0, 1]) tf.sum(tf.abs(prediction))
 
