@@ -371,6 +371,8 @@ $("#new_gel_type").change(function() {
         document.getElementById("new_Gdl_added_anionic").required = true;
         document.getElementById("new_chem_struct_anionic").required = true;
         document.getElementById("new_chem_struct_cationic").required = false;
+        $("#input").css("height", "380px");
+
 
     } else if (NEW_gel_type == "cationic") {
         $('#chem_struc_anionic_field').hide();
@@ -388,6 +390,7 @@ $("#new_gel_type").change(function() {
         document.getElementById("new_Gdl_added_anionic").required = false;
         document.getElementById("new_chem_struct_anionic").required = false;
         document.getElementById("new_chem_struct_cationic").required = true;
+        $("#input").css("height", "450px");
 
 
     } else {
