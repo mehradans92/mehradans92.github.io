@@ -1,25 +1,92 @@
 //https://www.w3docs.com/tools/editor/5918
-import * as raw_anionic_train_Data from "./json/anionic_raw_train_data.json";
-const { chem_struct, Gel_conc, Gdl_added } = raw_anionic_train_Data;
-
 import * as tf from '@tensorflow/tfjs';
 var math = require('mathjs');
 var $ = require('jquery');
 var dt = require('datatables.net')();
 
-// $('#chem_struc_field').hide();
-// $('#gel_conc_field').hide();
-// $('#equivalent_gdl_field').hide();
-// $('#salt_type_field').hide();
-// $('#salt_conc_field').hide();
+import * as raw_anionic_train_Data from "./json/anionic_raw_train_data.json";
+const { chem_struct_ANIONIC, Gel_conc_ANIONIC, Gdl_added_ANIONIC } = raw_anionic_train_Data;
 
-// if (document.getElementById("new_gel_type").value == "none") {
-//     document.getElementById("chem_struc_field").style.display = "none"
-//     document.getElementById("gel_conc_field").style.display = "none"
-//     document.getElementById("equivalent_gdl_field").style.display = "none"
-//     document.getElementById("salt_type_field").style.display = "none"
-//     document.getElementById("salt_conc_field").style.display = "none"
-// }
+import * as raw_cationic_train_Data from "./json/cationic_raw_train_data.json";
+const { chem_struct_CATIONIC, Salt_conc_CATIONIC, Gel_conc_CATIONIC, salt_added_CATIONIC } = raw_cationic_train_Data;
+
+
+
+function GTP_cationic_api(new_struct_cationic, new_salt_added_cationic, new_salt_concentration_cationic, new_gel_concentration_cationic) {
+    const chem_struct_cationic = [...chem_struct_CATIONIC];
+    const salt_concentration_cationic = [...Salt_conc_CATIONIC];
+    const gel_concentration_cationic = [...Gel_conc_CATIONIC];
+    const salt_added_cationic = [...salt_added_CATIONIC];
+    var divided_peptides_cationic = []
+    var gel_concentration_list_cationic = []
+    var salt_concentration_list_cationic = []
+    var salt_added_list_cationic = []
+    for (let i = 0; i < chem_struct_cationic.length; i++) {
+        divided_peptides_cationic.push(str_divide(chem_struct_cationic[i]))
+        var gel_concentration_parsed_cationic = gel_concentration_cationic[i].replace(/[^0-9\.]/g, '')
+        gel_concentration_list_cationic.push(parseFloat(gel_concentration_parsed_cationic))
+        var salt_concentration_parsed_cationic = salt_concentration_cationic[i].replace(/[^0-9\.]/g, '')
+        salt_concentration_list_cationic.push(parseFloat(salt_concentration_parsed_cationic))
+        salt_added_list_cationic.push(salt_added_cationic[i])
+    }
+    var ohe_peptides_cationic = ohe_pep_encoder(divided_peptides_cationic)
+    var ohe_salt_added_cationic = ohe_salt_encoder(salt_added_list_cationic)
+    var normalized_h_dist_cationic = normalized_hamming_dist_finder(ohe_peptides_cationic)
+    var normalized_cg_dist_cationic = normalized_conc_dist_finder(gel_concentration_list_cationic) //cg stands for concentration gel
+    var normalized_cs_dist_cationic = normalized_conc_dist_finder(salt_concentration_list_cationic) //cs stands for concentration salt
+    var normalized_ts_dist_cationic = normalized_hamming_dist_finder(ohe_salt_added_cationic) //ts stands for type salt
+
+    var overall_distance_train_cationic = math.sqrt(math.add(math.dotMultiply(normalized_h_dist_cationic, normalized_h_dist_cationic),
+        math.dotMultiply(normalized_cg_dist_cationic, normalized_cg_dist_cationic), math.dotMultiply(normalized_cs_dist_cationic, normalized_cs_dist_cationic), math.dotMultiply(normalized_ts_dist_cationic, normalized_ts_dist_cationic)))
+    var overall_distance_train_cationic = tf.tensor2d(overall_distance_train_cationic)
+        // Evaluating New test data
+    chem_struct_cationic.push(new_struct_cationic)
+    salt_added_cationic.push(new_salt_added_cationic)
+        //gel_conentration_cationic_new.push(new_gel_conc_cationic)
+    var divided_peptides_cationic = []
+    var concentration_gel_list_cationic = []
+    var concentration_salt_list_cationic = []
+    for (let i = 0; i < chem_struct_cationic.length; i++) {
+        divided_peptides_cationic.push(str_divide(chem_struct_cationic[i]))
+        if (i < chem_struct_cationic.length - 1) {
+            var concentration_gel_parsed_cationic = parseFloat(gel_concentration_cationic[i].replace(/[^0-9\.]/g, ''))
+            var concentration_salt_parsed_cationic = parseFloat(salt_concentration_cationic[i].replace(/[^0-9\.]/g, ''))
+        } else {
+            var concentration_gel_parsed_cationic = new_gel_concentration_cationic
+            var concentration_salt_parsed_cationic = new_salt_concentration_cationic
+        }
+        concentration_gel_list_cationic.push(concentration_gel_parsed_cationic)
+        concentration_salt_list_cationic.push(concentration_salt_parsed_cationic)
+    }
+    var ohe_peptides_cationic = ohe_pep_encoder(divided_peptides_cationic)
+    var ohe_salt_added_cationic = ohe_salt_encoder(salt_added_cationic)
+    var normalized_h_dist_cationic = normalized_hamming_dist_finder(ohe_peptides_cationic)
+    var normalized_cg_dist_cationic = normalized_conc_dist_finder(concentration_gel_list_cationic)
+    var normalized_cs_dist_cationic = normalized_conc_dist_finder(concentration_salt_list_cationic)
+    var normalized_ts_dist_cationic = normalized_hamming_dist_finder(ohe_salt_added_cationic)
+    var normalized_h_dist_cationic = normalized_h_dist_cationic[normalized_h_dist_cationic.length - 1].slice(0, normalized_h_dist_cationic.length - 1)
+    var normalized_cg_dist_cationic = normalized_cg_dist_cationic[normalized_cg_dist_cationic.length - 1].slice(0, normalized_cg_dist_cationic.length - 1)
+    var normalized_cs_dist_cationic = normalized_cs_dist_cationic[normalized_cs_dist_cationic.length - 1].slice(0, normalized_cs_dist_cationic.length - 1)
+    var normalized_ts_dist_cationic = normalized_ts_dist_cationic[normalized_ts_dist_cationic.length - 1].slice(0, normalized_ts_dist_cationic.length - 1)
+    var overall_distance_test_cationic = math.sqrt(math.add(math.dotMultiply(normalized_h_dist_cationic, normalized_h_dist_cationic),
+        math.dotMultiply(normalized_cg_dist_cationic, normalized_cg_dist_cationic), math.dotMultiply(normalized_cs_dist_cationic, normalized_cs_dist_cationic), math.dotMultiply(normalized_ts_dist_cationic, normalized_ts_dist_cationic)))
+    console.log(overall_distance_test_cationic)
+    var overall_distance_test_cationic = tf.tensor1d(overall_distance_test_cationic)
+    var overall_distance_test_cationic = tf.reshape(overall_distance_test_cationic, [1, chem_struct_cationic.length - 1])
+        //console.log(overall_distance_test_anionic.shape[0])
+    var train_cationic_Data = require('./json/cationic_fit_data.json');
+    const weights_cationic = tf.tensor2d(train_cationic_Data['weights']);
+    var result = KRR(overall_distance_test_cationic, overall_distance_train_cationic, weights_cationic)
+    console.log(result)
+    return result
+}
+var new_struct_cationic = "Fmoc-Phe-DAP"
+var new_salt_concentration_cationic = 500
+var new_gel_concentration_cationic = 10
+var new_salt_added_cationic = "NaCl"
+
+var result = GTP_cationic_api(new_struct_cationic, new_salt_added_cationic, new_salt_concentration_cationic, new_gel_concentration_cationic)
+
 
 function kernel_linear(a, b) {
     const dot_product = tf.mul(a, b);
@@ -48,8 +115,7 @@ function compute_kernel(a, b) {
 // function Loading data from json file;
 
 
-
-function GTP_anionic(overall_distance_test, overall_distance_train, weights) {
+function KRR(overall_distance_test, overall_distance_train, weights) {
     //console.log(overall_distance_test.shape[0])
     var length_test_data = overall_distance_test.shape[0]
     var i;
@@ -92,6 +158,29 @@ function str_divide(chem_struct) {
     var parsed_modified_str = [modified_str[0].slice(0, 4), modified_str[0].slice(4, modified_str[0].length), modified_str[1]];
     //first item: N Terminus, Second item: functional group, Last item: C terminus
     return parsed_modified_str;
+}
+
+function ohe_salt_encoder(salt_added_list_cationic) { //input is salt type data
+    // Fidning all possible classes
+    var Salt_type_classes = []
+    for (let i = 0; i < salt_added_list_cationic.length; i++) {
+        Salt_type_classes.push(salt_added_list_cationic[i])
+    }
+    var Salt_type_classes = Salt_type_classes.filter(onlyUnique).sort();
+    /// Finding one-hot encoding
+    var ohe_salts_added = []
+    for (let k = 0; k < salt_added_list_cationic.length; k++) {
+        var ohe_salt = Array(Salt_type_classes.length).fill(0)
+
+        for (let j = 0; j < Salt_type_classes.length; j++) {
+            //var check = possible_classes[i][j].includes(divided_peptides[0][i]);
+            if (Salt_type_classes[j] == salt_added_list_cationic[k]) {
+                ohe_salt[j] = 1
+            }
+        }
+        ohe_salts_added.push(ohe_salt)
+    }
+    return ohe_salts_added
 }
 
 function ohe_pep_encoder(divided_peptides) { //input is parsed peptide data
@@ -180,9 +269,9 @@ function GTP_anionic_api(new_struct_anionic, new_concentration_anionic, new_Gdl_
     // var chem_struct_anionic = raw_anionic_train_Data['chem_struct']
     // var concentration_anionic = raw_anionic_train_Data['Gel_conc'];
     // var Gdl_anionic = raw_anionic_train_Data['Gdl_added'];
-    const chem_struct_anionic = [...chem_struct];
-    const concentration_anionic = [...Gel_conc];
-    const Gdl_anionic = [...Gdl_added];
+    const chem_struct_anionic = [...chem_struct_ANIONIC];
+    const concentration_anionic = [...Gel_conc_ANIONIC];
+    const Gdl_anionic = [...Gdl_added_ANIONIC];
 
 
     var divided_peptides_anionic = []
@@ -207,8 +296,6 @@ function GTP_anionic_api(new_struct_anionic, new_concentration_anionic, new_Gdl_
     //var new_concentration_anionic = 7.5
     //var new_Gdl_anionic = 2
     chem_struct_anionic.push(new_struct_anionic)
-        //concentration_anionic.push(new_concentration_anionic)
-
     Gdl_anionic.push(new_Gdl_anionic)
     var divided_peptides_anionic = []
     var concentration_list_anionic = []
@@ -240,8 +327,8 @@ function GTP_anionic_api(new_struct_anionic, new_concentration_anionic, new_Gdl_
     var overall_distance_test_anionic = tf.reshape(overall_distance_test_anionic, [1, Gdl_anionic.length - 1])
         //console.log(overall_distance_test_anionic.shape[0])
     var train_anionic_Data = require('./json/anionic_fit_data.json');
-    const weights = tf.tensor2d(train_anionic_Data['weights']);
-    var result = GTP_anionic(overall_distance_test_anionic, overall_distance_train_anionic, weights)
+    const weights_anionic = tf.tensor2d(train_anionic_Data['weights']);
+    var result = KRR(overall_distance_test_anionic, overall_distance_train_anionic, weights_anionic)
     return (result)
 }
 
@@ -263,29 +350,10 @@ function GTP_anionic_api(new_struct_anionic, new_concentration_anionic, new_Gdl_
 // );
 
 
-
-
-function toJSONString(form) {
-    var obj = {};
-    var elements = form.querySelectorAll("input");
-    for (var i = 0; i < elements.length; ++i) {
-        var element = elements[i];
-        var name = element.name;
-        var value = element.value;
-
-        if (name) {
-            obj[name] = value;
-        }
-    }
-
-    return JSON.stringify(obj);
-}
-
-
 $("#new_gel_type").change(function() {
 
     $('#prediction_box').hide();
-    $('#message').hide();
+    $('#notes').hide();
     var NEW_gel_type = document.getElementById("new_gel_type").value
     if (NEW_gel_type == "anionic") {
         $('#chem_struc_anionic_field').show();
@@ -350,17 +418,16 @@ document.addEventListener("DOMContentLoaded", function() {
         var new_gel_type = document.getElementById("new_gel_type").value
 
         if (new_gel_type == 'anionic') {
-            document.getElementById("salt_type_field").required = false;
-            //document.getElementById("salt_conc_field").required = false;
-            //$("#salt_conc_field").attr('required', ''); 
-            $("#salt_conc_field").removeAttr('required');
+            // document.getElementById("salt_type_field").required = false;
+            // $("#salt_conc_field").removeAttr('required');
             var new_struct_anionic = document.getElementById("new_chem_struct_anionic").value;
             var new_concentration_anionic = document.getElementById("new_gel_conc_anionic").value;
             var new_Gdl_anionic = document.getElementById("new_Gdl_added_anionic").value;
             var result = GTP_anionic_api(new_struct_anionic, new_concentration_anionic, new_Gdl_anionic);
             //prediction_score.innerHTML = result[1];
             //prediction_trancparency.innerHTML = result[0];
-            document.getElementById("message").innerHTML = "Score shows the certainty of the model on new predictions on the scale of 0 to 1.";
+            document.getElementById("report_avg_score").innerHTML = "Average score for the anionic model is currently 0.83.";
+            document.getElementById("message").innerHTML = "Score shows the certainty of the model for new predictions on the scale of 0 to 1.";
             document.getElementById("prediction_transparency").innerHTML = "Prediction: " + "&nbsp" + "&nbsp" + "&nbsp" + result[0]
             document.getElementById("prediction_score").innerHTML = "Score: " + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + result[1]
             var el = document.getElementById('prediction_box');
@@ -368,7 +435,28 @@ document.addEventListener("DOMContentLoaded", function() {
             el.style.cssText = 'position: absolute; left: 350px; width:300px; top: 160px; background-color: #fffccc; padding:5px 10px 5px 20px; border: 3px solid #ffb99c; border-radius: 10px;'
                 //document.getElementById("prediction_box").style.display = "none"
             $('#prediction_box').show();
-            $('#message').show();
+            $('#notes').show();
+        }
+        if (new_gel_type == 'cationic') {
+
+            // $("#salt_conc_field").removeAttr('required');
+            var new_struct_cationic = document.getElementById("new_chem_struct_anionic").value;
+            var new_salt_added_cationic = document.getElementById("new_salt_type").value;
+            var new_salt_concentration_cationic = document.getElementById("new_salt_added_cationic").value;
+            var new_gel_concentration_cationic = document.getElementById("new_gel_conc_cationic").value;
+            var result = GTP_cationic_api(new_struct_cationic, new_salt_added_cationic, new_salt_concentration_cationic, new_gel_concentration_cationic)
+                //prediction_score.innerHTML = result[1];
+                //prediction_trancparency.innerHTML = result[0];
+            document.getElementById("report_avg_score").innerHTML = "Average score for the cationic model is currently 0.86.";
+            document.getElementById("message").innerHTML = "Score shows the certainty of the model for new predictions on the scale of 0 to 1.";
+            document.getElementById("prediction_transparency").innerHTML = "Prediction: " + "&nbsp" + "&nbsp" + "&nbsp" + result[0]
+            document.getElementById("prediction_score").innerHTML = "Score: " + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + "&nbsp" + result[1]
+            var el = document.getElementById('prediction_box');
+            //el.style.backgroundColor = "#ff0000";
+            el.style.cssText = 'position: absolute; left: 350px; width:300px; top: 160px; background-color: #fffccc; padding:5px 10px 5px 20px; border: 3px solid #ffb99c; border-radius: 10px;'
+                //document.getElementById("prediction_box").style.display = "none"
+            $('#prediction_box').show();
+            $('#notes').show();
         }
     }, false);
 

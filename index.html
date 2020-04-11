@@ -57,7 +57,7 @@
             }
             form {
                 position: absolute;
-                top: 30%;
+                top: 18%;
                 height: 450px;
                 width: 650px;
                 padding: 35px;
@@ -197,7 +197,6 @@
                                 name="new_struct_cationic"
                                 id="new_chem_struct_cationic"
                                 placeholder="example: 1-Nap-Phe-DAP"
-
                                 title="This field can not be empty"
                                 value=""/>
 
@@ -214,8 +213,7 @@
                             name="new_concentration_anionic"
                             id="new_gel_conc_anionic"
                             placeholder="example: 10"
-                            
-                            step="0.25"
+                            step="0.001"
                             value=""/>
                     </h3>
                 </div>
@@ -228,8 +226,7 @@
                             name="new_concentration_cationic"
                             id="new_gel_conc_cationic"
                             placeholder="example: 10"
-                            
-                            step="0.25"
+                            step="0.001"
                             value=""/>
                     </h3>
                 </div>
@@ -242,28 +239,35 @@
                             name="new_Gdl_anionic"
                             id="new_Gdl_added_anionic"
                             placeholder="example: 1"
-                            
                             value=""
-                            step="0.25"/>
+                            step="0.001"/>
                     </h3>
                 </div>
                 <div class="item" id="salt_type_field" style="display:none;">
                     <h3>
                         <p>Salt Type</p>
                         <div class="name-item">
-                            <select id="new_salt_type" >
+                            <select id="new_salt_type">
                                 <option disabled="disabled" selected="selected" value="none" hidden="hidden">
                                     -- select salt --
                                 </option>
-                                <option  value="NaCl">NaCl</option>
-                                <option value="Na2SO4">Na2SO4 </option>
-                                <option value="Na2HPO4">Na2HPO4 </option>
-                                <option value="NaBr">NaBr </option>
-                                <option value="NaNO3">NaNO3 </option>
-                                <option value="NaI">NaI </option>
-                                <option value="NaClO4">NaClO4 </option>
-                                <option value="NaSCN">NaSCN </option>
-                                <option value="sodium acetate">Sodium acetate </option>
+                                <option value="Na2HPO4">Na2HPO4
+                                </option>
+                                <option value="Na2SO4">Na2SO4
+                                </option>
+                                <option value="NaBr">NaBr
+                                </option>
+                                <option value="NaCl">NaCl</option>
+                                <option value="NaClO4">NaClO4
+                                </option>
+                                <option value="NaI">NaI
+                                </option>
+                                <option value="NaNO3">NaNO3
+                                </option>
+                                <option value="NaSCN">NaSCN
+                                </option>
+                                <option value="sodium acetate">Sodium acetate
+                                </option>
                                 <option value="sodium citrate">Sodium citrate</option>
                             </select>
                         </div>
@@ -278,8 +282,7 @@
                             name="new_saltadded_cationic"
                             id="new_salt_added_cationic"
                             placeholder="example: 10"
-                            
-                            step="0.25"
+                            step="0.001"
                             value=""/>
                     </h3>
                 </div>
@@ -296,7 +299,12 @@
                 <div class="btn-block" style="position:absolute; top:280px; left: 465px">
                     <button id="getDataBtn" href="/">Predict</button>
                 </div>
-                <p id="message" style='position: relative; top: 0px'></p>
+                <div id ="notes">
+                <ul>
+                    <li id="message" style='position: relative; top: 0px'></li>
+                    <li id="report_avg_score" style='position: relative; top: 0px'></li>
+                </ul>
+                </div>
 
             </form>
 
