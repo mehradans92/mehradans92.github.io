@@ -376,15 +376,15 @@ body {
 }
 
 
-/* ========== Education section: fancier cards, gradient, icons, pills ========== */
+/* ========== Education section ========== */
 
-/* Match Work section: body text = Merriweather, headings = Open Sans (same as #work / .bg-yellow) */
 #about {
-    /* Gradient using the original section blue (#295d91) */
-    background: linear-gradient(160deg, #295d91 0%, #234a75 45%, #1a3a5c 100%) !important;
+    background: linear-gradient(160deg, #2c6fad 0%, #1e4f7e 40%, #152d4a 100%) !important;
     padding-bottom: 4em !important;
     padding-top: 3.5em !important;
     font-family: Merriweather, 'Helvetica Neue', Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
 }
 
 #about .section-heading,
@@ -414,72 +414,175 @@ body {
     margin-bottom: 2rem;
 }
 
-/* Card container for each Education column */
-#about .row > [class*="col-"] {
-    margin-bottom: 1.5rem;
+/* ---------- Floating particles background ---------- */
+#about .edu-bg-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
 }
 
+#about .edu-bg-particles span {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    animation: eduFloat linear infinite;
+}
+
+@keyframes eduFloat {
+    0%   { transform: translateY(0) scale(1);   opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateY(-110vh) scale(0.6); opacity: 0; }
+}
+
+#about .edu-bg-particles span:nth-child(1) {
+    width: 6px; height: 6px;
+    left: 8%;  bottom: -10%;
+    background: rgba(100, 180, 255, 0.2);
+    animation-duration: 18s; animation-delay: 0s;
+}
+#about .edu-bg-particles span:nth-child(2) {
+    width: 10px; height: 10px;
+    left: 25%; bottom: -10%;
+    background: rgba(140, 200, 255, 0.15);
+    animation-duration: 22s; animation-delay: 3s;
+}
+#about .edu-bg-particles span:nth-child(3) {
+    width: 4px; height: 4px;
+    left: 45%; bottom: -10%;
+    background: rgba(180, 220, 255, 0.25);
+    animation-duration: 16s; animation-delay: 1s;
+}
+#about .edu-bg-particles span:nth-child(4) {
+    width: 8px; height: 8px;
+    left: 65%; bottom: -10%;
+    background: rgba(100, 180, 255, 0.18);
+    animation-duration: 20s; animation-delay: 5s;
+}
+#about .edu-bg-particles span:nth-child(5) {
+    width: 5px; height: 5px;
+    left: 82%; bottom: -10%;
+    background: rgba(160, 210, 255, 0.22);
+    animation-duration: 24s; animation-delay: 2s;
+}
+#about .edu-bg-particles span:nth-child(6) {
+    width: 12px; height: 12px;
+    left: 50%; bottom: -10%;
+    background: rgba(255, 255, 255, 0.07);
+    animation-duration: 26s; animation-delay: 7s;
+}
+
+/* ---------- Card columns ---------- */
+#about .row > [class*="col-"] {
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* ---------- Glassmorphism cards with accent top stripe ---------- */
 #about .edu-card {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 16px;
-    padding: 1.75rem 1.25rem;
+    background: rgba(255, 255, 255, 0.07);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    padding-top: 2.25rem;
     height: 100%;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    position: relative;
+    overflow: hidden;
+    /* 3D tilt support */
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: box-shadow 0.35s cubic-bezier(.25,.8,.25,1),
+                border-color 0.35s ease,
+                background 0.35s ease;
+}
+
+/* Accent stripe at the top of each card */
+#about .edu-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 20px 20px 0 0;
+    background: linear-gradient(90deg, rgba(100, 180, 255, 0.6), rgba(160, 210, 255, 0.3));
+    opacity: 0.7;
+    transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+#about .edu-card:hover::before {
+    opacity: 1;
+    height: 4px;
 }
 
 #about .edu-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.1);
 }
 
-/* Icon with circular background - ensure icons always show (not affected by ScrollReveal) */
+/* ---------- Icon circles ---------- */
 #about .edu-icon-wrap {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 72px;
-    height: 72px;
+    width: 76px;
+    height: 76px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    margin-bottom: 1rem;
-    transition: background 0.25s ease, transform 0.25s ease;
+    background: linear-gradient(135deg, rgba(100, 180, 255, 0.25) 0%, rgba(255, 255, 255, 0.06) 100%);
+    border: 1px solid rgba(100, 180, 255, 0.2);
+    margin-bottom: 1.15rem;
+    transition: all 0.35s cubic-bezier(.25,.8,.25,1);
 }
 
 #about .edu-icon-wrap .edu-fa-icon,
-#about .edu-icon-wrap .fa {
+#about .edu-icon-wrap .fa,
+#about .edu-icon-wrap svg {
     opacity: 1 !important;
     transform: none !important;
     display: inline-block !important;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.92);
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
 }
 
 #about .edu-card:hover .edu-icon-wrap {
-    background: rgba(255, 255, 255, 0.18);
-    transform: scale(1.05);
+    background: linear-gradient(135deg, rgba(100, 180, 255, 0.4) 0%, rgba(200, 230, 255, 0.12) 100%);
+    transform: scale(1.1);
+    box-shadow: 0 4px 20px rgba(100, 180, 255, 0.25);
+    border-color: rgba(100, 180, 255, 0.4);
 }
 
 #about .edu-card h3 {
     font-size: 1.2rem;
     letter-spacing: 0.04em;
     margin-bottom: 1rem;
+    font-weight: 600;
 }
 
-/* Degree item: logo + text row */
+/* ---------- Degree items ---------- */
 #about .degree-item {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
     text-align: left;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    transition: background 0.2s ease;
+    border-radius: 8px;
+    padding: 0.6rem;
+    margin-left: -0.6rem;
+    margin-right: -0.6rem;
+}
+
+#about .degree-item:hover {
+    background: rgba(255, 255, 255, 0.04);
 }
 
 #about .degree-item:last-child {
     margin-bottom: 0;
-    padding-bottom: 0;
     border-bottom: none;
 }
 
@@ -488,6 +591,12 @@ body {
     width: 44px;
     height: 44px;
     object-fit: contain;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+#about .degree-item:hover .degree-logo {
+    transform: scale(1.05);
 }
 
 #about .degree-text {
@@ -497,45 +606,60 @@ body {
 
 #about .degree-text b {
     display: block;
-    color: rgba(255, 255, 255, 0.95);
+    color: rgba(255, 255, 255, 0.97);
     font-size: 0.95rem;
 }
 
 #about .degree-text a {
     display: inline-block;
     margin-top: 0.25rem;
-    font-size: 0.9rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    color: rgba(160, 210, 255, 0.9);
+    border-bottom: 1px solid transparent;
     padding-bottom: 1px;
+    transition: color 0.2s ease, border-bottom-color 0.2s ease;
 }
 
 #about .degree-text a:hover {
-    border-bottom-color: rgba(255, 255, 255, 0.85);
+    color: #fff;
+    border-bottom-color: rgba(255, 255, 255, 0.6);
 }
 
-/* Skills / Languages as pills */
+/* ---------- Skill pills ---------- */
 #about .skill-pill {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.95);
-    padding: 0.35rem 0.75rem;
+    padding: 0.4rem 0.85rem;
     border-radius: 999px;
-    font-size: 0.85rem;
+    font-size: 0.83rem;
     margin: 0.25rem;
-    transition: background 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.25s ease;
+    cursor: default;
 }
 
-#about .edu-card:hover .skill-pill {
-    background: rgba(255, 255, 255, 0.18);
+#about .skill-pill:hover {
+    background: rgba(100, 180, 255, 0.2);
+    border-color: rgba(100, 180, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(100, 180, 255, 0.15);
 }
 
-/* Awards list styling */
+/* ---------- Award items ---------- */
 #about .award-item {
     text-align: left;
-    margin-bottom: 0.85rem;
-    padding-left: 0.5rem;
-    border-left: 3px solid rgba(255, 255, 255, 0.2);
-    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0.65rem;
+    border-left: 3px solid rgba(100, 180, 255, 0.35);
+    font-size: 0.88rem;
+    border-radius: 0 8px 8px 0;
+    transition: all 0.2s ease;
+}
+
+#about .award-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-left-color: rgba(100, 180, 255, 0.6);
 }
 
 #about .award-item:last-child {
@@ -543,9 +667,10 @@ body {
 }
 
 #about .award-item a {
-    transition: opacity 0.2s ease;
+    color: rgba(160, 210, 255, 0.95);
+    transition: color 0.2s ease;
 }
 
 #about .award-item a:hover {
-    opacity: 0.9;
+    color: #fff;
 }
