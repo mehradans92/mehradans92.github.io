@@ -427,51 +427,127 @@ body {
     position: absolute;
     border-radius: 50%;
     opacity: 0;
-    animation: eduFloat linear infinite;
+    bottom: -5%;
 }
 
-@keyframes eduFloat {
-    0%   { transform: translateY(0) scale(1);   opacity: 0; }
-    10%  { opacity: 1; }
-    90%  { opacity: 1; }
-    100% { transform: translateY(-110vh) scale(0.6); opacity: 0; }
+/* Two animation types: float up + drift, and a pulsing glow */
+@keyframes eduRise {
+    0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+    8%   { opacity: 1; }
+    50%  { transform: translateY(-55vh) translateX(var(--drift, 30px)) scale(var(--mid-scale, 1.2)); }
+    92%  { opacity: 0.8; }
+    100% { transform: translateY(-115vh) translateX(var(--drift-end, -20px)) scale(0.5); opacity: 0; }
 }
 
+@keyframes eduPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(100, 180, 255, 0); }
+    50%      { box-shadow: 0 0 var(--glow-size, 8px) 2px rgba(100, 180, 255, var(--glow-alpha, 0.3)); }
+}
+
+/* Particle 1 — tiny, fast */
 #about .edu-bg-particles span:nth-child(1) {
-    width: 6px; height: 6px;
-    left: 8%;  bottom: -10%;
-    background: rgba(100, 180, 255, 0.2);
-    animation-duration: 18s; animation-delay: 0s;
+    width: 4px; height: 4px; left: 5%;
+    background: rgba(120, 190, 255, 0.35);
+    --drift: 20px; --drift-end: -10px; --mid-scale: 1.1;
+    animation: eduRise 14s linear infinite 0s;
 }
+/* Particle 2 — medium with glow */
 #about .edu-bg-particles span:nth-child(2) {
-    width: 10px; height: 10px;
-    left: 25%; bottom: -10%;
-    background: rgba(140, 200, 255, 0.15);
-    animation-duration: 22s; animation-delay: 3s;
+    width: 8px; height: 8px; left: 15%;
+    background: rgba(100, 180, 255, 0.25);
+    --drift: -40px; --drift-end: 20px; --mid-scale: 1.3; --glow-size: 10px; --glow-alpha: 0.25;
+    animation: eduRise 20s linear infinite 2s, eduPulse 4s ease-in-out infinite 2s;
 }
+/* Particle 3 — large soft orb */
 #about .edu-bg-particles span:nth-child(3) {
-    width: 4px; height: 4px;
-    left: 45%; bottom: -10%;
-    background: rgba(180, 220, 255, 0.25);
-    animation-duration: 16s; animation-delay: 1s;
+    width: 16px; height: 16px; left: 28%;
+    background: radial-gradient(circle, rgba(140, 210, 255, 0.2) 0%, transparent 70%);
+    --drift: 50px; --drift-end: 30px; --mid-scale: 1.15;
+    animation: eduRise 26s linear infinite 1s;
 }
+/* Particle 4 — tiny fast */
 #about .edu-bg-particles span:nth-child(4) {
-    width: 8px; height: 8px;
-    left: 65%; bottom: -10%;
-    background: rgba(100, 180, 255, 0.18);
-    animation-duration: 20s; animation-delay: 5s;
+    width: 3px; height: 3px; left: 35%;
+    background: rgba(200, 230, 255, 0.4);
+    --drift: -15px; --drift-end: -30px; --mid-scale: 1;
+    animation: eduRise 12s linear infinite 4s;
 }
+/* Particle 5 — medium glow */
 #about .edu-bg-particles span:nth-child(5) {
-    width: 5px; height: 5px;
-    left: 82%; bottom: -10%;
-    background: rgba(160, 210, 255, 0.22);
-    animation-duration: 24s; animation-delay: 2s;
+    width: 6px; height: 6px; left: 48%;
+    background: rgba(100, 180, 255, 0.3);
+    --drift: 35px; --drift-end: -15px; --mid-scale: 1.4; --glow-size: 12px; --glow-alpha: 0.2;
+    animation: eduRise 18s linear infinite 0.5s, eduPulse 3.5s ease-in-out infinite 0.5s;
 }
+/* Particle 6 — large orb, slow */
 #about .edu-bg-particles span:nth-child(6) {
-    width: 12px; height: 12px;
-    left: 50%; bottom: -10%;
-    background: rgba(255, 255, 255, 0.07);
-    animation-duration: 26s; animation-delay: 7s;
+    width: 20px; height: 20px; left: 55%;
+    background: radial-gradient(circle, rgba(160, 215, 255, 0.12) 0%, transparent 70%);
+    --drift: -60px; --drift-end: 40px; --mid-scale: 1.1;
+    animation: eduRise 30s linear infinite 6s;
+}
+/* Particle 7 — tiny bright */
+#about .edu-bg-particles span:nth-child(7) {
+    width: 3px; height: 3px; left: 62%;
+    background: rgba(180, 220, 255, 0.45);
+    --drift: 10px; --drift-end: 25px; --mid-scale: 1;
+    animation: eduRise 13s linear infinite 3s;
+}
+/* Particle 8 — medium with glow */
+#about .edu-bg-particles span:nth-child(8) {
+    width: 7px; height: 7px; left: 72%;
+    background: rgba(100, 180, 255, 0.28);
+    --drift: -25px; --drift-end: -50px; --mid-scale: 1.25; --glow-size: 8px; --glow-alpha: 0.3;
+    animation: eduRise 22s linear infinite 1.5s, eduPulse 5s ease-in-out infinite 1.5s;
+}
+/* Particle 9 — large soft */
+#about .edu-bg-particles span:nth-child(9) {
+    width: 14px; height: 14px; left: 80%;
+    background: radial-gradient(circle, rgba(120, 200, 255, 0.15) 0%, transparent 70%);
+    --drift: 45px; --drift-end: -20px; --mid-scale: 1.2;
+    animation: eduRise 24s linear infinite 5s;
+}
+/* Particle 10 — tiny, far right */
+#about .edu-bg-particles span:nth-child(10) {
+    width: 5px; height: 5px; left: 90%;
+    background: rgba(140, 200, 255, 0.3);
+    --drift: -20px; --drift-end: 10px; --mid-scale: 1.15;
+    animation: eduRise 16s linear infinite 7s;
+}
+/* Particle 11 — medium, pulsing */
+#about .edu-bg-particles span:nth-child(11) {
+    width: 9px; height: 9px; left: 40%;
+    background: rgba(100, 180, 255, 0.2);
+    --drift: -50px; --drift-end: 60px; --mid-scale: 1.35; --glow-size: 14px; --glow-alpha: 0.18;
+    animation: eduRise 28s linear infinite 8s, eduPulse 6s ease-in-out infinite 8s;
+}
+/* Particle 12 — tiny accent */
+#about .edu-bg-particles span:nth-child(12) {
+    width: 4px; height: 4px; left: 18%;
+    background: rgba(200, 230, 255, 0.35);
+    --drift: 15px; --drift-end: -25px; --mid-scale: 1;
+    animation: eduRise 15s linear infinite 9s;
+}
+/* Particle 13 — large slow orb */
+#about .edu-bg-particles span:nth-child(13) {
+    width: 24px; height: 24px; left: 70%;
+    background: radial-gradient(circle, rgba(100, 175, 255, 0.08) 0%, transparent 70%);
+    --drift: 70px; --drift-end: -30px; --mid-scale: 1.05;
+    animation: eduRise 35s linear infinite 3s;
+}
+/* Particle 14 — tiny quick */
+#about .edu-bg-particles span:nth-child(14) {
+    width: 3px; height: 3px; left: 52%;
+    background: rgba(170, 215, 255, 0.4);
+    --drift: -10px; --drift-end: 15px; --mid-scale: 1.1;
+    animation: eduRise 11s linear infinite 6s;
+}
+/* Particle 15 — medium glow, far left */
+#about .edu-bg-particles span:nth-child(15) {
+    width: 10px; height: 10px; left: 3%;
+    background: rgba(100, 180, 255, 0.22);
+    --drift: 30px; --drift-end: 50px; --mid-scale: 1.3; --glow-size: 10px; --glow-alpha: 0.22;
+    animation: eduRise 21s linear infinite 4.5s, eduPulse 4.5s ease-in-out infinite 4.5s;
 }
 
 /* ---------- Card columns ---------- */
