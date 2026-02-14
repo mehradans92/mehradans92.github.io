@@ -309,8 +309,8 @@ iframe {
 .portfolio-box {
     position: relative;
     display: block;
-    width: 82% !important;
-    max-width: 82% !important;
+    width: 96% !important;
+    max-width: 96% !important;
     margin-left: auto;
     margin-right: auto;
     aspect-ratio: 16 / 9;
@@ -341,8 +341,8 @@ iframe {
 
 /* Software section: same-size boxes, vertical & horizontal gap both 2rem */
 #software .portfolio-box {
-    width: 82% !important;
-    max-width: 82% !important;
+    width: 96% !important;
+    max-width: 96% !important;
     margin-top: 1rem;
     margin-bottom: 1rem;
     aspect-ratio: 16 / 9 !important;
