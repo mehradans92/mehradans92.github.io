@@ -374,3 +374,178 @@ iframe {
 body {
     overflow-x: hidden;
 }
+
+
+/* ========== Education section: fancier cards, gradient, icons, pills ========== */
+
+/* Match Work section: body text = Merriweather, headings = Open Sans (same as #work / .bg-yellow) */
+#about {
+    /* Gradient using the original section blue (#295d91) */
+    background: linear-gradient(160deg, #295d91 0%, #234a75 45%, #1a3a5c 100%) !important;
+    padding-bottom: 4em !important;
+    padding-top: 3.5em !important;
+    font-family: Merriweather, 'Helvetica Neue', Arial, sans-serif;
+}
+
+#about .section-heading,
+#about .edu-card h3 {
+    font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+}
+
+#about .edu-card,
+#about .degree-text,
+#about .degree-text b,
+#about .degree-text a,
+#about .skill-pill,
+#about .award-item,
+#about .award-item a,
+#about .text-faded {
+    font-family: Merriweather, 'Helvetica Neue', Arial, sans-serif;
+}
+
+#about .section-heading {
+    letter-spacing: 0.08em;
+    margin-bottom: 0.25rem;
+}
+
+#about .light {
+    width: 80px;
+    border-width: 3px;
+    margin-bottom: 2rem;
+}
+
+/* Card container for each Education column */
+#about .row > [class*="col-"] {
+    margin-bottom: 1.5rem;
+}
+
+#about .edu-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 1.75rem 1.25rem;
+    height: 100%;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+#about .edu-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Icon with circular background - ensure icons always show (not affected by ScrollReveal) */
+#about .edu-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 1rem;
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+#about .edu-icon-wrap .edu-fa-icon,
+#about .edu-icon-wrap .fa {
+    opacity: 1 !important;
+    transform: none !important;
+    display: inline-block !important;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+#about .edu-card:hover .edu-icon-wrap {
+    background: rgba(255, 255, 255, 0.18);
+    transform: scale(1.05);
+}
+
+#about .edu-card h3 {
+    font-size: 1.2rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 1rem;
+}
+
+/* Degree item: logo + text row */
+#about .degree-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    text-align: left;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#about .degree-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+#about .degree-logo {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+}
+
+#about .degree-text {
+    flex: 1;
+    min-width: 0;
+}
+
+#about .degree-text b {
+    display: block;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 0.95rem;
+}
+
+#about .degree-text a {
+    display: inline-block;
+    margin-top: 0.25rem;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    padding-bottom: 1px;
+}
+
+#about .degree-text a:hover {
+    border-bottom-color: rgba(255, 255, 255, 0.85);
+}
+
+/* Skills / Languages as pills */
+#about .skill-pill {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.95);
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    margin: 0.25rem;
+    transition: background 0.2s ease;
+}
+
+#about .edu-card:hover .skill-pill {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+/* Awards list styling */
+#about .award-item {
+    text-align: left;
+    margin-bottom: 0.85rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.9rem;
+}
+
+#about .award-item:last-child {
+    margin-bottom: 0;
+}
+
+#about .award-item a {
+    transition: opacity 0.2s ease;
+}
+
+#about .award-item a:hover {
+    opacity: 0.9;
+}

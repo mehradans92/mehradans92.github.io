@@ -44,6 +44,8 @@
     href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic'
     rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="css/academicons.css">
+  <!-- Font Awesome 4.7 CDN - ensures icon font loads so Education/icons display -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
 
   <!-- Plugin CSS -->
   <link href="css/magnific-popup.css" rel="stylesheet">
@@ -219,7 +221,7 @@
             <strong class="thinner-text moving-text-container"></strong>
             <span class="cursor">|</span>
           </h1>
-          <p class="text-italic mb-5"><strong>Staff Scientist at Acceleration Consortium</strong></p>
+          <p class="text-italic mb-5"><strong>Teaching computers how to do science at Lila</strong></p>
           <a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">Find Out More!</a>
         </div>
       </div>
@@ -238,78 +240,101 @@
       </div>
       <div class="row">
         <div class="col-lg-3 col-md-6 col-sm-6 text-center">
-          <i class="fa fa-4x fa-graduation-cap text-faded sr-icons"></i>
-          <h3 class="text-white">Degrees</h3>
-          <p class="text-faded" style="margin: 0; padding: 0;"><b><br /> Chemical Engineering, Ph.D.</b>
-            <a class="text-white-link" href="https://www.rochester.edu/" class="text-blue">
-              <center>University of Rochester</center>
-            </a>
-            <img src="img/UR_logo.png" class="img-fluid" width="60px"
-              style="transform: translateX(180px) translateY(-50px);" alt="UofR" />
-          </p>
-          <p class="text-faded" style="margin: 0; padding: 0;"><b>Chemical Engineering, M .Sc.</b>
-            <a class="text-white-link" href="https://www.rochester.edu/" class="text-blue">
-              <center>University of Rochester</center>
-            </a>
-            <img src="img/UR_logo.png" class="img-fluid" width="60px"
-              style="transform: translateX(180px) translateY(-50px);" alt="UofR" />
-          </p>
-          <p class="text-faded" style="margin: 0; padding: 0;"><b>Environmental Engineering, M .Sc.</b>
-            <a class="text-white-link" href="https://www.mst.edu/" class="text-blue">
-              <center>Missouri S&T</center>
-            </a>
-            <img src="img/MST_logo.png" class="img-fluid" width="55px"
-              style="transform: translateX(180px) translateY(-50px);" alt="MST" />
-          </p>
-          <p class="text-faded" style="margin: 0; padding: 0;"><b>Chemical Engineering, B .Sc.</b>
-            <a class="text-white-link" href="https://ut.ac.ir/en" class="text-blue">
-              <center>University of Tehran</center>
-            </a>
-            <img src="img/UT_logo.png" class="img-fluid" width="55px"
-              style="transform: translateX(180px) translateY(-50px);" alt="UT" />
-          </p>
+          <div class="edu-card">
+            <div class="edu-icon-wrap">
+              <i class="fa fa-3x fa-graduation-cap text-faded edu-fa-icon"></i>
+            </div>
+            <h3 class="text-white">Degrees</h3>
+            <div class="degree-item">
+              <img src="img/UR_logo.png" class="degree-logo" alt="University of Rochester" />
+              <div class="degree-text">
+                <b>Chemical Engineering, Ph.D.</b>
+                <a class="text-white-link" href="https://www.rochester.edu/">University of Rochester</a>
+              </div>
+            </div>
+            <div class="degree-item">
+              <img src="img/UR_logo.png" class="degree-logo" alt="University of Rochester" />
+              <div class="degree-text">
+                <b>Chemical Engineering, M.Sc.</b>
+                <a class="text-white-link" href="https://www.rochester.edu/">University of Rochester</a>
+              </div>
+            </div>
+            <div class="degree-item">
+              <img src="img/MST_logo.png" class="degree-logo" alt="Missouri S&T" />
+              <div class="degree-text">
+                <b>Environmental Engineering, M.Sc.</b>
+                <a class="text-white-link" href="https://www.mst.edu/">Missouri S&T</a>
+              </div>
+            </div>
+            <div class="degree-item">
+              <img src="img/UT_logo.png" class="degree-logo" alt="University of Tehran" />
+              <div class="degree-text">
+                <b>Chemical Engineering, B.Sc.</b>
+                <a class="text-white-link" href="https://ut.ac.ir/en">University of Tehran</a>
+              </div>
+            </div>
+          </div>
         </div>
 
-
-        <div class="col-lg-3 col-md-6 col-sm-6 text-center mb-4">
-          <i class="fa fa-4x fa-code text-faded sr-icons"></i>
-          <h3 class="text-white">Languages & Tools</h3>
-          <p class="text-faded no-margin">
-            <br />Python<br /><br />MATLAB<br /><br />JavaScript<br /><br />HTML5<br /><br />CSS<br /><br />TensorFlow<br /><br />PyTorch<br /><br />Scikit-learn
-          </p>
-
+        <div class="col-lg-3 col-md-6 col-sm-6 text-center">
+          <div class="edu-card">
+            <div class="edu-icon-wrap">
+              <i class="fa fa-3x fa-code text-faded edu-fa-icon"></i>
+            </div>
+            <h3 class="text-white">Languages & Tools</h3>
+            <div>
+              <span class="skill-pill">Python</span>
+              <span class="skill-pill">MATLAB</span>
+              <span class="skill-pill">JavaScript</span>
+              <span class="skill-pill">HTML5</span>
+              <span class="skill-pill">CSS</span>
+              <span class="skill-pill">TensorFlow</span>
+              <span class="skill-pill">PyTorch</span>
+              <span class="skill-pill">Scikit-learn</span>
+            </div>
+          </div>
         </div>
 
-        <div class="col-lg-3 col-md-6 col-sm-6 text-center mb-4">
-          <i class="fa fa-4x fa-file-code-o text-faded sr-icons"></i>
-          <h3 class="text-white">Skills</h3>
-          <p class="text-faded no-margin"><br />Agentic Workflows<br /><br />Deep Learning<br /><br />Large Language Models<br /><br />Bayesian Optimization<br /> <br />Cloud
-            (AWS)<br /><br />High Performance Computing<br /><br />Computational Fluid Dynamics<br /><br />Molecular
-            Dynamics Simulations<br /><br />Software Development<br /><br />Web Development</p>
+        <div class="col-lg-3 col-md-6 col-sm-6 text-center">
+          <div class="edu-card">
+            <div class="edu-icon-wrap">
+              <i class="fa fa-3x fa-file-code-o text-faded edu-fa-icon"></i>
+            </div>
+            <h3 class="text-white">Skills</h3>
+            <div>
+              <span class="skill-pill">Agentic Workflows</span>
+              <span class="skill-pill">Deep Learning</span>
+              <span class="skill-pill">Large Language Models</span>
+              <span class="skill-pill">Bayesian Optimization</span>
+              <span class="skill-pill">Cloud (AWS)</span>
+              <span class="skill-pill">High Performance Computing</span>
+              <span class="skill-pill">Computational Fluid Dynamics</span>
+              <span class="skill-pill">Molecular Dynamics</span>
+              <span class="skill-pill">Software Development</span>
+              <span class="skill-pill">Web Development</span>
+            </div>
+          </div>
         </div>
 
-        <div class="col-lg-3 col-md-6 col-sm-6 text-center mb-4">
-          <i class="fa fa-4x fa-trophy text-faded sr-icons" aria-hidden="true"></i>
-          <h3 class="text-white">Awards</h3>
-          <p><a class="text-white-link" href="https://www.linkedin.com/posts/mehradansari_llm-materials-chemistry-activity-7195777605373935616-H23M?utm_source=share&utm_medium=member_desktop"
-              class="text-blue"><br />3rd Place Radical AI Winner. LLM Hackathon for Materials and Chemistry (2024)</a></p>
-          <p><a class="text-white-link" href="https://ac-bo-hackathon.github.io/projects/project-34-boms-probs/"
-            class="text-blue"><br />2nd Place Winner. Bayesian Optimization Hackathon for Chemistry and Materials (2024)</a></p>
-          <p class="text-faded"><br />Acceleration Consortium Research Fellowship (2023)</p>
-          <p><a class="text-white-link" href="https://www.kaggle.com/competitions/beep-competition/leaderboard"
-              class="text-blue"><br />1st Place Winner. Battery Informatics & ML Competition, Materials Research Society (2022)</a></p>
-          <p><a class="text-white-link"
-              href="https://www.hajim.rochester.edu/che/graduate/prizes-fellowships/kylcw-fellowship.html"
-              class="text-blue"><br />Kwang-Yu and Lee-Chien Wang Fellowship (2021)</a></p>
-          <p class="text-faded">Earl W. Costich Fellowship (2020)</p>
-          <p><a class="text-white-link"
-              href="http://sections.asce.org/stlouis/documents/November_2017_Newsletter_Final.pdf"
-              class="text-blue">Mike Alizadeh Scholarship (2017)</a></p>
-          <p class="text-faded no-margin">University of Sharif Computer-Aided Chemical Engineering Contest (2014)</p>
+        <div class="col-lg-3 col-md-6 col-sm-6 text-center">
+          <div class="edu-card">
+            <div class="edu-icon-wrap">
+              <i class="fa fa-3x fa-trophy text-faded edu-fa-icon" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-white">Awards</h3>
+            <div class="award-item"><a class="text-white-link" href="https://www.linkedin.com/posts/mehradansari_llm-materials-chemistry-activity-7195777605373935616-H23M?utm_source=share&utm_medium=member_desktop">3rd Place Radical AI Winner. LLM Hackathon for Materials and Chemistry (2024)</a></div>
+            <div class="award-item"><a class="text-white-link" href="https://ac-bo-hackathon.github.io/projects/project-34-boms-probs/">2nd Place Winner. Bayesian Optimization Hackathon for Chemistry and Materials (2024)</a></div>
+            <div class="award-item"><span class="text-faded">Acceleration Consortium Research Fellowship (2023)</span></div>
+            <div class="award-item"><a class="text-white-link" href="https://www.kaggle.com/competitions/beep-competition/leaderboard">1st Place Winner. Battery Informatics & ML Competition, Materials Research Society (2022)</a></div>
+            <div class="award-item"><a class="text-white-link" href="https://www.hajim.rochester.edu/che/graduate/prizes-fellowships/kylcw-fellowship.html">Kwang-Yu and Lee-Chien Wang Fellowship (2021)</a></div>
+            <div class="award-item"><span class="text-faded">Earl W. Costich Fellowship (2020)</span></div>
+            <div class="award-item"><a class="text-white-link" href="http://sections.asce.org/stlouis/documents/November_2017_Newsletter_Final.pdf">Mike Alizadeh Scholarship (2017)</a></div>
+            <div class="award-item"><span class="text-faded">University of Sharif Computer-Aided Chemical Engineering Contest (2014)</span></div>
+          </div>
         </div>
       </div>
 
-      <div class="row" style="margin : 0; transform: translateY(-50px);">
+      <div class="row mt-4 pt-3">
         <div class="col-lg-12 col-md-12 col-sm-12 text-center">
           <a class="btn btn-light btn-xl js-scroll-trigger" href="#work">Wait There's More!</a>
         </div>
