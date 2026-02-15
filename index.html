@@ -242,6 +242,37 @@
   </header>
 
 
+  <!-- Latent Space Blog Section -->
+  <section id="blog-terminal" class="blog-terminal-section">
+    <div class="container">
+      <div class="row d-flex justify-content-center">
+        <div class="col-lg-12 text-center mb-4">
+          <h1 class="text-white"><strong>Latent Space Blog</strong></h1>
+          <hr class="light">
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-lg-10 col-md-12">
+          <div class="terminal-window">
+            <div class="terminal-header">
+              <span class="terminal-dot red"></span>
+              <span class="terminal-dot yellow"></span>
+              <span class="terminal-dot green"></span>
+              <span class="terminal-title">latent_space</span>
+            </div>
+            <div class="terminal-body">
+              <div class="matrix-rain" id="matrixRain"></div>
+              <p class="terminal-line"><span class="terminal-prompt">$</span> cat posts/</p>
+              <p class="terminal-line terminal-output" id="cyclingPost">&gt; <strong>Hyperparameter Tuning: Finding the Sweet Spot</strong></p>
+              <p class="terminal-line"><span class="terminal-prompt">$</span> <span class="terminal-typed">open blog<span class="terminal-cursor">|</span></span></p>
+              <a href="blog.html" class="terminal-btn">Enter Latent Space →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Education Section -->
   <section class="bg-primary" id="about">
     <!-- Floating particle background -->
@@ -1098,6 +1129,51 @@
   <script src="js/scrollreveal.min.js"></script>
   <script src="js/jquery.magnific-popup.min.js"></script>
   <script src="js/creative.min.js"></script>
+
+  <!-- Matrix rain for terminal -->
+  <script>
+    (function() {
+      var chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+      var rain = document.getElementById('matrixRain');
+      if (!rain) return;
+      var cols = 30;
+      for (var i = 0; i < cols; i++) {
+        var span = document.createElement('span');
+        var text = '';
+        for (var j = 0; j < 20; j++) {
+          text += chars.charAt(Math.floor(Math.random() * chars.length)) + '\n';
+        }
+        span.textContent = text;
+        span.style.left = (Math.random() * 100) + '%';
+        span.style.animationDuration = (4 + Math.random() * 8) + 's';
+        span.style.animationDelay = (Math.random() * 6) + 's';
+        span.style.fontSize = (0.6 + Math.random() * 0.4) + 'rem';
+        rain.appendChild(span);
+      }
+    })();
+  </script>
+
+  <!-- Cycling blog post titles -->
+  <script>
+    (function() {
+      var posts = [
+        'Hyperparameter Tuning: Finding the Sweet Spot',
+        'Coming Soon: LLM Inference at Scale',
+        'Coming Soon: Bayesian Optimization for Scientists'
+      ];
+      var el = document.getElementById('cyclingPost');
+      if (!el) return;
+      var i = 0;
+      setInterval(function() {
+        el.classList.add('fade-out');
+        setTimeout(function() {
+          i = (i + 1) % posts.length;
+          el.innerHTML = '&gt; <strong>' + posts[i] + '</strong>';
+          el.classList.remove('fade-out');
+        }, 400);
+      }, 3500);
+    })();
+  </script>
 
   <!-- Education: staggered scroll reveal -->
   <script>
