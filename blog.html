@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Latent Space | Mehrad Ansari</title>
+
+  <!-- Bootstrap Core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+    integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+  <!-- Custom Fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,700,900' rel='stylesheet' type='text/css'>
+
+  <!-- Font Awesome -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/solid.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/brands.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/fontawesome.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    /* ---- Theme variables ---- */
+    :root {
+      --bg: linear-gradient(160deg, #0a1628 0%, #0f2035 40%, #091a2a 100%);
+      --text: #d0dce8;
+      --heading: #fff;
+      --link: #5cb8ff;
+      --link-hover: #8ed0ff;
+      --nav-bg: rgba(10, 22, 40, 0.85);
+      --nav-border: rgba(255,255,255,0.06);
+      --nav-brand: #fff;
+      --nav-muted: rgba(255,255,255,0.4);
+      --nav-link: rgba(255,255,255,0.6);
+      --hero-sub: rgba(255,255,255,0.5);
+      --card-bg: rgba(255,255,255,0.04);
+      --card-border: rgba(255,255,255,0.08);
+      --card-hover-shadow: rgba(0,0,0,0.3);
+      --card-hover-border: rgba(92,184,255,0.2);
+      --card-meta: rgba(255,255,255,0.35);
+      --card-p: rgba(255,255,255,0.6);
+      --soon-bg: rgba(255,255,255,0.02);
+      --soon-border: rgba(255,255,255,0.1);
+      --soon-text: rgba(255,255,255,0.25);
+      --soon-sub: rgba(255,255,255,0.15);
+      --toggle-bg: rgba(255,255,255,0.1);
+      --toggle-color: #fff;
+    }
+    body.light {
+      --bg: linear-gradient(160deg, #f0f4f8 0%, #e8eef5 40%, #f5f7fa 100%);
+      --text: #3a4a5c;
+      --heading: #1a2a3a;
+      --link: #2a7de1;
+      --link-hover: #1a5fb4;
+      --nav-bg: rgba(255, 255, 255, 0.9);
+      --nav-border: rgba(0,0,0,0.06);
+      --nav-brand: #1a2a3a;
+      --nav-muted: rgba(0,0,0,0.4);
+      --nav-link: rgba(0,0,0,0.55);
+      --hero-sub: rgba(0,0,0,0.45);
+      --card-bg: rgba(255,255,255,0.7);
+      --card-border: rgba(0,0,0,0.08);
+      --card-hover-shadow: rgba(0,0,0,0.1);
+      --card-hover-border: rgba(42,125,225,0.25);
+      --card-meta: rgba(0,0,0,0.4);
+      --card-p: rgba(0,0,0,0.55);
+      --soon-bg: rgba(0,0,0,0.02);
+      --soon-border: rgba(0,0,0,0.12);
+      --soon-text: rgba(0,0,0,0.25);
+      --soon-sub: rgba(0,0,0,0.15);
+      --toggle-bg: rgba(0,0,0,0.08);
+      --toggle-color: #1a2a3a;
+    }
+
+    body {
+      font-family: Merriweather, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      margin: 0;
+      transition: background 0.4s, color 0.4s;
+    }
+    a { color: var(--link); transition: color 0.3s; }
+    a:hover { color: var(--link-hover); text-decoration: none; }
+
+    /* Nav */
+    .blog-nav {
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--nav-border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: background 0.4s, border-color 0.4s;
+    }
+    .blog-nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .blog-nav-brand {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--nav-brand);
+      text-decoration: none;
+    }
+    .blog-nav-brand:hover { color: var(--link); }
+    .blog-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .blog-nav-label {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.9rem;
+      color: var(--nav-muted);
+    }
+
+    /* Theme toggle */
+    .theme-toggle {
+      background: var(--toggle-bg);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--toggle-color);
+      font-size: 1.1rem;
+      transition: background 0.3s, color 0.3s, transform 0.3s;
+    }
+    .theme-toggle:hover {
+      transform: scale(1.1);
+    }
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: inline; }
+    body.light .theme-toggle .icon-sun { display: inline; }
+    body.light .theme-toggle .icon-moon { display: none; }
+
+    /* Hero */
+    .blog-hero {
+      text-align: center;
+      padding: 6rem 1rem 3rem;
+    }
+    .blog-hero h1 {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--heading);
+      letter-spacing: -0.02em;
+    }
+    .blog-hero p {
+      font-size: 1.1rem;
+      color: var(--hero-sub);
+      max-width: 520px;
+      margin: 1rem auto 0;
+    }
+
+    /* Post grid */
+    .posts { padding: 2rem 0 5rem; }
+    .posts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .posts-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Post cards */
+    .post-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      text-decoration: none;
+      overflow: hidden;
+      transition: transform 0.35s cubic-bezier(.25,.8,.25,1),
+                  box-shadow 0.35s cubic-bezier(.25,.8,.25,1),
+                  border-color 0.35s ease,
+                  background 0.4s;
+    }
+    .post-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px var(--card-hover-shadow);
+      border-color: var(--card-hover-border);
+      text-decoration: none;
+    }
+    .post-card-thumb {
+      width: 100%;
+      padding: 0 1.5rem 1.5rem;
+    }
+    .post-card-thumb img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+    .post-card-text {
+      padding: 1.5rem 2rem 2rem;
+    }
+    .post-card h2 {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin: 0 0 0.5rem;
+    }
+    .post-card .post-meta {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.8rem;
+      color: var(--card-meta);
+      margin-bottom: 0.75rem;
+    }
+    .post-card p {
+      font-size: 0.92rem;
+      color: var(--card-p);
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    /* Coming soon placeholder */
+    .post-card-soon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--soon-bg);
+      border: 1px dashed var(--soon-border);
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      text-align: center;
+      transition: background 0.4s, border-color 0.4s;
+    }
+    .post-card-soon span {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--soon-text);
+    }
+    .post-card-soon p {
+      font-size: 0.85rem;
+      color: var(--soon-sub);
+      margin: 0.5rem 0 0;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="blog-nav">
+    <div class="container">
+      <a class="blog-nav-brand" href="index.html">← Mehrad Ansari</a>
+      <div class="blog-nav-right">
+        <span class="blog-nav-label">Latent Space</span>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+          <span class="icon-moon">&#9790;</span>
+          <span class="icon-sun">&#9788;</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="blog-hero">
+    <h1>Latent Space</h1>
+    <p>Just some late-night thoughts on inference, deep learning, LLMs, and building intelligent systems.</p>
+  </div>
+
+  <div class="container posts">
+    <div class="posts-grid">
+      <a class="post-card" href="latent_space_blog/hyperparameter-tuning.html">
+        <div class="post-card-text">
+          <h2>Hyperparameter Tuning: Finding the Sweet Spot</h2>
+          <div class="post-meta">August 2023</div>
+          <p>Training deep learning models is a bit like tuning a car, you've got a bunch of knobs to adjust, and finding the sweet spot takes patience and know-how.</p>
+        </div>
+        <div class="post-card-thumb">
+          <img src="latent_space_blog/media/hyperparameter-tuning/loss-lr.gif" alt="Effect of learning rate on loss">
+        </div>
+      </a>
+
+      <div class="post-card-soon">
+        <span>Coming Soon</span>
+        <p>Next post in the works...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var toggle = document.getElementById('themeToggle');
+      var saved = localStorage.getItem('blog-theme');
+      if (saved === 'light') document.body.classList.add('light');
+      toggle.addEventListener('click', function() {
+        document.body.classList.toggle('light');
+        localStorage.setItem('blog-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+      });
+    })();
+  </script>
+</body>
+</html>
