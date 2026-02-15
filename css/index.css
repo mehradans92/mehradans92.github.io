@@ -10,6 +10,34 @@
     This file contains CSS classes / IDs used to override the Creative Bootstrap Theme
 */
 
+/* ---------- Hero / Masthead mobile fix ---------- */
+@media (max-width: 767px) {
+    header.masthead {
+        height: 80vh;
+        min-height: 480px;
+        background-position: 72% center;  /* shift right to keep subject visible */
+        padding-top: 7rem;
+        padding-bottom: 3rem;
+    }
+    header.masthead h1 {
+        font-size: 1.6rem;
+    }
+    header.masthead p {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    header.masthead {
+        height: 75vh;
+        min-height: 400px;
+        background-position: 78% center;  /* shift further right on small phones */
+    }
+    header.masthead h1 {
+        font-size: 1.35rem;
+    }
+}
+
 .text-small {
     font-size: 100%;
 }
