@@ -875,6 +875,7 @@ body {
 /* Animated underline on text nav links */
 #mainNav .navbar-nav > li.nav-item > a.nav-link:not(.nav-icon) {
     position: relative;
+    white-space: nowrap;
 }
 
 #mainNav .navbar-nav > li.nav-item > a.nav-link:not(.nav-icon)::after {
