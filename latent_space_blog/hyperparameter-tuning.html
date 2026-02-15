@@ -21,42 +21,117 @@
 
   <style>
     *, *::before, *::after { box-sizing: border-box; }
+
+    /* ---- Theme variables ---- */
+    :root {
+      --bg: linear-gradient(160deg, #0a1628 0%, #0f2035 40%, #091a2a 100%);
+      --text: #d0dce8;
+      --heading: #fff;
+      --link: #5cb8ff;
+      --link-hover: #8ed0ff;
+      --nav-bg: rgba(10, 22, 40, 0.85);
+      --nav-border: rgba(255,255,255,0.06);
+      --nav-brand: #fff;
+      --nav-link: rgba(255,255,255,0.6);
+      --meta: rgba(255,255,255,0.35);
+      --body-text: rgba(255,255,255,0.78);
+      --muted: rgba(255,255,255,0.55);
+      --faint: rgba(255,255,255,0.4);
+      --border: rgba(255,255,255,0.08);
+      --callout-bg: rgba(92, 184, 255, 0.06);
+      --callout-border: rgba(92, 184, 255, 0.4);
+      --callout-text: rgba(255,255,255,0.7);
+      --callout-em: rgba(255,255,255,0.85);
+      --toggle-bg: rgba(255,255,255,0.1);
+      --toggle-color: #fff;
+    }
+    body.light {
+      --bg: linear-gradient(160deg, #f0f4f8 0%, #e8eef5 40%, #f5f7fa 100%);
+      --text: #3a4a5c;
+      --heading: #1a2a3a;
+      --link: #2a7de1;
+      --link-hover: #1a5fb4;
+      --nav-bg: rgba(255, 255, 255, 0.9);
+      --nav-border: rgba(0,0,0,0.06);
+      --nav-brand: #1a2a3a;
+      --nav-link: rgba(0,0,0,0.55);
+      --meta: rgba(0,0,0,0.4);
+      --body-text: rgba(0,0,0,0.72);
+      --muted: rgba(0,0,0,0.5);
+      --faint: rgba(0,0,0,0.4);
+      --border: rgba(0,0,0,0.08);
+      --callout-bg: rgba(42, 125, 225, 0.06);
+      --callout-border: rgba(42, 125, 225, 0.35);
+      --callout-text: rgba(0,0,0,0.6);
+      --callout-em: rgba(0,0,0,0.8);
+      --toggle-bg: rgba(0,0,0,0.08);
+      --toggle-color: #1a2a3a;
+    }
+
     body {
-      font-family: 'Merriweather', serif;
-      background: linear-gradient(160deg, #0a1628 0%, #0f2035 40%, #091a2a 100%);
-      color: #d0dce8;
+      font-family: Merriweather, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
       margin: 0;
+      transition: background 0.4s, color 0.4s;
     }
-    a { color: #5cb8ff; transition: color 0.3s; }
-    a:hover { color: #8ed0ff; text-decoration: none; }
+    a { color: var(--link); transition: color 0.3s; }
+    a:hover { color: var(--link-hover); text-decoration: none; }
 
     /* Nav */
     .blog-nav {
-      background: rgba(10, 22, 40, 0.85);
+      background: var(--nav-bg);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid var(--nav-border);
       padding: 1rem 0;
       position: sticky;
       top: 0;
       z-index: 100;
+      transition: background 0.4s, border-color 0.4s;
     }
     .blog-nav .container { display: flex; align-items: center; justify-content: space-between; }
     .blog-nav-brand {
-      font-family: 'Open Sans', sans-serif;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
       font-weight: 700;
       font-size: 1.1rem;
-      color: #fff;
+      color: var(--nav-brand);
       text-decoration: none;
     }
-    .blog-nav-brand:hover { color: #5cb8ff; }
+    .blog-nav-brand:hover { color: var(--link); }
+    .blog-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
     .blog-nav-link {
-      font-family: 'Open Sans', sans-serif;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
       font-size: 0.85rem;
-      color: rgba(255,255,255,0.6);
+      color: var(--nav-link);
       text-decoration: none;
     }
-    .blog-nav-link:hover { color: #fff; }
+    .blog-nav-link:hover { color: var(--heading); }
+
+    /* Theme toggle */
+    .theme-toggle {
+      background: var(--toggle-bg);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--toggle-color);
+      font-size: 1.1rem;
+      transition: background 0.3s, color 0.3s, transform 0.3s;
+    }
+    .theme-toggle:hover { transform: scale(1.1); }
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: inline; }
+    body.light .theme-toggle .icon-sun { display: inline; }
+    body.light .theme-toggle .icon-moon { display: none; }
 
     /* Article */
     .post-header {
@@ -64,16 +139,16 @@
       padding: 5rem 1rem 2rem;
     }
     .post-header h1 {
-      font-family: 'Open Sans', sans-serif;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
       font-size: 2.6rem;
       font-weight: 800;
-      color: #fff;
+      color: var(--heading);
       letter-spacing: -0.02em;
     }
     .post-meta {
-      font-family: 'Open Sans', sans-serif;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
       font-size: 0.85rem;
-      color: rgba(255,255,255,0.35);
+      color: var(--meta);
       margin-top: 0.75rem;
     }
 
@@ -83,7 +158,7 @@
       padding: 2rem 1.5rem 4rem;
       font-size: 1.05rem;
       line-height: 1.9;
-      color: rgba(255,255,255,0.78);
+      color: var(--body-text);
     }
     .post-body p { margin-bottom: 1.6rem; }
 
@@ -94,13 +169,13 @@
       padding: 0 1.5rem 5rem;
     }
     .references h2 {
-      font-family: 'Open Sans', sans-serif;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
       font-size: 1.3rem;
       font-weight: 700;
-      color: #fff;
+      color: var(--heading);
       margin-bottom: 1.2rem;
       padding-top: 1.5rem;
-      border-top: 1px solid rgba(255,255,255,0.08);
+      border-top: 1px solid var(--border);
     }
     .references ol {
       padding-left: 1.4rem;
@@ -109,17 +184,17 @@
     .references li {
       font-size: 0.88rem;
       line-height: 1.7;
-      color: rgba(255,255,255,0.55);
+      color: var(--muted);
       margin-bottom: 0.6rem;
     }
-    .references li a { color: #5cb8ff; }
+    .references li a { color: var(--link); }
 
     /* Sub-headings */
     .post-body h2 {
-      font-family: 'Open Sans', sans-serif;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
       font-size: 1.5rem;
       font-weight: 700;
-      color: #fff;
+      color: var(--heading);
       margin: 2.5rem 0 1rem;
     }
 
@@ -131,12 +206,12 @@
     .post-figure img {
       max-width: 100%;
       border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid var(--border);
     }
     .post-figure figcaption {
-      font-family: 'Open Sans', sans-serif;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
       font-size: 0.82rem;
-      color: rgba(255,255,255,0.4);
+      color: var(--faint);
       margin-top: 0.75rem;
       line-height: 1.6;
       font-style: italic;
@@ -144,22 +219,46 @@
 
     /* Callout box */
     .post-callout {
-      background: rgba(92, 184, 255, 0.06);
-      border-left: 3px solid rgba(92, 184, 255, 0.4);
+      background: var(--callout-bg);
+      border-left: 3px solid var(--callout-border);
       border-radius: 0 10px 10px 0;
       padding: 1.2rem 1.5rem;
       margin: 2rem 0;
       font-size: 0.95rem;
-      color: rgba(255,255,255,0.7);
+      color: var(--callout-text);
+      transition: background 0.4s, border-color 0.4s, color 0.4s;
     }
-    .post-callout em { color: rgba(255,255,255,0.85); }
+    .post-callout em { color: var(--callout-em); }
 
     /* Back link */
     .back-link {
       display: inline-block;
-      margin-top: 2rem;
-      font-family: 'Open Sans', sans-serif;
-      font-size: 0.9rem;
+      margin-top: 2.5rem;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.75rem 2rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 300px;
+      color: var(--heading);
+      background: rgba(255,255,255,0.1);
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .back-link:hover {
+      background: var(--heading);
+      color: var(--bg);
+      text-decoration: none;
+    }
+    body.light .back-link {
+      border-color: rgba(0,0,0,0.15);
+      background: rgba(0,0,0,0.04);
+    }
+    body.light .back-link:hover {
+      background: var(--heading);
+      color: #fff;
     }
 
     @media (max-width: 576px) {
@@ -174,8 +273,14 @@
 <body>
   <nav class="blog-nav">
     <div class="container">
-      <a class="blog-nav-brand" href="../blog.html">← Latent Space Blog</a>
-      <a class="blog-nav-link" href="../index.html">Home</a>
+      <a class="blog-nav-brand" href="../blog.html">← Latent Space</a>
+      <div class="blog-nav-right">
+        <a class="blog-nav-link" href="../index.html">Home</a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+          <span class="icon-moon">&#9790;</span>
+          <span class="icon-sun">&#9788;</span>
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -241,8 +346,19 @@
       <li id="ref9"><a href="https://github.com/keras-team/keras-tuner" target="_blank">O'Malley, Tom, et al. "Keras Tuner." 2019.</a></li>
     </ol>
 
-    <a class="back-link" href="../blog.html">← Back to Latent Space</a>
+    <a class="back-link" href="../blog.html">Back to Latent Space</a>
   </div>
 
+  <script>
+    (function() {
+      var toggle = document.getElementById('themeToggle');
+      var saved = localStorage.getItem('blog-theme');
+      if (saved === 'light') document.body.classList.add('light');
+      toggle.addEventListener('click', function() {
+        document.body.classList.toggle('light');
+        localStorage.setItem('blog-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+      });
+    })();
+  </script>
 </body>
 </html>
