@@ -215,24 +215,27 @@ iframe {
 /* Adding some background color options */
 
 .bg-red {
-    /* Spotify Green - hex code from: https://brandpalettes.com/spotify-color-codes/ */
-    background-color: #d43d3d !important;
+    background: linear-gradient(160deg, #d43d3d 0%, #a82e2e 40%, #7a1f1f 100%) !important;
     padding-bottom: 5em;
     padding-top: 3em;
+    position: relative;
+    overflow: hidden;
 }
 
 .bg-green {
-    /* Spotify Green - hex code from: https://brandpalettes.com/spotify-color-codes/ */
-    background-color: #064F40 !important;
+    background: linear-gradient(160deg, #0a6b55 0%, #064F40 40%, #032e25 100%) !important;
     padding-bottom: 5em;
     padding-top: 3em;
+    position: relative;
+    overflow: hidden;
 }
 
 .bg-yellow {
-    /* Spotify Green - hex code from: https://brandpalettes.com/spotify-color-codes/ */
-    background-color: #feffd6 !important;
+    background: linear-gradient(160deg, #fffee8 0%, #faf5c8 30%, #efe0a0 65%, #dcc878 100%) !important;
     padding-bottom: 3em;
     padding-top: 3em;
+    position: relative;
+    overflow: hidden;
 }
 
 
@@ -300,4 +303,810 @@ iframe {
 .RtnRed {
     color: #E61231 !important;
     font-weight: bold;
+}
+
+
+/* Section figures (Software & Projects): same-size containers, image centered with white space
+   Use vertical margin only to avoid horizontal overflow and white space on the right. */
+
+.portfolio-box {
+    position: relative;
+    display: block;
+    width: 96% !important;
+    max-width: 96% !important;
+    margin-left: auto;
+    margin-right: auto;
+    aspect-ratio: 16 / 9;
+    background: #fff;
+    overflow: hidden;
+    border-radius: 20px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.portfolio-box > img,
+.portfolio-box > video {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    object-position: center 90% !important;
+    border-radius: 20px;
+}
+
+.portfolio-box .portfolio-box-caption {
+    border-radius: 20px;
+}
+
+/* Software section: same-size boxes, vertical & horizontal gap both 2rem */
+#software .portfolio-box {
+    width: 96% !important;
+    max-width: 96% !important;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    aspect-ratio: 16 / 9 !important;
+}
+
+#software .row .col-md-6 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* Projects: vertical & horizontal gap both 2rem (match Software) */
+#projects .row [class*="col"] {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+#software .portfolio-box > img,
+#software .portfolio-box > video {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+}
+
+/* Prevent horizontal overflow / white strip on the right */
+body {
+    overflow-x: hidden;
+}
+
+
+/* ========== Education section ========== */
+
+#about {
+    background: linear-gradient(160deg, #2c6fad 0%, #1e4f7e 40%, #152d4a 100%) !important;
+    padding-bottom: 4em !important;
+    padding-top: 3.5em !important;
+    font-family: Merriweather, 'Helvetica Neue', Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+#about .section-heading,
+#about .edu-card h3 {
+    font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+}
+
+#about .edu-card,
+#about .degree-text,
+#about .degree-text b,
+#about .degree-text a,
+#about .skill-pill,
+#about .award-item,
+#about .award-item a,
+#about .text-faded {
+    font-family: Merriweather, 'Helvetica Neue', Arial, sans-serif;
+}
+
+#about .section-heading {
+    letter-spacing: 0.08em;
+    margin-bottom: 0.25rem;
+}
+
+#about .light {
+    width: 80px;
+    border-width: 3px;
+    margin-bottom: 2rem;
+}
+
+/* ---------- Floating particles background ---------- */
+#about .edu-bg-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+#about .edu-bg-particles span {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    bottom: -5%;
+}
+
+/* Two animation types: float up + drift, and a pulsing glow */
+@keyframes eduRise {
+    0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+    8%   { opacity: 1; }
+    50%  { transform: translateY(-55vh) translateX(var(--drift, 30px)) scale(var(--mid-scale, 1.2)); }
+    92%  { opacity: 0.8; }
+    100% { transform: translateY(-115vh) translateX(var(--drift-end, -20px)) scale(0.5); opacity: 0; }
+}
+
+@keyframes eduPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(100, 180, 255, 0); }
+    50%      { box-shadow: 0 0 var(--glow-size, 8px) 2px rgba(100, 180, 255, var(--glow-alpha, 0.3)); }
+}
+
+/* Particle 1 — tiny, fast */
+#about .edu-bg-particles span:nth-child(1) {
+    width: 4px; height: 4px; left: 5%;
+    background: rgba(120, 190, 255, 0.35);
+    --drift: 20px; --drift-end: -10px; --mid-scale: 1.1;
+    animation: eduRise 14s linear infinite 0s;
+}
+/* Particle 2 — medium with glow */
+#about .edu-bg-particles span:nth-child(2) {
+    width: 8px; height: 8px; left: 15%;
+    background: rgba(100, 180, 255, 0.25);
+    --drift: -40px; --drift-end: 20px; --mid-scale: 1.3; --glow-size: 10px; --glow-alpha: 0.25;
+    animation: eduRise 20s linear infinite 2s, eduPulse 4s ease-in-out infinite 2s;
+}
+/* Particle 3 — large soft orb */
+#about .edu-bg-particles span:nth-child(3) {
+    width: 16px; height: 16px; left: 28%;
+    background: radial-gradient(circle, rgba(140, 210, 255, 0.2) 0%, transparent 70%);
+    --drift: 50px; --drift-end: 30px; --mid-scale: 1.15;
+    animation: eduRise 26s linear infinite 1s;
+}
+/* Particle 4 — tiny fast */
+#about .edu-bg-particles span:nth-child(4) {
+    width: 3px; height: 3px; left: 35%;
+    background: rgba(200, 230, 255, 0.4);
+    --drift: -15px; --drift-end: -30px; --mid-scale: 1;
+    animation: eduRise 12s linear infinite 4s;
+}
+/* Particle 5 — medium glow */
+#about .edu-bg-particles span:nth-child(5) {
+    width: 6px; height: 6px; left: 48%;
+    background: rgba(100, 180, 255, 0.3);
+    --drift: 35px; --drift-end: -15px; --mid-scale: 1.4; --glow-size: 12px; --glow-alpha: 0.2;
+    animation: eduRise 18s linear infinite 0.5s, eduPulse 3.5s ease-in-out infinite 0.5s;
+}
+/* Particle 6 — large orb, slow */
+#about .edu-bg-particles span:nth-child(6) {
+    width: 20px; height: 20px; left: 55%;
+    background: radial-gradient(circle, rgba(160, 215, 255, 0.12) 0%, transparent 70%);
+    --drift: -60px; --drift-end: 40px; --mid-scale: 1.1;
+    animation: eduRise 30s linear infinite 6s;
+}
+/* Particle 7 — tiny bright */
+#about .edu-bg-particles span:nth-child(7) {
+    width: 3px; height: 3px; left: 62%;
+    background: rgba(180, 220, 255, 0.45);
+    --drift: 10px; --drift-end: 25px; --mid-scale: 1;
+    animation: eduRise 13s linear infinite 3s;
+}
+/* Particle 8 — medium with glow */
+#about .edu-bg-particles span:nth-child(8) {
+    width: 7px; height: 7px; left: 72%;
+    background: rgba(100, 180, 255, 0.28);
+    --drift: -25px; --drift-end: -50px; --mid-scale: 1.25; --glow-size: 8px; --glow-alpha: 0.3;
+    animation: eduRise 22s linear infinite 1.5s, eduPulse 5s ease-in-out infinite 1.5s;
+}
+/* Particle 9 — large soft */
+#about .edu-bg-particles span:nth-child(9) {
+    width: 14px; height: 14px; left: 80%;
+    background: radial-gradient(circle, rgba(120, 200, 255, 0.15) 0%, transparent 70%);
+    --drift: 45px; --drift-end: -20px; --mid-scale: 1.2;
+    animation: eduRise 24s linear infinite 5s;
+}
+/* Particle 10 — tiny, far right */
+#about .edu-bg-particles span:nth-child(10) {
+    width: 5px; height: 5px; left: 90%;
+    background: rgba(140, 200, 255, 0.3);
+    --drift: -20px; --drift-end: 10px; --mid-scale: 1.15;
+    animation: eduRise 16s linear infinite 7s;
+}
+/* Particle 11 — medium, pulsing */
+#about .edu-bg-particles span:nth-child(11) {
+    width: 9px; height: 9px; left: 40%;
+    background: rgba(100, 180, 255, 0.2);
+    --drift: -50px; --drift-end: 60px; --mid-scale: 1.35; --glow-size: 14px; --glow-alpha: 0.18;
+    animation: eduRise 28s linear infinite 8s, eduPulse 6s ease-in-out infinite 8s;
+}
+/* Particle 12 — tiny accent */
+#about .edu-bg-particles span:nth-child(12) {
+    width: 4px; height: 4px; left: 18%;
+    background: rgba(200, 230, 255, 0.35);
+    --drift: 15px; --drift-end: -25px; --mid-scale: 1;
+    animation: eduRise 15s linear infinite 9s;
+}
+/* Particle 13 — large slow orb */
+#about .edu-bg-particles span:nth-child(13) {
+    width: 24px; height: 24px; left: 70%;
+    background: radial-gradient(circle, rgba(100, 175, 255, 0.08) 0%, transparent 70%);
+    --drift: 70px; --drift-end: -30px; --mid-scale: 1.05;
+    animation: eduRise 35s linear infinite 3s;
+}
+/* Particle 14 — tiny quick */
+#about .edu-bg-particles span:nth-child(14) {
+    width: 3px; height: 3px; left: 52%;
+    background: rgba(170, 215, 255, 0.4);
+    --drift: -10px; --drift-end: 15px; --mid-scale: 1.1;
+    animation: eduRise 11s linear infinite 6s;
+}
+/* Particle 15 — medium glow, far left */
+#about .edu-bg-particles span:nth-child(15) {
+    width: 10px; height: 10px; left: 3%;
+    background: rgba(100, 180, 255, 0.22);
+    --drift: 30px; --drift-end: 50px; --mid-scale: 1.3; --glow-size: 10px; --glow-alpha: 0.22;
+    animation: eduRise 21s linear infinite 4.5s, eduPulse 4.5s ease-in-out infinite 4.5s;
+}
+
+/* ---------- Card columns ---------- */
+#about .row > [class*="col-"] {
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* ---------- Glassmorphism cards with accent top stripe ---------- */
+#about .edu-card {
+    background: rgba(255, 255, 255, 0.07);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    padding-top: 2.25rem;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    /* 3D tilt support */
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: box-shadow 0.35s cubic-bezier(.25,.8,.25,1),
+                border-color 0.35s ease,
+                background 0.35s ease;
+}
+
+/* Accent stripe at the top of each card */
+#about .edu-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 20px 20px 0 0;
+    background: linear-gradient(90deg, rgba(100, 180, 255, 0.6), rgba(160, 210, 255, 0.3));
+    opacity: 0.7;
+    transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+#about .edu-card:hover::before {
+    opacity: 1;
+    height: 4px;
+}
+
+#about .edu-card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ---------- Icon circles ---------- */
+#about .edu-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(100, 180, 255, 0.25) 0%, rgba(255, 255, 255, 0.06) 100%);
+    border: 1px solid rgba(100, 180, 255, 0.2);
+    margin-bottom: 1.15rem;
+    transition: all 0.35s cubic-bezier(.25,.8,.25,1);
+}
+
+#about .edu-icon-wrap .edu-fa-icon,
+#about .edu-icon-wrap .fa,
+#about .edu-icon-wrap svg {
+    opacity: 1 !important;
+    transform: none !important;
+    display: inline-block !important;
+    color: rgba(255, 255, 255, 0.92);
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+}
+
+#about .edu-card:hover .edu-icon-wrap {
+    background: linear-gradient(135deg, rgba(100, 180, 255, 0.4) 0%, rgba(200, 230, 255, 0.12) 100%);
+    transform: scale(1.1);
+    box-shadow: 0 4px 20px rgba(100, 180, 255, 0.25);
+    border-color: rgba(100, 180, 255, 0.4);
+}
+
+#about .edu-card h3 {
+    font-size: 1.2rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+/* ---------- Degree items ---------- */
+#about .degree-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    text-align: left;
+    margin-bottom: 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    transition: background 0.2s ease;
+    border-radius: 8px;
+    padding: 0.6rem;
+    margin-left: -0.6rem;
+    margin-right: -0.6rem;
+}
+
+#about .degree-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+#about .degree-item:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+#about .degree-logo {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+#about .degree-item:hover .degree-logo {
+    transform: scale(1.05);
+}
+
+#about .degree-text {
+    flex: 1;
+    min-width: 0;
+}
+
+#about .degree-text b {
+    display: block;
+    color: rgba(255, 255, 255, 0.97);
+    font-size: 0.95rem;
+}
+
+#about .degree-text a {
+    display: inline-block;
+    margin-top: 0.25rem;
+    font-size: 0.85rem;
+    color: rgba(160, 210, 255, 0.9);
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: color 0.2s ease, border-bottom-color 0.2s ease;
+}
+
+#about .degree-text a:hover {
+    color: #fff;
+    border-bottom-color: rgba(255, 255, 255, 0.6);
+}
+
+/* ---------- Skill pills ---------- */
+#about .skill-pill {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.95);
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.83rem;
+    margin: 0.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.25s ease;
+    cursor: default;
+}
+
+#about .skill-pill:hover {
+    background: rgba(100, 180, 255, 0.2);
+    border-color: rgba(100, 180, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(100, 180, 255, 0.15);
+}
+
+/* ---------- Award items ---------- */
+#about .award-item {
+    text-align: left;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0.65rem;
+    border-left: 3px solid rgba(100, 180, 255, 0.35);
+    font-size: 0.88rem;
+    border-radius: 0 8px 8px 0;
+    transition: all 0.2s ease;
+}
+
+#about .award-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-left-color: rgba(100, 180, 255, 0.6);
+}
+
+#about .award-item:last-child {
+    margin-bottom: 0;
+}
+
+#about .award-item a {
+    color: rgba(160, 210, 255, 0.95);
+    transition: color 0.2s ease;
+}
+
+#about .award-item a:hover {
+    color: #fff;
+}
+
+/* ========== Navbar Enhancements ========== */
+
+/* Glassmorphism on scroll */
+#mainNav.navbar-shrink {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Animated underline on text nav links */
+#mainNav .navbar-nav > li.nav-item > a.nav-link:not(.nav-icon) {
+    position: relative;
+}
+
+#mainNav .navbar-nav > li.nav-item > a.nav-link:not(.nav-icon)::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 4px;
+    width: 0;
+    height: 2px;
+    background: #f05f40;
+    border-radius: 2px;
+    transition: width 0.3s ease, left 0.3s ease;
+}
+
+#mainNav .navbar-nav > li.nav-item > a.nav-link:not(.nav-icon):hover::after {
+    width: 60%;
+    left: 20%;
+}
+
+/* Vertical divider between text links and social icons */
+.nav-divider {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+}
+
+.nav-divider::before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 1px;
+}
+
+/* Nav icon hover: brand colors + scale */
+.nav-icon {
+    padding: 0.4rem 0.5rem !important;
+}
+
+.nav-icon i {
+    font-size: 1.4rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-icon:hover i {
+    transform: scale(1.25);
+}
+
+.nav-icon-youtube:hover i  { color: #FF0000 !important; }
+.nav-icon-linkedin:hover i { color: #0A66C2 !important; }
+.nav-icon-github:hover i   { color: #24292e !important; }
+.nav-icon-scholar:hover i  { color: #4285F4 !important; }
+.nav-icon-twitter:hover i  { color: #1DA1F2 !important; }
+
+/* Hide divider on mobile (collapsed nav) */
+@media (max-width: 991px) {
+    .nav-divider {
+        display: none;
+    }
+}
+
+/* ========== Social Links Section ========== */
+
+.social-section {
+    background: #fafafa;
+    padding: 1.5rem 0;
+}
+
+.social-row {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.social-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    text-decoration: none;
+    color: #555;
+    transition: transform 0.35s cubic-bezier(.25,.8,.25,1),
+                box-shadow 0.35s cubic-bezier(.25,.8,.25,1),
+                border-color 0.35s ease,
+                color 0.35s ease,
+                background 0.35s ease;
+}
+
+.social-link i {
+    font-size: 1.6rem;
+    margin-bottom: 0.25rem;
+    transition: transform 0.35s cubic-bezier(.25,.8,.25,1), color 0.35s ease;
+}
+
+.social-link span {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+.social-link:hover {
+    transform: translateY(-6px) scale(1.05);
+    text-decoration: none;
+    color: #fff;
+}
+
+.social-link:hover i {
+    transform: scale(1.15);
+}
+
+/* Per-platform hover colors */
+.social-youtube:hover {
+    background: #FF0000;
+    border-color: #FF0000;
+    box-shadow: 0 8px 24px rgba(255, 0, 0, 0.25);
+}
+
+.social-linkedin:hover {
+    background: #0A66C2;
+    border-color: #0A66C2;
+    box-shadow: 0 8px 24px rgba(10, 102, 194, 0.25);
+}
+
+.social-github:hover {
+    background: #24292e;
+    border-color: #24292e;
+    box-shadow: 0 8px 24px rgba(36, 41, 46, 0.25);
+}
+
+.social-scholar:hover {
+    background: #4285F4;
+    border-color: #4285F4;
+    box-shadow: 0 8px 24px rgba(66, 133, 244, 0.25);
+}
+
+.social-twitter:hover {
+    background: #1DA1F2;
+    border-color: #1DA1F2;
+    box-shadow: 0 8px 24px rgba(29, 161, 242, 0.25);
+}
+
+@media (max-width: 576px) {
+    .social-link {
+        width: 85px;
+        height: 85px;
+        border-radius: 16px;
+    }
+    .social-link i {
+        font-size: 1.7rem;
+    }
+    .social-link span {
+        font-size: 0.68rem;
+    }
+    .social-row {
+        gap: 0.8rem;
+    }
+}
+
+/* ========== Software section gradient override ========== */
+#software {
+    background: linear-gradient(160deg, #343a40 0%, #212529 30%, #141618 65%, #0a0b0d 100%) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ========== Reusable Section Particles ========== */
+
+.section-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.section-particles span {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    bottom: -5%;
+}
+
+@keyframes sectionRise {
+    0%   { opacity: 0;   transform: translateY(0)   translateX(0);           }
+    10%  { opacity: 0.7;                                                      }
+    50%  { transform: translateY(-50vh) translateX(var(--drift, 20px)) scale(var(--mid-scale, 1.1)); }
+    90%  { opacity: 0.4;                                                      }
+    100% { opacity: 0;   transform: translateY(-105vh) translateX(var(--drift-end, -10px)); }
+}
+
+/* -- Work (yellow): darker warm particles visible on light bg -- */
+#work .section-particles span { background: rgba(180, 140, 40, 0.5); }
+#work .section-particles span:nth-child(1) { width: 5px; height: 5px; left: 8%;  --drift: 15px; --drift-end: -10px; animation: sectionRise 14s linear infinite 0s; }
+#work .section-particles span:nth-child(2) { width: 10px; height: 10px; left: 20%; --drift: -30px; --drift-end: 20px; --mid-scale: 1.3; animation: sectionRise 20s linear infinite 2s; }
+#work .section-particles span:nth-child(3) { width: 18px; height: 18px; left: 35%; background: radial-gradient(circle, rgba(180, 140, 40, 0.3) 0%, transparent 70%); --drift: 40px; --drift-end: 30px; animation: sectionRise 26s linear infinite 1s; }
+#work .section-particles span:nth-child(4) { width: 4px; height: 4px; left: 45%; --drift: -12px; --drift-end: -25px; animation: sectionRise 12s linear infinite 4s; }
+#work .section-particles span:nth-child(5) { width: 8px; height: 8px; left: 55%; --drift: 25px; --drift-end: -15px; --mid-scale: 1.4; animation: sectionRise 18s linear infinite 0.5s; }
+#work .section-particles span:nth-child(6) { width: 22px; height: 22px; left: 65%; background: radial-gradient(circle, rgba(180, 140, 40, 0.2) 0%, transparent 70%); --drift: -50px; --drift-end: 35px; animation: sectionRise 30s linear infinite 6s; }
+#work .section-particles span:nth-child(7) { width: 4px; height: 4px; left: 75%; --drift: 10px; --drift-end: 20px; animation: sectionRise 13s linear infinite 3s; }
+#work .section-particles span:nth-child(8) { width: 9px; height: 9px; left: 85%; --drift: -20px; --drift-end: -40px; --mid-scale: 1.2; animation: sectionRise 22s linear infinite 1.5s; }
+#work .section-particles span:nth-child(9) { width: 16px; height: 16px; left: 92%; background: radial-gradient(circle, rgba(180, 140, 40, 0.25) 0%, transparent 70%); --drift: 35px; --drift-end: -15px; animation: sectionRise 24s linear infinite 5s; }
+#work .section-particles span:nth-child(10) { width: 6px; height: 6px; left: 3%; --drift: -18px; --drift-end: 10px; animation: sectionRise 16s linear infinite 7s; }
+
+/* -- Software (dark): cool blue particles -- */
+#software .section-particles span { background: rgba(100, 160, 255, 0.2); }
+#software .section-particles span:nth-child(1) { width: 4px; height: 4px; left: 5%;  --drift: 20px; --drift-end: -10px; animation: sectionRise 15s linear infinite 0s; }
+#software .section-particles span:nth-child(2) { width: 9px; height: 9px; left: 18%; --drift: -35px; --drift-end: 25px; --mid-scale: 1.3; animation: sectionRise 21s linear infinite 2.5s; }
+#software .section-particles span:nth-child(3) { width: 16px; height: 16px; left: 30%; background: radial-gradient(circle, rgba(100, 160, 255, 0.12) 0%, transparent 70%); --drift: 45px; --drift-end: 25px; animation: sectionRise 28s linear infinite 1s; }
+#software .section-particles span:nth-child(4) { width: 3px; height: 3px; left: 42%; --drift: -10px; --drift-end: -30px; animation: sectionRise 11s linear infinite 3.5s; }
+#software .section-particles span:nth-child(5) { width: 6px; height: 6px; left: 52%; --drift: 30px; --drift-end: -12px; --mid-scale: 1.35; animation: sectionRise 19s linear infinite 1s; }
+#software .section-particles span:nth-child(6) { width: 20px; height: 20px; left: 60%; background: radial-gradient(circle, rgba(100, 160, 255, 0.08) 0%, transparent 70%); --drift: -55px; --drift-end: 40px; animation: sectionRise 32s linear infinite 5s; }
+#software .section-particles span:nth-child(7) { width: 3px; height: 3px; left: 70%; --drift: 12px; --drift-end: 22px; animation: sectionRise 14s linear infinite 4s; }
+#software .section-particles span:nth-child(8) { width: 7px; height: 7px; left: 80%; --drift: -22px; --drift-end: -45px; --mid-scale: 1.25; animation: sectionRise 23s linear infinite 2s; }
+#software .section-particles span:nth-child(9) { width: 14px; height: 14px; left: 88%; background: radial-gradient(circle, rgba(100, 160, 255, 0.1) 0%, transparent 70%); --drift: 40px; --drift-end: -18px; animation: sectionRise 25s linear infinite 6s; }
+#software .section-particles span:nth-child(10) { width: 5px; height: 5px; left: 95%; --drift: -15px; --drift-end: 8px; animation: sectionRise 17s linear infinite 8s; }
+
+/* -- Projects (red): warm pink/white particles -- */
+#projects .section-particles span { background: rgba(255, 180, 180, 0.25); }
+#projects .section-particles span:nth-child(1) { width: 4px; height: 4px; left: 6%;  --drift: 18px; --drift-end: -8px; animation: sectionRise 13s linear infinite 0s; }
+#projects .section-particles span:nth-child(2) { width: 8px; height: 8px; left: 16%; --drift: -28px; --drift-end: 18px; --mid-scale: 1.25; animation: sectionRise 19s linear infinite 1.5s; }
+#projects .section-particles span:nth-child(3) { width: 15px; height: 15px; left: 28%; background: radial-gradient(circle, rgba(255, 200, 200, 0.15) 0%, transparent 70%); --drift: 42px; --drift-end: 28px; animation: sectionRise 27s linear infinite 0.5s; }
+#projects .section-particles span:nth-child(4) { width: 3px; height: 3px; left: 40%; --drift: -14px; --drift-end: -28px; animation: sectionRise 11s linear infinite 4s; }
+#projects .section-particles span:nth-child(5) { width: 6px; height: 6px; left: 50%; --drift: 28px; --drift-end: -10px; --mid-scale: 1.4; animation: sectionRise 17s linear infinite 2s; }
+#projects .section-particles span:nth-child(6) { width: 18px; height: 18px; left: 62%; background: radial-gradient(circle, rgba(255, 200, 200, 0.1) 0%, transparent 70%); --drift: -48px; --drift-end: 32px; animation: sectionRise 29s linear infinite 5.5s; }
+#projects .section-particles span:nth-child(7) { width: 3px; height: 3px; left: 72%; --drift: 8px; --drift-end: 18px; animation: sectionRise 12s linear infinite 3s; }
+#projects .section-particles span:nth-child(8) { width: 7px; height: 7px; left: 82%; --drift: -18px; --drift-end: -38px; --mid-scale: 1.2; animation: sectionRise 21s linear infinite 1s; }
+#projects .section-particles span:nth-child(9) { width: 12px; height: 12px; left: 90%; background: radial-gradient(circle, rgba(255, 200, 200, 0.12) 0%, transparent 70%); --drift: 32px; --drift-end: -12px; animation: sectionRise 24s linear infinite 7s; }
+#projects .section-particles span:nth-child(10) { width: 5px; height: 5px; left: 2%; --drift: -16px; --drift-end: 12px; animation: sectionRise 15s linear infinite 6s; }
+
+/* -- Fun Stuff (green): emerald/teal particles -- */
+#fun .section-particles span { background: rgba(100, 220, 180, 0.22); }
+#fun .section-particles span:nth-child(1) { width: 4px; height: 4px; left: 7%;  --drift: 16px; --drift-end: -12px; animation: sectionRise 14s linear infinite 0.5s; }
+#fun .section-particles span:nth-child(2) { width: 8px; height: 8px; left: 22%; --drift: -32px; --drift-end: 22px; --mid-scale: 1.3; animation: sectionRise 20s linear infinite 3s; }
+#fun .section-particles span:nth-child(3) { width: 14px; height: 14px; left: 32%; background: radial-gradient(circle, rgba(100, 220, 180, 0.14) 0%, transparent 70%); --drift: 38px; --drift-end: 22px; animation: sectionRise 25s linear infinite 1s; }
+#fun .section-particles span:nth-child(4) { width: 3px; height: 3px; left: 44%; --drift: -10px; --drift-end: -22px; animation: sectionRise 12s linear infinite 5s; }
+#fun .section-particles span:nth-child(5) { width: 6px; height: 6px; left: 54%; --drift: 26px; --drift-end: -14px; --mid-scale: 1.35; animation: sectionRise 18s linear infinite 1.5s; }
+#fun .section-particles span:nth-child(6) { width: 20px; height: 20px; left: 64%; background: radial-gradient(circle, rgba(100, 220, 180, 0.08) 0%, transparent 70%); --drift: -52px; --drift-end: 36px; animation: sectionRise 31s linear infinite 6s; }
+#fun .section-particles span:nth-child(7) { width: 3px; height: 3px; left: 74%; --drift: 10px; --drift-end: 20px; animation: sectionRise 13s linear infinite 2.5s; }
+#fun .section-particles span:nth-child(8) { width: 7px; height: 7px; left: 84%; --drift: -20px; --drift-end: -42px; --mid-scale: 1.2; animation: sectionRise 22s linear infinite 0.5s; }
+#fun .section-particles span:nth-child(9) { width: 12px; height: 12px; left: 92%; background: radial-gradient(circle, rgba(100, 220, 180, 0.1) 0%, transparent 70%); --drift: 36px; --drift-end: -16px; animation: sectionRise 24s linear infinite 4s; }
+#fun .section-particles span:nth-child(10) { width: 5px; height: 5px; left: 4%; --drift: -14px; --drift-end: 8px; animation: sectionRise 16s linear infinite 7.5s; }
+
+/* Ensure section content stays above particles */
+#work > *:not(.section-particles),
+#software > *:not(.section-particles),
+#projects > *:not(.section-particles),
+#fun > *:not(.section-particles) {
+    position: relative;
+    z-index: 1;
+}
+
+/* ========== Visitor Map Section ========== */
+
+.map-section {
+    position: relative;
+    background: linear-gradient(135deg, #0a1628 0%, #122848 40%, #0d2137 100%);
+    padding: 5rem 0 4rem;
+    overflow: hidden;
+}
+
+.map-bg-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(56, 140, 220, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.map-title {
+    font-family: 'Open Sans', sans-serif;
+    color: #fff;
+    font-size: 2.2rem;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.3rem;
+}
+
+.map-subtitle {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    color: rgba(160, 200, 240, 0.7);
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    margin-bottom: 0;
+}
+
+.map-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(8px);
+    transition: transform 0.4s cubic-bezier(.25,.8,.25,1),
+                box-shadow 0.4s cubic-bezier(.25,.8,.25,1),
+                border-color 0.4s ease;
+}
+
+.map-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(56, 140, 220, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    border-color: rgba(56, 140, 220, 0.2);
+}
+
+.map-img {
+    border-radius: 14px;
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.map-card:hover .map-img {
+    transform: scale(1.015);
+}
+
+@media (max-width: 576px) {
+    .map-section {
+        padding: 3rem 0 2.5rem;
+    }
+    .map-card {
+        padding: 0.75rem;
+    }
+    .map-title {
+        font-size: 1.6rem;
+    }
 }
