@@ -330,8 +330,8 @@ iframe {
     height: 100% !important;
     max-width: none !important;
     max-height: none !important;
-    object-fit: contain !important;
-    object-position: center !important;
+    object-fit: cover !important;
+    object-position: center 90% !important;
     border-radius: 20px;
 }
 
@@ -366,7 +366,7 @@ iframe {
     top: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    object-fit: contain !important;
+    object-fit: cover !important;
     object-position: center !important;
 }
 
@@ -806,6 +806,7 @@ body {
 }
 
 .nav-icon i {
+    font-size: 1.4rem;
     transition: color 0.3s ease, transform 0.3s ease;
 }
 
