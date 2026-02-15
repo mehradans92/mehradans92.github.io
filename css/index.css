@@ -726,6 +726,20 @@ body {
     box-shadow: 0 2px 8px rgba(100, 180, 255, 0.15);
 }
 
+/* ---------- Work Logo Alignment ---------- */
+.work-logo-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 90px;          /* fixed height so all logos sit in the same row space */
+}
+.work-logo {
+    max-height: 90px;
+    max-width: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
 /* ---------- Award Timeline ---------- */
 .award-timeline {
     position: relative;
@@ -907,11 +921,6 @@ body {
 
 /* ========== Social Links Section ========== */
 
-.social-section {
-    background: #fafafa;
-    padding: 1.5rem 0;
-}
-
 .social-row {
     display: flex;
     justify-content: center;
@@ -927,11 +936,11 @@ body {
     width: 80px;
     height: 80px;
     border-radius: 16px;
-    background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     text-decoration: none;
-    color: #555;
+    color: rgba(255, 255, 255, 0.75);
     transition: transform 0.35s cubic-bezier(.25,.8,.25,1),
                 box-shadow 0.35s cubic-bezier(.25,.8,.25,1),
                 border-color 0.35s ease,
