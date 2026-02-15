@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Gelator Transparency Classification | Latent Space</title>
+
+  <!-- Bootstrap Core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+    integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+  <!-- Custom Fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,700,900' rel='stylesheet' type='text/css'>
+
+  <!-- Font Awesome -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/solid.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/brands.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/fontawesome.min.js"></script>
+
+  <!-- MathJax -->
+  <script>
+    MathJax = { tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] } };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    /* ---- Theme variables ---- */
+    :root {
+      --bg: linear-gradient(160deg, #0a1628 0%, #0f2035 40%, #091a2a 100%);
+      --text: #d0dce8;
+      --heading: #fff;
+      --link: #5cb8ff;
+      --link-hover: #8ed0ff;
+      --nav-bg: rgba(10, 22, 40, 0.85);
+      --nav-border: rgba(255,255,255,0.06);
+      --nav-brand: #fff;
+      --nav-link: rgba(255,255,255,0.6);
+      --meta: rgba(255,255,255,0.35);
+      --body-text: rgba(255,255,255,0.78);
+      --muted: rgba(255,255,255,0.55);
+      --faint: rgba(255,255,255,0.4);
+      --border: rgba(255,255,255,0.08);
+      --callout-bg: rgba(92, 184, 255, 0.06);
+      --callout-border: rgba(92, 184, 255, 0.4);
+      --callout-text: rgba(255,255,255,0.7);
+      --callout-em: rgba(255,255,255,0.85);
+      --toggle-bg: rgba(255,255,255,0.1);
+      --toggle-color: #fff;
+    }
+    body.light {
+      --bg: linear-gradient(160deg, #f0f4f8 0%, #e8eef5 40%, #f5f7fa 100%);
+      --text: #3a4a5c;
+      --heading: #1a2a3a;
+      --link: #2a7de1;
+      --link-hover: #1a5fb4;
+      --nav-bg: rgba(255, 255, 255, 0.9);
+      --nav-border: rgba(0,0,0,0.06);
+      --nav-brand: #1a2a3a;
+      --nav-link: rgba(0,0,0,0.55);
+      --meta: rgba(0,0,0,0.4);
+      --body-text: rgba(0,0,0,0.72);
+      --muted: rgba(0,0,0,0.5);
+      --faint: rgba(0,0,0,0.4);
+      --border: rgba(0,0,0,0.08);
+      --callout-bg: rgba(42, 125, 225, 0.06);
+      --callout-border: rgba(42, 125, 225, 0.35);
+      --callout-text: rgba(0,0,0,0.6);
+      --callout-em: rgba(0,0,0,0.8);
+      --toggle-bg: rgba(0,0,0,0.08);
+      --toggle-color: #1a2a3a;
+    }
+
+    body {
+      font-family: Merriweather, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      margin: 0;
+      transition: background 0.4s, color 0.4s;
+    }
+    a { color: var(--link); transition: color 0.3s; }
+    a:hover { color: var(--link-hover); text-decoration: none; }
+
+    /* Nav */
+    .blog-nav {
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--nav-border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: background 0.4s, border-color 0.4s;
+    }
+    .blog-nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .blog-nav-brand {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--nav-brand);
+      text-decoration: none;
+    }
+    .blog-nav-brand:hover { color: var(--link); }
+    .blog-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .blog-nav-link {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.85rem;
+      color: var(--nav-link);
+      text-decoration: none;
+    }
+    .blog-nav-link:hover { color: var(--heading); }
+
+    /* Theme toggle */
+    .theme-toggle {
+      background: var(--toggle-bg);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--toggle-color);
+      font-size: 1.1rem;
+      transition: background 0.3s, color 0.3s, transform 0.3s;
+    }
+    .theme-toggle:hover { transform: scale(1.1); }
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: inline; }
+    body.light .theme-toggle .icon-sun { display: inline; }
+    body.light .theme-toggle .icon-moon { display: none; }
+
+    /* Article */
+    .post-header {
+      text-align: center;
+      padding: 5rem 1rem 1rem;
+    }
+    .post-header h1 {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--heading);
+      letter-spacing: -0.02em;
+    }
+    .post-authors {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-top: 0.75rem;
+    }
+    .post-meta {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.85rem;
+      color: var(--meta);
+      margin-top: 0.5rem;
+    }
+
+    .post-body {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      font-size: 1.02rem;
+      line-height: 1.9;
+      color: var(--body-text);
+    }
+    .post-body p { margin-bottom: 1.5rem; }
+
+    /* Sub-headings */
+    .post-body h2 {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin: 2.5rem 0 1rem;
+    }
+    .post-body h3 {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--heading);
+      margin: 2rem 0 0.75rem;
+    }
+
+    /* Figures */
+    .post-figure {
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .post-figure img {
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .post-figure figcaption {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.82rem;
+      color: var(--faint);
+      margin-top: 0.75rem;
+      line-height: 1.6;
+      font-style: italic;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Equations */
+    .post-body .MathJax { font-size: 1.05em; }
+
+    /* Callout box */
+    .post-callout {
+      background: var(--callout-bg);
+      border-left: 3px solid var(--callout-border);
+      border-radius: 0 10px 10px 0;
+      padding: 1.2rem 1.5rem;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+      color: var(--callout-text);
+      transition: background 0.4s, border-color 0.4s, color 0.4s;
+    }
+    .post-callout em { color: var(--callout-em); }
+
+    /* Abstract */
+    .post-abstract {
+      background: var(--callout-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin: 0 0 2rem;
+      font-size: 0.95rem;
+      color: var(--body-text);
+      line-height: 1.8;
+    }
+    .post-abstract strong {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      color: var(--heading);
+    }
+
+    /* References */
+    .references {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+    .references h2 {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin-bottom: 1.2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .references ol {
+      padding-left: 1.4rem;
+      margin: 0;
+    }
+    .references li {
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .references li a { color: var(--link); }
+
+    /* Back link */
+    .back-link {
+      display: inline-block;
+      margin-top: 2.5rem;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.75rem 2rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 300px;
+      color: var(--heading);
+      background: rgba(255,255,255,0.1);
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .back-link:hover {
+      background: var(--heading);
+      color: var(--bg);
+      text-decoration: none;
+    }
+    body.light .back-link {
+      border-color: rgba(0,0,0,0.15);
+      background: rgba(0,0,0,0.04);
+    }
+    body.light .back-link:hover {
+      background: var(--heading);
+      color: #fff;
+    }
+
+    @media (max-width: 576px) {
+      .post-header h1 { font-size: 1.7rem; }
+      .post-body { font-size: 0.95rem; padding: 1.5rem 1rem 3rem; }
+      .post-body h2 { font-size: 1.25rem; }
+      .references { padding: 0 1rem 3rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="blog-nav">
+    <div class="container">
+      <a class="blog-nav-brand" href="../blog.html">← Latent Space</a>
+      <div class="blog-nav-right">
+        <a class="blog-nav-link" href="../index.html">Home</a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+          <span class="icon-moon">&#9790;</span>
+          <span class="icon-sun">&#9788;</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="post-header">
+    <h1>Gelator Transparency Classification using Kernel Ridge Regression</h1>
+    <div class="post-meta">November 2021</div>
+  </div>
+
+  <article class="post-body">
+    <div class="post-callout">
+      <em>This is based on some of my unpublished work from PhD. The Hamming distance idea is probably naive by today's standards, but I still like using kernel ridge regression for sparse datasets, pretty common in physical and life sciences. The classifier has been implemented as a <a href="https://mehradans92.github.io/GTP/GTP.html" target="_blank">web-based application</a>. Code is available on <a href="https://github.com/mehradans92/Gelator-Transparency-Predictor" target="_blank">GitHub</a> and data credit goes to Bradley Nilsson's lab at U Rochester.</em>
+    </div>
+
+    <div class="post-abstract">
+      <strong>Abstract.</strong> Kernel methods have become one of the most popular methods of solving nonlinear problems in chemistry. In this work, we apply kernel ridge regression to perform binary classification on the transparency of anionic gelators under different experimental conditions. The basic idea of this kernel classifier is to map the observed data onto a potentially much higher dimensional feature space, where ridge regression finds a linear relationship. We define the physical representation of the system, to which we apply kernel learning and evaluate model generalization-error by leave-one-out cross validation. This low error demonstrates on the applicability of KRR method for small datasets.
+    </div>
+
+    <h2>Introduction</h2>
+    <p>
+      Traditionally, theory and algorithms of various machine learning methods have been mostly developed for problems with linear settings <a href="#ref1">[1]</a>. These linear methods such as multiple linear regression (MLR) <a href="#ref2">[2]</a>, ridge regression (RR) <a href="#ref3">[3]</a>, principle component regression (PCR) <a href="#ref4">[4]</a> and partial least squares regression (PLSR) <a href="#ref5">[5]</a> have become widely popular in chemistry for predicting the properties of new samples <a href="#ref6">[6]</a>. In practice, however, these methods may be inapplicable to complex real-world chemical systems, where the relationship between the process variables are nonlinear <a href="#ref7">[7]</a>. For instance, according to Bernoulli's equation, the pressure drop and flow rate have a squared relationship or the outlet temperature and the concentration of species in a chemical reactor are nonlinearly related, given complex reaction kinetics and energy balance.
+    </p>
+    <p>
+      Kernel methods <a href="#ref8">[8</a>–<a href="#ref12">12]</a> solve the nonlinearity problem by using a simple linear transformation manner. The key idea is to project the data onto a higher-dimensional space, where linear methods are more applicable <a href="#ref13">[13]</a> and chances of over-fitting are less likely <a href="#ref14">[14]</a>. The kernel methods are performed in two successive steps: First, the training data in the input space are nonlinearly mapped onto a much higher dimensional feature space, where sometimes even unknown features are induced by the kernel <a href="#ref15">[15]</a>. In the second step, a linear method is applied to find a linear relationship in that feature space in a regression or a classification setting. Since everything is formulated in terms of kernel-evaluations, there is no need for performing any explicit calculations in the high-dimensional feature space <a href="#ref16">[16]</a>. This allows an efficient solution to the highly nonlinear convex optimization problems encountered in chemistry <a href="#ref17">[17</a>–<a href="#ref22">22]</a>.
+    </p>
+    <p>
+      In this work, we focus on applying kernel ridge regression (KRR) to infer the observable in terms of a linear expansion of the gelation experimental space and perform a binary classification for the transparency of anionic gelators. The low number of experimental data points, paired with a highly non-linear learning problem makes kernel learning a suitable choice to our setting.
+    </p>
+
+    <h2>Theory</h2>
+    <h3>Kernel Methods</h3>
+    <p>
+      With a kernel, data can be nonlinearly mapped from original input space \(\mathcal{R}^{D}\) onto a feature space \(\mathcal{R}^{F}\), with input and feature dimension \(D\) and \(F\), respectively.
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/gelator/kernel.png" alt="Kernel transformation mapping" style="padding: 1.5rem; background: #fff; border-radius: 12px;">
+      <figcaption>Figure 1. Transformation &phi; embeds data points from input space R<sup>D</sup> to feature space R<sup>F</sup>, where non-linear relationships become linear.</figcaption>
+    </figure>
+
+    <p>
+      For transformation (mapping) \(\phi:\mathcal{R}^{D} \rightarrow \mathcal{R}^{F}\), a kernel function is defined as
+    </p>
+    \[K(\mathbf{x},\mathbf{y}) = \langle \phi(\mathbf{x}), \phi(\mathbf{y})\rangle_F\]
+    <p>
+      A key requirement is that \(\langle\cdot\rangle_F\) is a proper inner product. This means that a kernel is required to work on scalar products of type \(\mathbf{x}^T\mathbf{y}\) that can be translated into scalar products \(\phi(\mathbf{x})^T\phi(\mathbf{y})\) in the feature space. On the other hand, as long as \(F\) is an inner product space, the explicit representation of \(\phi\) is not necessary and the kernel function can be evaluated as <a href="#ref23">[23]</a>:
+    </p>
+    \[K(\mathbf{x},\mathbf{y}) = \phi(\mathbf{x})^T\phi(\mathbf{y})\]
+    <p>
+      This is also known as the <em>kernel trick</em> <a href="#ref11">[11]</a>, and interestingly, many algorithms for regression and classification can be reformulated in terms of the kernelized dual representation, where the kernel function arises naturally <a href="#ref10">[10]</a>. Using the <em>kernel trick</em>, we never have to explicitly do the computationally expensive transformation \(\phi\).
+    </p>
+    <p>
+      A key concept here is that the transformation can be done implicitly by the choice of the kernel. In specific, the kernel encodes a real valued similarity between inputs \(\mathbf{x}\) and \(\mathbf{y}\). The similarity measure is defined by the representation of the system which is then used in combination with linear or non-linear kernel functions such as Gaussian, Laplace, polynomial and sigmoid kernels. Alternatively, the similarity measure can be encoded <em>directly</em> into the kernel, leading to a wide variety of kernels in the chemical domain <a href="#ref24">[24]</a>. In this setting, the defined binary kernel function needs to be non-negative, symmetric and point-separating (i.e. \(\langle x,x' \rangle = 0\) if and if only \(x=x'\)) <a href="#ref25">[25]</a>. For a given numerical feature we can use distance or \(l_2\) norm (Euclidean distance), whereas for a categorical feature, hamming distance is applicable.
+    </p>
+
+    <h3>Kernel Ridge Regression</h3>
+    <p>
+      Consider a data set containing \(N\) input samples \(\{x_i\}_{i=1}^N\), labeled as \(\{y_i\}_{i=1}^N\). In ridge regression, loss function
+    </p>
+    \[L(w) = \frac{1}{N}\sum_{i=1}^{N} (y_i - \vec{w}^T \vec{x_i})^2 + \lambda \cdot \|w\|^2\]
+    <p>
+      is minimized with respect to weight coefficients \(w\), where hyperparameter \(\lambda\) is used for regularization, which penalizes the norm of the weights. Increasing \(\lambda\) results in smoother functions that avoid the pure interpolation of the training data and thus, reduces overfitting. Despite having a good stability in terms of the generalization error, linear ridge regression needs a non-linear variant to better capture the features of complex non-linear systems.
+    </p>
+    <p>
+      This non-linear variant is obtained by kernelizing the ridge regression formulation. The dual form of kernel ridge regression (KRR) is given by
+    </p>
+    \[\hat{y} = \sum_{i=1}^N \alpha_i \cdot \langle \vec{x},\vec{x_i} \rangle\]
+    <p>
+      where \(\hat{y}\) is a model's prediction for unknown new data sample \(x\), given known training data \(x_i\). \(\alpha\) is obtained from
+    </p>
+    \[\alpha=(\lambda\cdot \mathbf{I} + \mathbf{K})^{-1}y\]
+    <p>
+      where \(\mathbf{I}\) is the identity matrix and \(\mathbf{K} \in \mathcal{R}^{N\times N}\) is the Gram matrix, defined as \(\mathbf{K_{ij}}=k(x_i,x_j)\).
+    </p>
+
+    <h2>Methods</h2>
+    <p>
+      Before defining this representation, we provide a brief description of the classification problem. The gelation experiment <a href="https://github.com/mehradans92/Gelator-Transparency-Predictor/blob/master/Library_of_Current_Gels.xlsx" target="_blank">dataset</a> contains features that include different experimental conditions such as the chemical structure, gelator concentration and equivalents of Glucono Delta Lactone (GdL) added during the experiment. The latter is added to the solution to trigger gelation process. This dataset for training is obtained by creating 29 anionic gelators under various alterations of the three mentioned features. The resulting gelators are either transparent or opaque, making this a binary classification problem.
+    </p>
+
+    <h3>Representation of the System</h3>
+    <p>
+      A key ingredient in kernel-based methods is the representation of the physical system. In the gelation experiment, the chemical structures vary given different functional groups at their \(N\) terminus.
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/gelator/gelator_structure.png" alt="Chemical structure variations">
+      <figcaption>Figure 2. Possible variations of the chemical structure in the gelation experiment. a) Cationic gelator 1-Nap-X-Phe-OH shown in black, where X can be any of its surrounding orange functional groups, b) Anionic gelator Fmoc-X-Phe-OH shown in black, where X can be any of its surrounding orange functional groups.</figcaption>
+    </figure>
+
+    <p>
+      The similarity between two chemical structures \(A\) and \(B\) is measured by their hamming distances defined as
+    </p>
+    \[\delta_{\text{hamming}} = L - \sum(\text{ohe}(A)\cdot \text{ohe}(B))\]
+    <p>
+      where \(\text{ohe}\) is the one-hot encoding for the chemical structure and \(L\) is the total length of positions. Hamming distance between two strings (of equal length), is the number of the positions at which the corresponding symbols are different. In other words, it measures the number of minimum substitutions required to change one string to another.
+    </p>
+    <p>
+      The one-hot-encoding is a trick of encoding categorical variables such as a set of strings into numerical values as "0"s and "1"s. We can consider having three labels in the strings, each representing different parts of a chemical structure name. Each label can be substituted by limited set of strings that represent the functional group. In this setting, we are doing a multi-class classification problem for each label. This means that there can be only a single "1" in the positions of the corresponding functional group for each label, with the rest of the values set to "0". Given this definition and the formulation of hamming distance, the maximum distance between two chemical structures is three, meaning that all three positional strings are not similar.
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/gelator/gelator_hamming.png" alt="One-hot representation">
+      <figcaption>Figure 3. One-hot representation of the chemical structure Fmoc-3F-Phe-OH as multi-label classes. Each string (functional group) represents a part of a chemical structure. By dividing the chemical structure string into three positions, each position can be filled with a single functional group.</figcaption>
+    </figure>
+
+    <p>
+      The other features include gelator concentration and equivalents of GdL, which are both a scalar. We define distance \(d\) as the absolute numerical difference, to ensure a positive kernel for each of those features. With this definition we can calculate the overall distance \(D\) between the datapoints in each experiment given by
+    </p>
+    \[D(A,B) = \sqrt{\delta_{\text{hamming}}^2(A,B) + d_{\text{conc}}^2(A,B) + d_{\text{GdL}}^2(A,B)}\]
+    <p>
+      Note that all the features are normalized before distance calculations. The binary labels are defined based on the experiment outcome for gelator's transparency, i.e. "0" for opaque and "1" for transparent.
+    </p>
+
+    <h2>Results</h2>
+    <p>
+      The model is trained in 29 gelation experiment data using KRR with kernels described above. The predicted labels from KRR are numerical float values between zero and one are decoded into the discrete representation of the true labels. By considering a middle threshold of 0.5, predictions beyond 0.5 are classified are transparent and opaque otherwise. This definition allows us to consider an uncertainty in predictions by finding the Euclidean distance between the new experiment data and all the training set.
+    </p>
+    <p>
+      Classifier's generalization error was minimized with \(\lambda\) of 1 after performing leave-one-out cross-validation (LOOCV). This error was found to be 0.83, which demonstrates on the applicability of KRR method for small datasets. The accuracy of the model is evaluated with the receiver operating characteristic curve (ROC) with area-under-curve (AUC) of 0.83.
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/gelator/gelator_roc_curve.png" alt="ROC curve" style="max-width:500px;">
+      <figcaption>Figure 4. Receiver operating characteristic curve for the binary classifier. The solid orange line shows the ROC curve and the blue dashed line represents the random guesses. The area under the curve is 0.83.</figcaption>
+    </figure>
+
+    <h2>Discussion</h2>
+    <p>
+      In this work, we demonstrated on applying kernel ridge to regression to embed the small gelation experimental data into a higher dimensional feature space and discover a calibrated linear relationship, while avoiding overfitting. In this setting, kernel learning was advantageous in two ways. First, it helped by solving a non-linear problem, where linear methods would have failed. Secondly, using kernel learning allowed us to expand the number of weights from number of features to number of training datapoints.
+    </p>
+    <p>
+      Proper description of the physical system is a key ingredient to kernel methods. In fact, this representation defines the function class from which the model is chosen and how it performs. Ideally speaking, this representation of data should distill relevant information about the learning problem in a concise manner, such that learning is possible even for small number of examples. In this regard, finding an appropriate representation of data can become a central problem. In contrast, deep neural networks can learn this representation from the data in a layer-wise fashion <a href="#ref26">[26</a>, <a href="#ref27">27]</a>. Considering these observations, it will be of interest to apply this problem to different representation of the chemical structure such as self-referencing embedded strings (SELFIES) <a href="#ref28">[28]</a> or simplified molecular-input line-entry system (SMILES) <a href="#ref29">[29]</a> that allows to incorporate some chemical intuition into the model.
+    </p>
+  </article>
+
+  <div class="references">
+    <h2>References</h2>
+    <ol>
+      <li id="ref1">Hofmann, T., Scholkopf, B. and Smola, A.J. "Kernel methods in machine learning." <em>The Annals of Statistics</em>, 36(3), 1171–1220, 2008.</li>
+      <li id="ref2">Krzywinski, M. and Altman, N. "Multiple linear regression." <em>Nature Methods</em>, 12(12), 1103–1105, 2015.</li>
+      <li id="ref3">Budka, M. and Gabrys, B. "Ridge regression ensemble for toxicity prediction." <em>Procedia Computer Science</em>, 1(1), 193–201, 2010.</li>
+      <li id="ref4">Keithley, R.B., Wightman, R.M. and Heien, M.L. "Multivariate concentration determination using principal component regression with residual analysis." <em>TrAC Trends in Analytical Chemistry</em>, 28(9), 1127–1136, 2009.</li>
+      <li id="ref5">Huerta, M. et al. "On a partial least squares regression model for asymmetric data with a chemical application in mining." <em>Chemometrics and Intelligent Laboratory Systems</em>, 190, 55–68, 2019.</li>
+      <li id="ref6">Abollino, O. et al. "The role of chemometrics in single and sequential extraction assays." <em>Analytica Chimica Acta</em>, 688(2), 104–121, 2011.</li>
+      <li id="ref7">Nelles, O. "Nonlinear dynamic system identification." In <em>Nonlinear System Identification</em>, Springer, 547–577, 2001.</li>
+      <li id="ref8">Scholkopf, B. and Smola, A.J. <em>Learning with Kernels</em>. MIT Press, 2002.</li>
+      <li id="ref9">Shawe-Taylor, J. and Cristianini, N. <em>Kernel Methods for Pattern Analysis</em>. Cambridge University Press, 2004.</li>
+      <li id="ref10">Muller, K-R. et al. "An introduction to kernel-based learning algorithms." <em>IEEE Transactions on Neural Networks</em>, 12(2), 181–201, 2001.</li>
+      <li id="ref11">Soentpiet, R. et al. <em>Advances in Kernel Methods: Support Vector Learning</em>. MIT Press, 1999.</li>
+      <li id="ref12">Czekaj, T. et al. "About kernel latent variable approaches and SVM." <em>Journal of Chemometrics</em>, 19(5-7), 341–354, 2005.</li>
+      <li id="ref13">Cover, T.M. "Geometrical and statistical properties of systems of linear inequalities with applications in pattern recognition." <em>IEEE Transactions on Electronic Computers</em>, 3, 326–334, 1965.</li>
+      <li id="ref14">Cao, D-S. et al. "Exploring nonlinear relationships in chemical data using kernel-based methods." <em>Chemometrics and Intelligent Laboratory Systems</em>, 107(1), 106–115, 2011.</li>
+      <li id="ref15">Mika, S. et al. "Fisher discriminant analysis with kernels." <em>IEEE Signal Processing Society Workshop</em>, 41–48, 1999.</li>
+      <li id="ref16">Braun, M.L. et al. "On relevant dimensions in kernel feature spaces." <em>JMLR</em>, 9, 1875–1908, 2008.</li>
+      <li id="ref17">Ramakrishnan, R. and von Lilienfeld, O.A. "Many molecular properties from one kernel in chemical space." <em>CHIMIA</em>, 69(4), 182–186, 2015.</li>
+      <li id="ref18">Huang, B. and Von Lilienfeld, O.A. "Understanding molecular representations in machine learning." <em>J. Chem. Phys.</em>, 145(16), 161102, 2016.</li>
+      <li id="ref19">De, S. et al. "Comparing molecules and solids across structural and alchemical space." <em>PCCP</em>, 18(20), 13754–13769, 2016.</li>
+      <li id="ref20">Collins, C.R. et al. "Constant size descriptors for accurate machine learning models of molecular properties." <em>J. Chem. Phys.</em>, 148(24), 241718, 2018.</li>
+      <li id="ref21">Stuke, A. et al. "Chemical diversity in molecular orbital energy predictions with kernel ridge regression." <em>J. Chem. Phys.</em>, 150(20), 204121, 2019.</li>
+      <li id="ref22">Stocker, S. et al. "Machine learning in chemical reaction space." <em>Nature Communications</em>, 11(1), 1–11, 2020.</li>
+      <li id="ref23"><a href="https://dl.acm.org/doi/10.1145/130385.130401" target="_blank">Boser, B.E. et al. "A training algorithm for optimal margin classifiers." <em>Proceedings of the Fifth Annual Workshop on Computational Learning Theory</em>, 144–152, 1992.</a></li>
+      <li id="ref24">Schutt, K.T. et al. "Machine Learning Meets Quantum Physics." <em>Lecture Notes in Physics</em>, Springer, 2020.</li>
+      <li id="ref25"><a href="https://dmol.pub" target="_blank">White, A.D. <em>Deep Learning for Molecules and Materials</em>, 2021.</a></li>
+      <li id="ref26">Schutt, K.T. et al. "Quantum-chemical insights from deep tensor neural networks." <em>Nature Communications</em>, 8(1), 1–8, 2017.</li>
+      <li id="ref27">Montavon, G. et al. "Kernel Analysis of Deep Networks." <em>JMLR</em>, 12(9), 2011.</li>
+      <li id="ref28">Krenn, M. et al. "Self-Referencing Embedded Strings (SELFIES): A 100% robust molecular string representation." <em>Machine Learning: Science and Technology</em>, 1(4), 045024, 2020.</li>
+      <li id="ref29">Weininger, D. "SMILES, a chemical language and information system." <em>J. Chem. Inf. Comput. Sci.</em>, 28(1), 31–36, 1988.</li>
+    </ol>
+
+    <a class="back-link" href="../blog.html">Back to Latent Space</a>
+  </div>
+
+  <script>
+    (function() {
+      var toggle = document.getElementById('themeToggle');
+      var saved = localStorage.getItem('blog-theme');
+      if (saved === 'light') document.body.classList.add('light');
+      toggle.addEventListener('click', function() {
+        document.body.classList.toggle('light');
+        localStorage.setItem('blog-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+      });
+    })();
+  </script>
+</body>
+</html>
