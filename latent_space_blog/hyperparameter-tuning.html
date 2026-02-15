@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Hyperparameter Tuning | Latent Space Blog</title>
+
+  <!-- Bootstrap Core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+    integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+  <!-- Custom Fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,700,900' rel='stylesheet' type='text/css'>
+
+  <!-- Font Awesome -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/solid.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/brands.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/fontawesome.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: 'Merriweather', serif;
+      background: linear-gradient(160deg, #0a1628 0%, #0f2035 40%, #091a2a 100%);
+      color: #d0dce8;
+      min-height: 100vh;
+      margin: 0;
+    }
+    a { color: #5cb8ff; transition: color 0.3s; }
+    a:hover { color: #8ed0ff; text-decoration: none; }
+
+    /* Nav */
+    .blog-nav {
+      background: rgba(10, 22, 40, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .blog-nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .blog-nav-brand {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #fff;
+      text-decoration: none;
+    }
+    .blog-nav-brand:hover { color: #5cb8ff; }
+    .blog-nav-link {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+    }
+    .blog-nav-link:hover { color: #fff; }
+
+    /* Article */
+    .post-header {
+      text-align: center;
+      padding: 5rem 1rem 2rem;
+    }
+    .post-header h1 {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .post-meta {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.35);
+      margin-top: 0.75rem;
+    }
+
+    .post-body {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: rgba(255,255,255,0.78);
+    }
+    .post-body p { margin-bottom: 1.6rem; }
+
+    /* References */
+    .references {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+    .references h2 {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1.2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .references ol {
+      padding-left: 1.4rem;
+      margin: 0;
+    }
+    .references li {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 0.6rem;
+    }
+    .references li a { color: #5cb8ff; }
+
+    /* Sub-headings */
+    .post-body h2 {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 2.5rem 0 1rem;
+    }
+
+    /* Figures */
+    .post-figure {
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .post-figure img {
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .post-figure figcaption {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.4);
+      margin-top: 0.75rem;
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* Callout box */
+    .post-callout {
+      background: rgba(92, 184, 255, 0.06);
+      border-left: 3px solid rgba(92, 184, 255, 0.4);
+      border-radius: 0 10px 10px 0;
+      padding: 1.2rem 1.5rem;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.7);
+    }
+    .post-callout em { color: rgba(255,255,255,0.85); }
+
+    /* Back link */
+    .back-link {
+      display: inline-block;
+      margin-top: 2rem;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 576px) {
+      .post-header h1 { font-size: 1.8rem; }
+      .post-body { font-size: 0.97rem; padding: 1.5rem 1rem 3rem; }
+      .post-body h2 { font-size: 1.25rem; }
+      .references { padding: 0 1rem 3rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="blog-nav">
+    <div class="container">
+      <a class="blog-nav-brand" href="../blog.html">← Latent Space Blog</a>
+      <a class="blog-nav-link" href="../index.html">Home</a>
+    </div>
+  </nav>
+
+  <div class="post-header">
+    <h1>Hyperparameter Tuning: Finding the Sweet Spot</h1>
+    <div class="post-meta">August 2023</div>
+  </div>
+
+  <article class="post-body">
+    <div class="post-callout">
+      <em>This is just a quick summary of a chapter I wrote in <a href="https://dmol.pub/index.html" target="_blank">Deep Learning for Molecules and Materials</a>, an awesome book by my awesome PhD advisor, <a href="https://x.com/andrewwhite01/" target="_blank">Andrew White</a>. Head <a href="https://dmol.pub/dl/Hyperparameter_tuning.html" target="_blank">there</a> for the full treatment, including code examples and a hands-on walkthrough of tuning a peptide hemolysis classifier.</em>
+    </div>
+
+    <p>
+      Training deep learning models is a bit like tuning a car, you've got a bunch of knobs to adjust, and finding the sweet spot takes patience and know-how.
+    </p>
+
+    <h2>The Learning Rate Saga</h2>
+    <p>
+      The learning rate is probably the most critical hyperparameter you'll deal with. Set it too high and your model overshoots the optimal solution; too low and you'll be waiting forever for it to converge <a href="#ref1">[1]</a>. The animation below shows this in action, watch how a tiny learning rate barely moves along the loss surface, a reasonable one glides toward the minimum, and a large one just bounces right past it:
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/hyperparameter-tuning/loss-lr.gif" alt="Effect of learning rate on loss convergence">
+      <figcaption>Fig 1. Effect of learning rate on loss. Too small crawls, too large overshoots, and a reasonable value converges efficiently.</figcaption>
+    </figure>
+
+    <p>
+      But here's the thing, even a "reasonable" constant learning rate can only get you so far. What if you could start bold and get more careful as you go? That's exactly what learning rate decay schedules do. By starting with a larger learning rate, you get the rarely discussed benefit of escaping local minima that overfit, and then as the rate decreases, you settle into a broader, better minimum:
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/hyperparameter-tuning/decay.gif" alt="Learning rate decay schedule vs constant learning rate">
+      <figcaption>Fig 2. A constant learning rate can get stuck in a local minimum, while a decay schedule allows the optimizer to escape and find a better solution.</figcaption>
+    </figure>
+
+    <h2>Momentum, Batch Size, and the Balancing Act</h2>
+    <p>
+      Momentum helps smooth things out by remembering which direction you've been heading, kind of like a ball rolling downhill that doesn't stop at every little dip <a href="#ref1">[1]</a>. Batch size is another interesting trade-off, smaller batches tend to generalize better because they add a bit of noise that helps escape local minima, though they're slower to train <a href="#ref2">[2</a>, <a href="#ref3">3]</a>. And then there's the architecture itself: how many layers, how many nodes, how much regularization. Too simple and you underfit; too complex and you overfit. It's a balancing act.
+    </p>
+
+    <h2>The Search for Optimal Hyperparameters</h2>
+    <p>
+      When it comes to actually searching for the best hyperparameters, you've got options ranging from brute-force grid search to smarter approaches like Bayesian optimization, which learns from previous trials to focus on promising regions <a href="#ref4">[4]</a>. But since training is expensive, early stopping strategies like Successive Halving and HyperBand have become popular, they essentially give every configuration a quick audition and cut the underperformers early, saving your compute budget for the winners <a href="#ref5">[5</a>, <a href="#ref6">6]</a>.
+    </p>
+    <p>
+      The key takeaway? Start with a baseline, add complexity gradually, and let your validation metrics guide you. And maybe use one of the many toolkits out there, Ray Tune, Optuna, Keras-Tuner, so you're not reinventing the wheel <a href="#ref7">[7</a>, <a href="#ref8">8</a>, <a href="#ref9">9]</a>.
+    </p>
+
+  </article>
+
+  <div class="references">
+    <h2>References</h2>
+    <ol>
+      <li id="ref1"><a href="https://mitpress.mit.edu/9780262035613/deep-learning/" target="_blank">Goodfellow, Ian, Yoshua Bengio, and Aaron Courville. <em>Deep Learning</em>. Cambridge, MA: MIT Press, 2017.</a></li>
+      <li id="ref2"><a href="https://arxiv.org/abs/1609.04836" target="_blank">Keskar, Nitish Shirish, et al. "On Large-Batch Training for Deep Learning: Generalization Gap and Sharp Minima." <em>arXiv preprint arXiv:1609.04836</em>, 2016.</a></li>
+      <li id="ref3"><a href="https://papers.nips.cc/paper/2017/hash/a5e0ff62be0b08456fc7f1e88812af3d-Abstract.html" target="_blank">Hoffer, Elad, Itay Hubara, and Daniel Soudry. "Train Longer, Generalize Better: Closing the Generalization Gap in Large Batch Training of Neural Networks." <em>Advances in Neural Information Processing Systems</em>, 2017.</a></li>
+      <li id="ref4"><a href="https://dl.acm.org/doi/10.1145/3097983.3098043" target="_blank">Golovin, Daniel, et al. "Google Vizier: A Service for Black-Box Optimization." <em>Proceedings of the 23rd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining</em>, 2017, 1487–1495.</a></li>
+      <li id="ref5"><a href="http://proceedings.mlr.press/v51/jamieson16.html" target="_blank">Jamieson, Kevin, and Ameet Talwalkar. "Non-stochastic Best Arm Identification and Hyperparameter Optimization." <em>Artificial Intelligence and Statistics</em>, PMLR, 2016, 240–248.</a></li>
+      <li id="ref6"><a href="https://jmlr.org/papers/v18/16-558.html" target="_blank">Li, Lisha, et al. "Hyperband: A Novel Bandit-Based Approach to Hyperparameter Optimization." <em>Journal of Machine Learning Research</em> 18, no. 185 (2018): 1–52.</a></li>
+      <li id="ref7"><a href="https://arxiv.org/abs/1807.05118" target="_blank">Liaw, Richard, et al. "Tune: A Research Platform for Distributed Model Selection and Training." <em>arXiv preprint arXiv:1807.05118</em>, 2018.</a></li>
+      <li id="ref8"><a href="https://dl.acm.org/doi/10.1145/3292500.3330701" target="_blank">Akiba, Takuya, et al. "Optuna: A Next-Generation Hyperparameter Optimization Framework." <em>Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining</em>, 2019.</a></li>
+      <li id="ref9"><a href="https://github.com/keras-team/keras-tuner" target="_blank">O'Malley, Tom, et al. "Keras Tuner." 2019.</a></li>
+    </ol>
+
+    <a class="back-link" href="../blog.html">← Back to Latent Space</a>
+  </div>
+
+</body>
+</html>
