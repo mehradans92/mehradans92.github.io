@@ -195,10 +195,12 @@
     }
     .post-card-thumb img {
       width: 100%;
-      height: auto;
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
       border-radius: 10px;
     }
     .post-card-text {
+      flex: 1;
       padding: 1.5rem 2rem 2rem;
     }
     .post-card h2 {
@@ -276,14 +278,20 @@
           <p>Training deep learning models is a bit like tuning a car, you've got a bunch of knobs to adjust, and finding the sweet spot takes patience and know-how.</p>
         </div>
         <div class="post-card-thumb">
-          <img src="latent_space_blog/media/hyperparameter-tuning/loss-lr.gif" alt="Effect of learning rate on loss">
+          <img src="latent_space_blog/media/hyperparameter-tuning/loss-lr.gif" alt="Effect of learning rate on loss" style="padding: 0.5rem 0.25rem; background: #fff; border-radius: 12px;">
         </div>
       </a>
 
-      <div class="post-card-soon">
-        <span>Coming Soon</span>
-        <p>Next post in the works...</p>
-      </div>
+      <a class="post-card" href="latent_space_blog/gelator-classification.html">
+        <div class="post-card-text">
+          <h2>Gelator Transparency Classification using Kernel Ridge Regression</h2>
+          <div class="post-meta">November 2021</div>
+          <p>Applying kernel ridge regression to perform binary classification on the transparency of anionic/cationic gelators under different experimental conditions (sparse data regime).</p>
+        </div>
+        <div class="post-card-thumb">
+          <img src="latent_space_blog/media/gelator/gelator_structure.png" alt="Chemical structure variations" style="padding: 0.5rem 0.25rem; background: #fff; border-radius: 12px;">
+        </div>
+      </a>
     </div>
   </div>
 
