@@ -42,9 +42,11 @@
     href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic'
     rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="css/academicons.css">
-  <!-- Font Awesome 5 CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/v4-shims.min.css">
+  <!-- Font Awesome 5 (SVG+JS — no font files needed) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/v4-shims.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/solid.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/brands.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/fontawesome.min.js"></script>
 
   <!-- Plugin CSS -->
   <link href="css/magnific-popup.css" rel="stylesheet">
@@ -143,8 +145,16 @@
 </head>
 
 <body id="page-top">
+
+  <!-- Global floating particles -->
+  <div id="global-particles">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-    <div class="container" width="60px">
+    <div class="container">
       <a class="navbar-brand js-scroll-trigger" href="#page-top">Mehrad Ansari</a>
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
         data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="true"
@@ -248,7 +258,7 @@
         <div class="col-lg-3 col-md-6 col-sm-6 text-center">
           <div class="edu-card">
             <div class="edu-icon-wrap">
-              <i class="fa fa-3x fa-graduation-cap text-faded edu-fa-icon"></i>
+              <i class="fas fa-3x fa-graduation-cap text-faded edu-fa-icon"></i>
             </div>
             <h3 class="text-white">Degrees</h3>
             <div class="degree-item">
@@ -285,7 +295,7 @@
         <div class="col-lg-3 col-md-6 col-sm-6 text-center">
           <div class="edu-card">
             <div class="edu-icon-wrap">
-              <i class="fa fa-3x fa-code text-faded edu-fa-icon"></i>
+              <i class="fas fa-3x fa-code text-faded edu-fa-icon"></i>
             </div>
             <h3 class="text-white">Languages & Tools</h3>
             <div>
@@ -294,10 +304,10 @@
               <span class="skill-pill">MATLAB</span>
               <span class="skill-pill">HTML5</span>
               <span class="skill-pill">CSS</span>
-              <span class="skill-pill">SQL</span>
               <span class="skill-pill">Bash</span>
               <span class="skill-pill">PyTorch</span>
               <span class="skill-pill">TensorFlow</span>
+              <span class="skill-pill">PyTorch</span>
               <span class="skill-pill">Scikit-learn</span>
               <span class="skill-pill">LangChain</span>
               <span class="skill-pill">Hugging Face</span>
@@ -311,7 +321,7 @@
         <div class="col-lg-3 col-md-6 col-sm-6 text-center">
           <div class="edu-card">
             <div class="edu-icon-wrap">
-              <i class="fa fa-3x fa-file-code-o text-faded edu-fa-icon"></i>
+              <i class="fas fa-3x fa-file-code text-faded edu-fa-icon"></i>
             </div>
             <h3 class="text-white">Skills</h3>
             <div>
@@ -336,17 +346,51 @@
         <div class="col-lg-3 col-md-6 col-sm-6 text-center">
           <div class="edu-card">
             <div class="edu-icon-wrap">
-              <i class="fa fa-3x fa-trophy text-faded edu-fa-icon" aria-hidden="true"></i>
+              <i class="fas fa-3x fa-trophy text-faded edu-fa-icon" aria-hidden="true"></i>
             </div>
             <h3 class="text-white">Awards</h3>
-            <div class="award-item"><a class="text-white-link" href="https://www.linkedin.com/posts/mehradansari_llm-materials-chemistry-activity-7195777605373935616-H23M?utm_source=share&utm_medium=member_desktop">3rd Place Radical AI Winner. LLM Hackathon for Materials and Chemistry (2024)</a></div>
-            <div class="award-item"><a class="text-white-link" href="https://ac-bo-hackathon.github.io/projects/project-34-boms-probs/">2nd Place Winner. Bayesian Optimization Hackathon for Chemistry and Materials (2024)</a></div>
-            <div class="award-item"><span class="text-faded">Acceleration Consortium Research Fellowship (2023)</span></div>
-            <div class="award-item"><a class="text-white-link" href="https://www.kaggle.com/competitions/beep-competition/leaderboard">1st Place Winner. Battery Informatics & ML Competition, Materials Research Society (2022)</a></div>
-            <div class="award-item"><a class="text-white-link" href="https://www.hajim.rochester.edu/che/graduate/prizes-fellowships/kylcw-fellowship.html">Kwang-Yu and Lee-Chien Wang Fellowship (2021)</a></div>
-            <div class="award-item"><span class="text-faded">Earl W. Costich Fellowship (2020)</span></div>
-            <div class="award-item"><a class="text-white-link" href="http://sections.asce.org/stlouis/documents/November_2017_Newsletter_Final.pdf">Mike Alizadeh Scholarship (2017)</a></div>
-            <div class="award-item"><span class="text-faded">University of Sharif Computer-Aided Chemical Engineering Contest (2014)</span></div>
+            <div class="award-timeline">
+              <div class="award-tl-item">
+                <span class="award-tl-year">2024</span>
+                <div class="award-tl-dot"></div>
+                <div class="award-tl-text"><a href="https://www.linkedin.com/posts/mehradansari_llm-materials-chemistry-activity-7195777605373935616-H23M?utm_source=share&utm_medium=member_desktop">3rd Place Radical AI Winner. LLM Hackathon for Materials and Chemistry</a></div>
+              </div>
+              <div class="award-tl-item">
+                <span class="award-tl-year">2024</span>
+                <div class="award-tl-dot"></div>
+                <div class="award-tl-text"><a href="https://ac-bo-hackathon.github.io/projects/project-34-boms-probs/">2nd Place Winner. Bayesian Optimization Hackathon for Chemistry and Materials</a></div>
+              </div>
+              <div class="award-tl-item">
+                <span class="award-tl-year">2023</span>
+                <div class="award-tl-dot"></div>
+                <div class="award-tl-text">Acceleration Consortium Research Fellowship</div>
+              </div>
+              <div class="award-tl-item">
+                <span class="award-tl-year">2022</span>
+                <div class="award-tl-dot"></div>
+                <div class="award-tl-text"><a href="https://www.kaggle.com/competitions/beep-competition/leaderboard">1st Place Winner. Battery Informatics & ML Competition, MRS</a></div>
+              </div>
+              <div class="award-tl-item">
+                <span class="award-tl-year">2021</span>
+                <div class="award-tl-dot"></div>
+                <div class="award-tl-text"><a href="https://www.hajim.rochester.edu/che/graduate/prizes-fellowships/kylcw-fellowship.html">Kwang-Yu and Lee-Chien Wang Fellowship</a></div>
+              </div>
+              <div class="award-tl-item">
+                <span class="award-tl-year">2020</span>
+                <div class="award-tl-dot"></div>
+                <div class="award-tl-text">Earl W. Costich Fellowship</div>
+              </div>
+              <div class="award-tl-item">
+                <span class="award-tl-year">2017</span>
+                <div class="award-tl-dot"></div>
+                <div class="award-tl-text"><a href="http://sections.asce.org/stlouis/documents/November_2017_Newsletter_Final.pdf">Mike Alizadeh Scholarship</a></div>
+              </div>
+              <div class="award-tl-item">
+                <span class="award-tl-year">2014</span>
+                <div class="award-tl-dot"></div>
+                <div class="award-tl-text">University of Sharif Computer-Aided Chemical Engineering Contest</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -361,7 +405,6 @@
 
   <!-- Work Experience Section. -->
   <section class="bg-yellow" id="work">
-    <div class="section-particles"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
     <div class="container-fluid">
 
       <div class="row d-flex justify-content-center">
@@ -380,7 +423,7 @@
           <img src="img/AC_logo.png" class="img-fluid" width="291" alt="AC logo">
           <h3 class="mt-4 mb-4">Staff Scientist</h3>
           <p class="text-muted"><span>Acceleration Consortium</span></br>Toronto, ON</br>(June 2023 -
-            June 2024)</p>
+            June 2025)</p>
         </div>
         <div class="col-lg-3 col-sm-6 text-center">
           <img src="img/UR_logo.png" class="img-fluid" width="120px" alt="UR logo">
@@ -432,7 +475,6 @@
 
   <!-- Software Section -->
   <section class="bg-dark" id="software">
-    <div class="section-particles"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
     <div class="container-fluid">
       <div class="row">
         <div class="col-lg-12 text-center">
@@ -443,8 +485,8 @@
     </div>
 
 
-    <div class="row justify-content-center">
-      <div class="col-md-6 text-center">
+    <div class="row justify-content-center text-center no-gutters">
+        <div class="col-lg-4 col-md-6">
         <a class="portfolio-box" href="https://mehradans92.github.io/dZiner/">
           <img class="img-responsive" width="100%" height="auto" style="border-radius: 20px;" src="img/dziner_toc.png"
             alt="">
@@ -460,10 +502,8 @@
           </div>
         </a>
       </div>
-    </div>
 
-    <div class="row justify-content-center text-center no-gutters">
-        <div class="col-md-6">
+        <div class="col-lg-4 col-md-6">
           <a class="portfolio-box" href="https://x.com/MehradAnsari/status/1753489227055337931/photo/1">
             <!--  Awesome photo of JT and random skiers from Google Photos
                    (Personal photo taken March 15 2017 at Cannon Mt)
@@ -486,7 +526,7 @@
           </a>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-lg-4 col-md-6">
           <a class="portfolio-box" href="https://github.com/AI4ChemS/Eunomia">
             <!--  Awesome photo of JT and random skiers from Google Photos
                              (Personal photo taken March 15 2017 at Cannon Mt)
@@ -510,8 +550,8 @@
         </div>
       </div>
 
-    <div class="row justify-content-center">
-      <div class="col-md-6 text-center">
+      <div class="row justify-content-center text-center no-gutters">
+        <div class="col-lg-4 col-md-6">
         <a class="portfolio-box" href="https://huggingface.co/spaces/mehradans92/decode-elm">
           <img class="img-responsive" width="100%" height="auto" style="border-radius: 20px;" src="img/arxiv_decode.png"
             alt="">
@@ -527,10 +567,8 @@
           </div>
         </a>
       </div>
-    </div>
 
-      <div class="row justify-content-center text-center no-gutters">
-        <div class="col-md-6">
+        <div class="col-lg-4 col-md-6">
           <a class="portfolio-box" href="https://github.com/TRI-AMDD/bye-cycle">
             <!--  Awesome photo of JT and random skiers from Google Photos
                    (Personal photo taken March 15 2017 at Cannon Mt)
@@ -554,7 +592,7 @@
           </a>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-lg-4 col-md-6">
           <a class="portfolio-box" href="https://peptide.bio/">
             <!--  Awesome photo of JT and random skiers from Google Photos
                              (Personal photo taken March 15 2017 at Cannon Mt)
@@ -580,8 +618,8 @@
 
 
 
-      <div class="row no-gutters">
-        <div class="col-md-6">
+      <div class="row justify-content-center text-center no-gutters">
+        <div class="col-lg-4 col-md-6">
           <a class="portfolio-box" href="https://github.com/ur-whitelab/hoomd-tf">
             <!--  Awesome photo of JT and random skiers from Google Photos
                 (Personal photo taken March 15 2017 at Cannon Mt)
@@ -605,7 +643,7 @@
           </a>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-lg-4 col-md-6">
           <a class="portfolio-box" href="https://github.com/ur-whitelab/maxent">
             <!--  Awesome photo of JT and random skiers from Google Photos
               (Personal photo taken March 15 2017 at Cannon Mt)
@@ -626,7 +664,7 @@
             </div>
           </a>
         </div>
-        <div class="col-md-6">
+        <div class="col-lg-4 col-md-6">
           <a class="portfolio-box" href="https://github.com/ur-whitelab/py0">
             <!--  Awesome photo of JT and random skiers from Google Photos
               (Personal photo taken March 15 2017 at Cannon Mt)
@@ -647,7 +685,7 @@
             </div>
           </a>
         </div>
-        <div class="col-md-6">
+        <div class="col-lg-4 col-md-6">
           <a class="portfolio-box" href="https://github.com/ur-whitelab/alcfd">
             <!--  Awesome photo of JT and random skiers from Google Photos
               (Personal photo taken March 15 2017 at Cannon Mt)
@@ -668,9 +706,7 @@
             </div>
           </a>
         </div>
-      </div>
-      <div class="row no-gutters">
-        <div class="col-md-6">
+        <div class="col-lg-4 col-md-6">
           <a class="portfolio-box" href="https://github.com/mehradans92/Real-time-HPC-Monitoring">
             <!--  Awesome photo of JT and random skiers from Google Photos
                     (Personal photo taken March 15 2017 at Cannon Mt)
@@ -690,7 +726,7 @@
             </div>
           </a>
         </div>
-        <div class="col-md-6">
+        <div class="col-lg-4 col-md-6">
           <a class="portfolio-box" href="GTP/GTP.html">
             <!--  Awesome photo of JT and random skiers from Google Photos
               (Personal photo taken March 15 2017 at Cannon Mt)
@@ -728,7 +764,6 @@
 
 
   <section class="bg-red" id="projects">
-    <div class="section-particles"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
     <div class="container-fluid">
       <div class="row images-vcenter">
         <div class="col-lg-12 pb-3 text-center">
@@ -928,7 +963,6 @@
   </section>
 
   <section class="bg-green" id="fun">
-    <div class="section-particles"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
     <div class="container-fluid">
       <div class="row images-vcenter">
         <div class="col-lg-12 pb-3 text-center">
