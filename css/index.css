@@ -751,6 +751,81 @@ body {
     color: #fff;
 }
 
+/* ========== Navbar Enhancements ========== */
+
+/* Glassmorphism on scroll */
+#mainNav.navbar-shrink {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Animated underline on text nav links */
+#mainNav .navbar-nav > li.nav-item > a.nav-link:not(.nav-icon) {
+    position: relative;
+}
+
+#mainNav .navbar-nav > li.nav-item > a.nav-link:not(.nav-icon)::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 4px;
+    width: 0;
+    height: 2px;
+    background: #f05f40;
+    border-radius: 2px;
+    transition: width 0.3s ease, left 0.3s ease;
+}
+
+#mainNav .navbar-nav > li.nav-item > a.nav-link:not(.nav-icon):hover::after {
+    width: 60%;
+    left: 20%;
+}
+
+/* Vertical divider between text links and social icons */
+.nav-divider {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+}
+
+.nav-divider::before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 1px;
+}
+
+/* Nav icon hover: brand colors + scale */
+.nav-icon {
+    padding: 0.4rem 0.5rem !important;
+}
+
+.nav-icon i {
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-icon:hover i {
+    transform: scale(1.25);
+}
+
+.nav-icon-youtube:hover i  { color: #FF0000 !important; }
+.nav-icon-linkedin:hover i { color: #0A66C2 !important; }
+.nav-icon-github:hover i   { color: #24292e !important; }
+.nav-icon-scholar:hover i  { color: #4285F4 !important; }
+.nav-icon-twitter:hover i  { color: #1DA1F2 !important; }
+
+/* Hide divider on mobile (collapsed nav) */
+@media (max-width: 991px) {
+    .nav-divider {
+        display: none;
+    }
+}
+
 /* ========== Social Links Section ========== */
 
 .social-section {
