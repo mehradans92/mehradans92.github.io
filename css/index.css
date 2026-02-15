@@ -344,16 +344,16 @@ iframe {
 
 /* Software section: same-size boxes, vertical & horizontal gap both 2rem */
 #software .portfolio-box {
-    width: 96% !important;
-    max-width: 96% !important;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    width: 94% !important;
+    max-width: 94% !important;
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
     aspect-ratio: 16 / 9 !important;
 }
 
-#software .row .col-md-6 {
-    padding-left: 1rem;
-    padding-right: 1rem;
+#software .row [class*="col"] {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
 }
 
 /* Projects: vertical & horizontal gap both 2rem (match Software) */
@@ -725,33 +725,97 @@ body {
     box-shadow: 0 2px 8px rgba(100, 180, 255, 0.15);
 }
 
-/* ---------- Award items ---------- */
-#about .award-item {
+/* ---------- Award Timeline ---------- */
+.award-timeline {
+    position: relative;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+
+.award-tl-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    position: relative;
+    margin-bottom: 0.6rem;
     text-align: left;
-    margin-bottom: 0.75rem;
-    padding: 0.5rem 0.65rem;
-    border-left: 3px solid rgba(100, 180, 255, 0.35);
-    font-size: 0.88rem;
-    border-radius: 0 8px 8px 0;
-    transition: all 0.2s ease;
 }
 
-#about .award-item:hover {
-    background: rgba(255, 255, 255, 0.04);
-    border-left-color: rgba(100, 180, 255, 0.6);
-}
-
-#about .award-item:last-child {
+.award-tl-item:last-child {
     margin-bottom: 0;
 }
 
-#about .award-item a {
-    color: rgba(160, 210, 255, 0.95);
+/* Year label on the left */
+.award-tl-year {
+    flex-shrink: 0;
+    width: 36px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: rgba(100, 180, 255, 0.8);
+    text-align: right;
+    padding-right: 8px;
+    padding-top: 2px;
+    letter-spacing: 0.02em;
+}
+
+/* Dot + vertical line */
+.award-tl-dot {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(100, 180, 255, 0.5);
+    border: 2px solid rgba(100, 180, 255, 0.3);
+    margin-top: 5px;
+    margin-right: 8px;
+    position: relative;
+    z-index: 1;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.award-tl-item:hover .award-tl-dot {
+    background: rgba(100, 180, 255, 0.9);
+    transform: scale(1.3);
+}
+
+/* Vertical line connecting dots */
+.award-tl-item:not(:last-child) .award-tl-dot::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: calc(0.6rem + 12px);
+    background: rgba(100, 180, 255, 0.15);
+}
+
+/* Text content */
+.award-tl-text {
+    flex: 1;
+    min-width: 0;
+    font-family: Merriweather, serif;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.85);
     transition: color 0.2s ease;
 }
 
-#about .award-item a:hover {
+.award-tl-item:hover .award-tl-text {
     color: #fff;
+}
+
+.award-tl-text a {
+    color: rgba(160, 210, 255, 0.95);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.award-tl-text a:hover {
+    color: #fff;
+    border-bottom-color: rgba(255, 255, 255, 0.5);
 }
 
 /* ========== Navbar Enhancements ========== */
@@ -961,14 +1025,14 @@ body {
 
 @keyframes sectionRise {
     0%   { opacity: 0;   transform: translateY(0)   translateX(0);           }
-    10%  { opacity: 0.7;                                                      }
-    50%  { transform: translateY(-50vh) translateX(var(--drift, 20px)) scale(var(--mid-scale, 1.1)); }
-    90%  { opacity: 0.4;                                                      }
+    8%   { opacity: 1;                                                        }
+    50%  { opacity: 0.85; transform: translateY(-50vh) translateX(var(--drift, 20px)) scale(var(--mid-scale, 1.1)); }
+    85%  { opacity: 0.6;                                                      }
     100% { opacity: 0;   transform: translateY(-105vh) translateX(var(--drift-end, -10px)); }
 }
 
 /* -- Work (yellow): darker warm particles visible on light bg -- */
-#work .section-particles span { background: rgba(180, 140, 40, 0.5); }
+#work .section-particles span { background: rgba(160, 120, 20, 0.65); }
 #work .section-particles span:nth-child(1) { width: 5px; height: 5px; left: 8%;  --drift: 15px; --drift-end: -10px; animation: sectionRise 14s linear infinite 0s; }
 #work .section-particles span:nth-child(2) { width: 10px; height: 10px; left: 20%; --drift: -30px; --drift-end: 20px; --mid-scale: 1.3; animation: sectionRise 20s linear infinite 2s; }
 #work .section-particles span:nth-child(3) { width: 18px; height: 18px; left: 35%; background: radial-gradient(circle, rgba(180, 140, 40, 0.3) 0%, transparent 70%); --drift: 40px; --drift-end: 30px; animation: sectionRise 26s linear infinite 1s; }
@@ -979,9 +1043,14 @@ body {
 #work .section-particles span:nth-child(8) { width: 9px; height: 9px; left: 85%; --drift: -20px; --drift-end: -40px; --mid-scale: 1.2; animation: sectionRise 22s linear infinite 1.5s; }
 #work .section-particles span:nth-child(9) { width: 16px; height: 16px; left: 92%; background: radial-gradient(circle, rgba(180, 140, 40, 0.25) 0%, transparent 70%); --drift: 35px; --drift-end: -15px; animation: sectionRise 24s linear infinite 5s; }
 #work .section-particles span:nth-child(10) { width: 6px; height: 6px; left: 3%; --drift: -18px; --drift-end: 10px; animation: sectionRise 16s linear infinite 7s; }
+#work .section-particles span:nth-child(11) { width: 7px; height: 7px; left: 12%; --drift: 22px; --drift-end: -18px; --mid-scale: 1.2; animation: sectionRise 15s linear infinite 1.5s; }
+#work .section-particles span:nth-child(12) { width: 12px; height: 12px; left: 30%; --drift: -35px; --drift-end: 15px; animation: sectionRise 19s linear infinite 3.5s; }
+#work .section-particles span:nth-child(13) { width: 5px; height: 5px; left: 50%; --drift: 18px; --drift-end: -22px; animation: sectionRise 11s linear infinite 0.8s; }
+#work .section-particles span:nth-child(14) { width: 15px; height: 15px; left: 70%; background: radial-gradient(circle, rgba(160, 120, 20, 0.35) 0%, transparent 70%); --drift: -28px; --drift-end: 30px; animation: sectionRise 23s linear infinite 5.5s; }
+#work .section-particles span:nth-child(15) { width: 4px; height: 4px; left: 88%; --drift: 12px; --drift-end: -8px; animation: sectionRise 13s linear infinite 2.5s; }
 
 /* -- Software (dark): cool blue particles -- */
-#software .section-particles span { background: rgba(100, 160, 255, 0.2); }
+#software .section-particles span { background: rgba(100, 170, 255, 0.45); }
 #software .section-particles span:nth-child(1) { width: 4px; height: 4px; left: 5%;  --drift: 20px; --drift-end: -10px; animation: sectionRise 15s linear infinite 0s; }
 #software .section-particles span:nth-child(2) { width: 9px; height: 9px; left: 18%; --drift: -35px; --drift-end: 25px; --mid-scale: 1.3; animation: sectionRise 21s linear infinite 2.5s; }
 #software .section-particles span:nth-child(3) { width: 16px; height: 16px; left: 30%; background: radial-gradient(circle, rgba(100, 160, 255, 0.12) 0%, transparent 70%); --drift: 45px; --drift-end: 25px; animation: sectionRise 28s linear infinite 1s; }
@@ -992,9 +1061,14 @@ body {
 #software .section-particles span:nth-child(8) { width: 7px; height: 7px; left: 80%; --drift: -22px; --drift-end: -45px; --mid-scale: 1.25; animation: sectionRise 23s linear infinite 2s; }
 #software .section-particles span:nth-child(9) { width: 14px; height: 14px; left: 88%; background: radial-gradient(circle, rgba(100, 160, 255, 0.1) 0%, transparent 70%); --drift: 40px; --drift-end: -18px; animation: sectionRise 25s linear infinite 6s; }
 #software .section-particles span:nth-child(10) { width: 5px; height: 5px; left: 95%; --drift: -15px; --drift-end: 8px; animation: sectionRise 17s linear infinite 8s; }
+#software .section-particles span:nth-child(11) { width: 8px; height: 8px; left: 10%; --drift: 25px; --drift-end: -15px; --mid-scale: 1.3; animation: sectionRise 16s linear infinite 1s; }
+#software .section-particles span:nth-child(12) { width: 14px; height: 14px; left: 25%; background: radial-gradient(circle, rgba(100, 170, 255, 0.2) 0%, transparent 70%); --drift: -40px; --drift-end: 20px; animation: sectionRise 22s linear infinite 4s; }
+#software .section-particles span:nth-child(13) { width: 5px; height: 5px; left: 48%; --drift: 15px; --drift-end: -20px; animation: sectionRise 12s linear infinite 2.5s; }
+#software .section-particles span:nth-child(14) { width: 10px; height: 10px; left: 75%; --drift: -30px; --drift-end: 25px; --mid-scale: 1.25; animation: sectionRise 20s linear infinite 7s; }
+#software .section-particles span:nth-child(15) { width: 4px; height: 4px; left: 58%; --drift: 10px; --drift-end: -12px; animation: sectionRise 14s linear infinite 0.5s; }
 
 /* -- Projects (red): warm pink/white particles -- */
-#projects .section-particles span { background: rgba(255, 180, 180, 0.25); }
+#projects .section-particles span { background: rgba(255, 200, 200, 0.5); }
 #projects .section-particles span:nth-child(1) { width: 4px; height: 4px; left: 6%;  --drift: 18px; --drift-end: -8px; animation: sectionRise 13s linear infinite 0s; }
 #projects .section-particles span:nth-child(2) { width: 8px; height: 8px; left: 16%; --drift: -28px; --drift-end: 18px; --mid-scale: 1.25; animation: sectionRise 19s linear infinite 1.5s; }
 #projects .section-particles span:nth-child(3) { width: 15px; height: 15px; left: 28%; background: radial-gradient(circle, rgba(255, 200, 200, 0.15) 0%, transparent 70%); --drift: 42px; --drift-end: 28px; animation: sectionRise 27s linear infinite 0.5s; }
@@ -1005,9 +1079,14 @@ body {
 #projects .section-particles span:nth-child(8) { width: 7px; height: 7px; left: 82%; --drift: -18px; --drift-end: -38px; --mid-scale: 1.2; animation: sectionRise 21s linear infinite 1s; }
 #projects .section-particles span:nth-child(9) { width: 12px; height: 12px; left: 90%; background: radial-gradient(circle, rgba(255, 200, 200, 0.12) 0%, transparent 70%); --drift: 32px; --drift-end: -12px; animation: sectionRise 24s linear infinite 7s; }
 #projects .section-particles span:nth-child(10) { width: 5px; height: 5px; left: 2%; --drift: -16px; --drift-end: 12px; animation: sectionRise 15s linear infinite 6s; }
+#projects .section-particles span:nth-child(11) { width: 7px; height: 7px; left: 15%; --drift: 20px; --drift-end: -16px; --mid-scale: 1.3; animation: sectionRise 14s linear infinite 1.5s; }
+#projects .section-particles span:nth-child(12) { width: 12px; height: 12px; left: 38%; --drift: -32px; --drift-end: 18px; animation: sectionRise 20s linear infinite 4.5s; }
+#projects .section-particles span:nth-child(13) { width: 5px; height: 5px; left: 55%; --drift: 14px; --drift-end: -18px; animation: sectionRise 12s linear infinite 2s; }
+#projects .section-particles span:nth-child(14) { width: 16px; height: 16px; left: 78%; background: radial-gradient(circle, rgba(255, 200, 200, 0.25) 0%, transparent 70%); --drift: -25px; --drift-end: 28px; animation: sectionRise 24s linear infinite 6.5s; }
+#projects .section-particles span:nth-child(15) { width: 4px; height: 4px; left: 48%; --drift: 10px; --drift-end: -10px; animation: sectionRise 11s linear infinite 0.5s; }
 
 /* -- Fun Stuff (green): emerald/teal particles -- */
-#fun .section-particles span { background: rgba(100, 220, 180, 0.22); }
+#fun .section-particles span { background: rgba(100, 230, 180, 0.5); }
 #fun .section-particles span:nth-child(1) { width: 4px; height: 4px; left: 7%;  --drift: 16px; --drift-end: -12px; animation: sectionRise 14s linear infinite 0.5s; }
 #fun .section-particles span:nth-child(2) { width: 8px; height: 8px; left: 22%; --drift: -32px; --drift-end: 22px; --mid-scale: 1.3; animation: sectionRise 20s linear infinite 3s; }
 #fun .section-particles span:nth-child(3) { width: 14px; height: 14px; left: 32%; background: radial-gradient(circle, rgba(100, 220, 180, 0.14) 0%, transparent 70%); --drift: 38px; --drift-end: 22px; animation: sectionRise 25s linear infinite 1s; }
@@ -1018,6 +1097,11 @@ body {
 #fun .section-particles span:nth-child(8) { width: 7px; height: 7px; left: 84%; --drift: -20px; --drift-end: -42px; --mid-scale: 1.2; animation: sectionRise 22s linear infinite 0.5s; }
 #fun .section-particles span:nth-child(9) { width: 12px; height: 12px; left: 92%; background: radial-gradient(circle, rgba(100, 220, 180, 0.1) 0%, transparent 70%); --drift: 36px; --drift-end: -16px; animation: sectionRise 24s linear infinite 4s; }
 #fun .section-particles span:nth-child(10) { width: 5px; height: 5px; left: 4%; --drift: -14px; --drift-end: 8px; animation: sectionRise 16s linear infinite 7.5s; }
+#fun .section-particles span:nth-child(11) { width: 8px; height: 8px; left: 18%; --drift: 22px; --drift-end: -14px; --mid-scale: 1.25; animation: sectionRise 15s linear infinite 2s; }
+#fun .section-particles span:nth-child(12) { width: 14px; height: 14px; left: 40%; background: radial-gradient(circle, rgba(100, 230, 180, 0.2) 0%, transparent 70%); --drift: -38px; --drift-end: 22px; animation: sectionRise 21s linear infinite 5s; }
+#fun .section-particles span:nth-child(13) { width: 5px; height: 5px; left: 58%; --drift: 16px; --drift-end: -20px; animation: sectionRise 12s linear infinite 1s; }
+#fun .section-particles span:nth-child(14) { width: 10px; height: 10px; left: 80%; --drift: -28px; --drift-end: 24px; --mid-scale: 1.2; animation: sectionRise 19s linear infinite 6s; }
+#fun .section-particles span:nth-child(15) { width: 4px; height: 4px; left: 50%; --drift: 8px; --drift-end: -10px; animation: sectionRise 13s linear infinite 3.5s; }
 
 /* Ensure section content stays above particles */
 #work > *:not(.section-particles),
