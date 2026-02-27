@@ -10,6 +10,13 @@
     This file contains CSS classes / IDs used to override the Creative Bootstrap Theme
 */
 
+header.masthead {
+    background-image: url("../img/Nepal.jpeg");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
 /* ---------- Hero / Masthead mobile fix ---------- */
 @media (max-width: 767px) {
     header.masthead {
