@@ -859,6 +859,12 @@ body {
     margin: 0 0 0.3rem;
     color: #c9d1d9;
 }
+.terminal-env {
+    color: #a78bfa;
+}
+.terminal-user {
+    color: #34d399;
+}
 .terminal-prompt {
     color: #58a6ff;
     margin-right: 0.6rem;
