@@ -247,6 +247,69 @@
       color: var(--soon-sub);
       margin: 0.5rem 0 0;
     }
+
+    /* Terminal */
+    .blog-terminal {
+      max-width: 540px;
+      margin: 2rem auto 0;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      overflow: hidden;
+      text-align: left;
+      font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+    }
+    body.light .blog-terminal {
+      background: rgba(30,40,55,0.92);
+    }
+    .blog-terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0.55rem 0.9rem;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .blog-terminal-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .blog-terminal-dot.r { background: #ff5f57; }
+    .blog-terminal-dot.y { background: #febc2e; }
+    .blog-terminal-dot.g { background: #28c840; }
+    .blog-terminal-body {
+      padding: 0.75rem 1rem 1rem;
+      color: rgba(255,255,255,0.75);
+    }
+    .blog-terminal-body .prompt-env {
+      color: #a78bfa;
+    }
+    .blog-terminal-body .prompt-user {
+      color: #34d399;
+    }
+    .blog-terminal-body .prompt-sym {
+      color: rgba(255,255,255,0.4);
+    }
+    .blog-terminal-body .cmd {
+      color: rgba(255,255,255,0.9);
+    }
+    .blog-terminal-body .out {
+      color: rgba(255,255,255,0.5);
+      padding-left: 0.25rem;
+    }
+    .blog-terminal-body .cursor-blink {
+      display: inline-block;
+      width: 7px;
+      height: 1em;
+      background: rgba(255,255,255,0.7);
+      margin-left: 2px;
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
   </style>
 </head>
 
@@ -267,6 +330,19 @@
   <div class="blog-hero">
     <h1>Latent Space</h1>
     <p>Just some late-night thoughts on inference, deep learning, LLMs, and building intelligent systems.</p>
+    <div class="blog-terminal">
+      <div class="blog-terminal-bar">
+        <span class="blog-terminal-dot r"></span>
+        <span class="blog-terminal-dot y"></span>
+        <span class="blog-terminal-dot g"></span>
+      </div>
+      <div class="blog-terminal-body">
+        <div><span class="prompt-env">(latent-space)</span> <span class="prompt-user">mehrad</span><span class="prompt-sym">:~$</span> <span class="cmd">cat posts/</span></div>
+        <div class="out">&gt; Gelator Transparency Classification using KRR</div>
+        <div class="out">&gt; Hyperparameter Tuning: Finding the Sweet Spot</div>
+        <div><span class="prompt-env">(latent-space)</span> <span class="prompt-user">mehrad</span><span class="prompt-sym">:~$</span> <span class="cmd">open blog</span><span class="cursor-blink"></span></div>
+      </div>
+    </div>
   </div>
 
   <div class="container posts">

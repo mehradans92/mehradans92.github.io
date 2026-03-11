@@ -335,6 +335,13 @@
       <em>This is based on some of my unpublished work from PhD. The Hamming distance idea is probably naive by today's standards, but I still like using kernel ridge regression for sparse datasets, which is something pretty common in physical and life science domains. The classifier has been implemented as a <a href="https://mehradans92.github.io/GTP/GTP.html" target="_blank">web-based application</a>. Code is available on <a href="https://github.com/mehradans92/Gelator-Transparency-Predictor" target="_blank">GitHub</a> and data credit goes to Bradley Nilsson's lab at U Rochester.</em>
     </div>
 
+    <h2>Setup</h2>
+    <pre style="background:rgba(255,255,255,0.06); border:1px solid var(--border); border-radius:10px; padding:1.2rem 1.5rem; font-size:0.88rem; line-height:1.7; overflow-x:auto; color:var(--body-text);"><code>git clone https://github.com/mehradans92/Gelator-Transparency-Predictor.git
+cd /home/mehrad/Gelator-Transparency-Predictor
+uv venv latent-space
+source latent-space/bin/activate
+uv pip install -r requirements.txt</code></pre>
+
     <div class="post-abstract">
       <strong>Abstract.</strong> Kernel methods have become one of the most popular methods of solving nonlinear problems in chemistry. In this work, we apply kernel ridge regression to perform binary classification on the transparency of anionic gelators under different experimental conditions. The basic idea of this kernel classifier is to map the observed data onto a potentially much higher dimensional feature space, where ridge regression finds a linear relationship. We define the physical representation of the system, to which we apply kernel learning and evaluate model generalization-error by leave-one-out cross validation. This low error demonstrates on the applicability of KRR method for small datasets.
     </div>
