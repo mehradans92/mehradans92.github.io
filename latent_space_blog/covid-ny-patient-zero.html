@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Where Did COVID-19 Start in New York? | Latent Space</title>
+
+  <!-- Bootstrap Core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+    integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+  <!-- Custom Fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,700,900' rel='stylesheet' type='text/css'>
+
+  <!-- Font Awesome -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/solid.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/brands.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/fontawesome.min.js"></script>
+
+  <!-- MathJax -->
+  <script>
+    MathJax = { tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] } };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    /* ---- Theme variables ---- */
+    :root {
+      --bg: linear-gradient(160deg, #0a1628 0%, #0f2035 40%, #091a2a 100%);
+      --text: #d0dce8;
+      --heading: #fff;
+      --link: #5cb8ff;
+      --link-hover: #8ed0ff;
+      --nav-bg: rgba(10, 22, 40, 0.85);
+      --nav-border: rgba(255,255,255,0.06);
+      --nav-brand: #fff;
+      --nav-link: rgba(255,255,255,0.6);
+      --meta: rgba(255,255,255,0.35);
+      --body-text: rgba(255,255,255,0.78);
+      --muted: rgba(255,255,255,0.55);
+      --faint: rgba(255,255,255,0.4);
+      --border: rgba(255,255,255,0.08);
+      --callout-bg: rgba(92, 184, 255, 0.06);
+      --callout-border: rgba(92, 184, 255, 0.4);
+      --callout-text: rgba(255,255,255,0.7);
+      --callout-em: rgba(255,255,255,0.85);
+      --toggle-bg: rgba(255,255,255,0.1);
+      --toggle-color: #fff;
+    }
+    body.light {
+      --bg: linear-gradient(160deg, #f0f4f8 0%, #e8eef5 40%, #f5f7fa 100%);
+      --text: #3a4a5c;
+      --heading: #1a2a3a;
+      --link: #2a7de1;
+      --link-hover: #1a5fb4;
+      --nav-bg: rgba(255, 255, 255, 0.9);
+      --nav-border: rgba(0,0,0,0.06);
+      --nav-brand: #1a2a3a;
+      --nav-link: rgba(0,0,0,0.55);
+      --meta: rgba(0,0,0,0.4);
+      --body-text: rgba(0,0,0,0.72);
+      --muted: rgba(0,0,0,0.5);
+      --faint: rgba(0,0,0,0.4);
+      --border: rgba(0,0,0,0.08);
+      --callout-bg: rgba(42, 125, 225, 0.06);
+      --callout-border: rgba(42, 125, 225, 0.35);
+      --callout-text: rgba(0,0,0,0.6);
+      --callout-em: rgba(0,0,0,0.8);
+      --toggle-bg: rgba(0,0,0,0.08);
+      --toggle-color: #1a2a3a;
+    }
+
+    body {
+      font-family: Merriweather, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      margin: 0;
+      transition: background 0.4s, color 0.4s;
+    }
+    a { color: var(--link); transition: color 0.3s; }
+    a:hover { color: var(--link-hover); text-decoration: none; }
+
+    /* Nav */
+    .blog-nav {
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--nav-border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: background 0.4s, border-color 0.4s;
+    }
+    .blog-nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .blog-nav-brand {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--nav-brand);
+      text-decoration: none;
+    }
+    .blog-nav-brand:hover { color: var(--link); }
+    .blog-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .blog-nav-link {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.85rem;
+      color: var(--nav-link);
+      text-decoration: none;
+    }
+    .blog-nav-link:hover { color: var(--heading); }
+
+    /* Theme toggle */
+    .theme-toggle {
+      background: var(--toggle-bg);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--toggle-color);
+      font-size: 1.1rem;
+      transition: background 0.3s, color 0.3s, transform 0.3s;
+    }
+    .theme-toggle:hover { transform: scale(1.1); }
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: inline; }
+    body.light .theme-toggle .icon-sun { display: inline; }
+    body.light .theme-toggle .icon-moon { display: none; }
+
+    /* Article */
+    .post-header {
+      text-align: center;
+      padding: 5rem 1rem 1rem;
+    }
+    .post-header h1 {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--heading);
+      letter-spacing: -0.02em;
+    }
+    .post-authors {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-top: 0.75rem;
+    }
+    .post-meta {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.85rem;
+      color: var(--meta);
+      margin-top: 0.5rem;
+    }
+
+    .post-body {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      font-size: 1.02rem;
+      line-height: 1.9;
+      color: var(--body-text);
+    }
+    .post-body p { margin-bottom: 1.5rem; }
+
+    /* Sub-headings */
+    .post-body h2 {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin: 2.5rem 0 1rem;
+    }
+    .post-body h3 {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--heading);
+      margin: 2rem 0 0.75rem;
+    }
+
+    /* Figures */
+    .post-figure {
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .post-figure img {
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .post-figure figcaption {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.82rem;
+      color: var(--faint);
+      margin-top: 0.75rem;
+      line-height: 1.6;
+      font-style: italic;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Equations */
+    .post-body .MathJax { font-size: 1.05em; }
+
+    /* Embedded video */
+    .post-video {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      margin: 0 0 2rem;
+      border-radius: 12px;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .post-video iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-radius: 12px;
+    }
+
+    /* Callout box */
+    .post-callout {
+      background: var(--callout-bg);
+      border-left: 3px solid var(--callout-border);
+      border-radius: 0 10px 10px 0;
+      padding: 1.2rem 1.5rem;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+      color: var(--callout-text);
+      transition: background 0.4s, border-color 0.4s, color 0.4s;
+    }
+    .post-callout em { color: var(--callout-em); }
+
+    /* Abstract */
+    .post-abstract {
+      background: var(--callout-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin: 0 0 2rem;
+      font-size: 0.95rem;
+      color: var(--body-text);
+      line-height: 1.8;
+    }
+    .post-abstract strong {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      color: var(--heading);
+    }
+
+    /* References */
+    .references {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+    .references h2 {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin-bottom: 1.2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .references ol {
+      padding-left: 1.4rem;
+      margin: 0;
+    }
+    .references li {
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .references li a { color: var(--link); }
+
+    /* Back link */
+    .back-link {
+      display: inline-block;
+      margin-top: 2.5rem;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.75rem 2rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 300px;
+      color: var(--heading);
+      background: rgba(255,255,255,0.1);
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .back-link:hover {
+      background: var(--heading);
+      color: var(--bg);
+      text-decoration: none;
+    }
+    body.light .back-link {
+      border-color: rgba(0,0,0,0.15);
+      background: rgba(0,0,0,0.04);
+    }
+    body.light .back-link:hover {
+      background: var(--heading);
+      color: #fff;
+    }
+
+    @media (max-width: 576px) {
+      .post-header h1 { font-size: 1.7rem; }
+      .post-body { font-size: 0.95rem; padding: 1.5rem 1rem 3rem; }
+      .post-body h2 { font-size: 1.25rem; }
+      .references { padding: 0 1rem 3rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="blog-nav">
+    <div class="container">
+      <a class="blog-nav-brand" href="../blog.html">← Latent Space</a>
+      <div class="blog-nav-right">
+        <a class="blog-nav-link" href="../index.html">Home</a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+          <span class="icon-moon">&#9790;</span>
+          <span class="icon-sun">&#9788;</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="post-header">
+    <h1>Where Did COVID-19 Start in the State of New York?</h1>
+    <div class="post-meta">October 2021</div>
+  </div>
+
+  <article class="post-body">
+    <div class="post-video">
+      <iframe src="https://www.youtube.com/embed/mNkt-5UFY3o" title="Where did COVID-19 start in the State of New York?" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+
+    <div class="post-abstract">
+      <strong>TL;DR.</strong> Given only the weekly-averaged number of confirmed COVID-19 cases in 20 New York counties before the March 22<sup>nd</sup>, 2020 lockdown, can we infer <em>where</em> the outbreak started? We treat an epidemic simulator as a generative prior, then use <strong>Maximum Entropy (MaxEnt) reweighting</strong> to minimally bias its trajectories so that, <em>in expectation</em>, they reproduce the observed case counts within an uncertainty budget set by a <strong>Laplace prior</strong>. Averaging the resulting posterior over 10,000 randomized observation subsets, our top prediction for patient-zero (\(P_0\)) is Richmond County, 57 miles from Westchester, the county of the first officially reported NY case.
+    </div>
+
+    <h2>The question</h2>
+    <p>
+      Most epidemic modeling asks a forward question: given where and how a disease started, where will it go? Here we ask the much harder inverse question, <em>given where the disease is now, where did it begin?</em> Inferring the spatial origin (the "epidemic seed" or patient-zero, \(P_0\)) is notoriously fragile: compartmental models are sensitive to their parameters, and the data we get early in an outbreak (case counts, mortality rates) are noisy, sparse, and biased by uneven testing <a href="#ref1">[1]</a>. We wanted a method that is honest about that uncertainty rather than overconfident.
+    </p>
+
+    <h2>The data</h2>
+    <p>
+      Our observations are the weekly-averaged number of confirmed COVID-19 cases from 20 New York counties, taken from the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University, restricted to the window between January 19<sup>th</sup> and March 22<sup>nd</sup>, 2020, i.e. <em>before</em> the "New York State on PAUSE" executive order changed mobility behavior. Inside the model these map onto weekly averages of the population fraction in the infectious (\(I\)) and resolved (\(R\)) compartments, the two quantities for which real-world surveillance data is the least unreliable <a href="#ref1">[1]</a>. And because testing was patchy, we don't trust those numbers exactly: each observation is treated as carrying multiplicative noise with mean 1 and standard deviation 0.05. Cutting off at the lockdown matters too, since the simulator's mobility assumptions only hold while people are moving as usual.
+    </p>
+
+    <h2>The simulator: a metapopulation SEAIR model</h2>
+    <p>
+      The forward model (implemented in <a href="https://github.com/ur-whitelab/py0" target="_blank">py0</a>) is a <strong>metapopulation SEAIR</strong> compartmental model <a href="#ref6">[6</a>, <a href="#ref7">7]</a>. Each of New York's 62 counties is a node ("patch") holding a locally well-mixed population, and within a patch people move between five compartments: Susceptible (\(S\)), Exposed (\(E\)), Asymptomatic (\(A\)), Infectious (\(I\)), and Resolved (\(R\)). A susceptible person gets exposed through contact with infectious and asymptomatic neighbors, with per-contact infection probabilities \(\beta\) and \(\beta'\); an exposed person then turns symptomatic-infectious with probability \(\eta\) or asymptomatic otherwise, split by the symptomatic fraction \(\varepsilon\); and both infectious classes resolve (recover or die) with probability \(\mu\) (Fig 1).
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/covid-ny/new_SEAIR.png" alt="SEAIR compartmental scheme: S to E with rates beta and beta-prime, E to A with rate (1-epsilon)eta and to I with rate epsilon-eta, A and I to R with rate mu" style="max-width: 420px; padding: 1.25rem; background: #fff; border-radius: 12px;">
+      <figcaption>Fig 1. The SEAIR compartmental scheme. Susceptible (\(S\)) individuals are exposed (\(E\)) through \(I\)-\(S\) and \(A\)-\(S\) contacts with per-contact probabilities \(\beta\) and \(\beta'\); the exposed become asymptomatic (\(A\)) or symptomatic-infectious (\(I\)) with probabilities \((1-\varepsilon)\eta\) and \(\varepsilon\eta\); and both resolve (\(R\)) with probability \(\mu\).</figcaption>
+    </figure>
+
+    <p>
+      The susceptible update per patch \(i\) is
+    </p>
+    \[\rho^{S}_i(t+1) = \big[1 - \Pi_i(t)\big]\,\rho^{S}_i(t), \qquad \Pi_i(t) = \sum_{j=1}^{N_P} R_{ij}\, P_j(t),\]
+    <p>
+      where \(\rho^{S}_i\) is the susceptible fraction in county \(i\), \(\Pi_i(t)\) is the probability that one of its residents catches the disease, and \(P_j(t)\) is the probability of infection inside county \(j\). The whole thing is coupled by a <strong>mobility matrix</strong> \(R_{ij} = T_{ij} / \sum_j T_{ij}\), built by row-normalizing the origin-destination commuting matrix \(T_{ij}\) from the United States LODES database <a href="#ref11">[11]</a>. That \(R\) is exactly the network shown in Fig 2: it is what lets the infection hop from county to county.
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/covid-ny/NY-mobility-network.png" alt="The real mobility network of New York State, with counties as nodes and commuting flows as edges">
+      <figcaption>Fig 2. The real mobility network of New York State. Counties are nodes and the colored edges are commuting flows between them, with the dense red bundle in the downstate New York City metro region reflecting its heavy inter-county mobility. This network defines the mobility matrix \(R_{ij}\) that couples the per-county SEAIR dynamics.</figcaption>
+    </figure>
+
+    <p>
+      Here is the twist that makes the whole thing work: rather than trying to pin down the parameters \(\vec{\theta} = (\beta, \beta', \varepsilon, \eta, \mu, \dots)\) directly, we infer the <em>disease trajectory itself</em> <a href="#ref1">[1]</a>. The one latent variable we really care about is hidden in the initial condition, the <em>identity of the seed county</em> that holds the single exposed individual at \(t = 0\). Inferring trajectories instead of parameters is what lets us reason about that seed at all.
+    </p>
+
+    <h2>Simulation-based inference, and why likelihoods are the problem</h2>
+    <p>
+      We would love to do straightforward Bayesian inference: write down \(P(\text{data}\,|\,\vec{\theta})\), multiply by a prior, and read off the posterior over \(\vec{\theta}\). The trouble is that simulators like this one are typically <em>not differentiable</em> and their likelihoods are <em>intractable</em>: there is no closed-form probability of observing a given case-count trajectory out of a stochastic, networked ODE system. This is exactly the regime that <strong>simulation-based inference (SBI)</strong> (a.k.a. likelihood-free inference) targets <a href="#ref2">[2]</a>.
+    </p>
+    <p>
+      But our problem has an unusual flavor. Classic SBI infers a few parameters from rich data. We have the opposite: a simulator we already <em>trust</em> (many "approximately correct" parameters) and only a <em>sparse</em> handful of noisy observations to nudge it with. Forcing a hard likelihood fit here would let a few data points dominate a model we believe is mostly right. We want the gentlest possible correction, and that is precisely what maximum entropy gives us <a href="#ref3">[3</a>, <a href="#ref4">4]</a>.
+    </p>
+
+    <h2>Maximum Entropy reweighting: biasing a simulator as little as possible</h2>
+    <p>
+      The idea is to treat the simulator as a <strong>prior distribution</strong> \(P(\vec{\theta})\) over parameters (including the seed location), draw many trajectories from it, and then find a <strong>posterior</strong> \(P'(\vec{\theta})\) that does two things: first, it reproduces the data, and second, it stays as close to the prior as possible. "As close as possible" is made precise by the Kullback&ndash;Leibler divergence: among all distributions that satisfy our data constraints, MaxEnt picks the one with the largest relative entropy with respect to the prior, which is the <em>minimal</em> distortion of the model we trust <a href="#ref3">[3</a>, <a href="#ref5">5]</a>.
+    </p>
+    <p>
+      Concretely, suppose we have \(N\) observations \(\bar{g}_k\) (the weekly-averaged case counts), where \(g_k[f(\vec{\theta})]\) is the corresponding quantity computed from a simulator run \(f(\vec{\theta})\). We let each observation carry its own uncertainty \(\epsilon_k\), and the defining MaxEnt move is to match the data <em>in expectation</em> rather than exactly:
+    </p>
+    \[\int d\vec{\theta}\, d\epsilon \; P'(\vec{\theta})\, P_0(\epsilon_k)\,\big\{ g_k[f(\vec{\theta})] + \epsilon_k \big\} = \mathbb{E}\big[g_k + \epsilon_k\big] = \bar{g}_k \quad \forall k\]
+    <p>
+      where \(P_0(\epsilon_k)\) is a prior over how much disagreement we will tolerate (more on that below). This "match on average" ansatz is far weaker than a pointwise likelihood fit, which is exactly what we want when we strongly believe the prior simulator. Maximizing the entropy of \(P'\) relative to \(P\) subject to these \(N\) constraints yields a posterior in the <strong>exponential family</strong> <a href="#ref3">[3</a>, <a href="#ref5">5]</a>:
+    </p>
+    \[P'(\vec{\theta}, \epsilon) = \frac{1}{Z'}\, P(\vec{\theta}) \prod_{k=1}^{N} e^{-\lambda_k\, g_k[f(\vec{\theta})]}\, e^{-\lambda_k \epsilon_k}\, P_0(\epsilon_k)\]
+    <p>
+      where \(Z'\) normalizes and the \(\lambda_k\) are Lagrange multipliers, iteratively updated to satisfy \(\mathbb{E}[g_k + \epsilon_k] = \bar{g}_k\). Two properties make this attractive: finding this posterior is equivalent to maximum-likelihood estimation within the exponential family, and the fit is <em>insensitive to prior strength</em>, so there is no knob balancing "trust the data" against "trust the prior" that you have to tune by hand, unlike in Bayesian model averaging <a href="#ref3">[3]</a>.
+    </p>
+
+    <h2>Why reweighting, and not re-simulating</h2>
+    <p>
+      The exponential form above turns inference into <strong>importance reweighting</strong>. We sample \(\vec{\theta}_i \sim P(\vec{\theta})\), run the simulator once per sample to get \(f(\vec{\theta}_i)\), and assign each trajectory a weight
+    </p>
+    \[w_i \;\propto\; \prod_{k=1}^{N} e^{-\lambda_k\, g_k[f(\vec{\theta}_i)]}.\]
+    <p>
+      Any quantity of interest, including the probability that a given county is the seed, is then just a weighted average, \(\langle g \rangle = \sum_i g[f(\vec{\theta}_i)]\, w_i / \sum_i w_i\). Because the method acts purely on samples, its run time is <em>independent of the dimensionality of the prior</em>: we never differentiate the simulator and never compute a likelihood. The \(\lambda_k\) are fit by gradient descent with Adam <a href="#ref10">[10]</a> on the constraint residuals. When the prior support is too narrow to reach the data, a variational step gently shifts the sampling distribution, but in the well-sampled case it is pure reweighting.
+    </p>
+
+    <h2>The Laplace prior: budgeting for epistemic uncertainty</h2>
+    <p>
+      That \(\epsilon_k\) in the constraint is the slack that lets the posterior <em>disagree</em> with observation \(k\) on average, and \(P_0(\epsilon_k)\) is the prior we put on it. In this work \(P_0\) is a <strong>Laplace distribution</strong>,
+    </p>
+    \[P_0(\epsilon) = \frac{1}{\sqrt{2}\,\sigma_0}\, \exp\!\Big(-\frac{\sqrt{2}\,|\epsilon|}{\sigma_0}\Big),\]
+    <p>
+      parametrized by a standard deviation \(\sigma_0\) that controls how much disagreement we allow (we use \(\sigma_0 = 1\) in the benchmark runs). This is the knob the slide calls an "uncertainty threshold." Send \(\sigma_0 \to 0\) and \(P_0\) collapses to a Dirac delta \(\delta(\epsilon = 0)\), recovering hard, exact-in-expectation constraints, just like a noise-free fit; turn it up and the model is allowed to shrug off observations it cannot reconcile with the trusted simulator.
+    </p>
+    <p>
+      Why Laplace rather than Gaussian? (I actually got asked exactly this during my PhD defense.) The choice encodes our <em>epistemic</em> uncertainty: systematic bias in the data, like uneven testing, under-reporting, and reporting lags, rather than the intrinsic variance of the disease process <a href="#ref1">[1]</a>. Because its log-density goes like \(|\epsilon|\), the Laplace prior acts like an \(L_1\) penalty on the disagreement. It strongly prefers fitting each observation exactly, but its heavier-than-Gaussian tails let the rare genuinely-inconsistent county deviate instead of dragging the whole fit toward it. So a small \(\sigma_0\) buys robustness to noisy outliers without letting any single county's count hijack the inference.
+    </p>
+
+    <h2>Running it 10,000 times</h2>
+    <p>
+      To turn the reweighted ensemble into a map, we read off \(P_0\) for a county as the total posterior weight of all the sampled trajectories whose single exposed individual at \(t = 0\) happened to sit in that county <a href="#ref1">[1]</a>. That only works because, when we build the ensemble, the infection is <em>randomly seeded</em>: each trajectory draws its seed county (and the individual within it) uniformly at random, so every county gets its turn as the hypothetical patient-zero. The county with the largest summed weight is our most probable origin.
+    </p>
+    <p>
+      So there are really two layers of randomness here. Within a single run, the seed is randomized across the ensemble of trajectories. And across runs, a single observation set could be lucky or unlucky, so to get a calibrated posterior over \(P_0\) we ran the inference 10,000 times, each time also randomizing which subset of the 20 observed counties we conditioned on. Each run produces a probability for every county being the seed; we then average over all 10,000 runs.
+    </p>
+
+    <h2>Results: the most probable origin</h2>
+    <p>
+      Averaging the posterior over all 10,000 inference models gives a ranked list of the most probable seed counties (Fig 3), and the top of it is dominated by the downstate New York City metro region, which is reassuring, since that is where the epidemic exploded. Richmond (\(P_0 \approx 0.126\)) and Putnam (\(0.119\)) lead, followed by Rockland (\(0.083\)), Bronx (\(0.082\)), Kings (\(0.073\)), Queens (\(0.073\)), New York (\(0.068\)), Westchester (\(0.054\)), Nassau (\(0.054\)), and Dutchess (\(0.043\)).
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/covid-ny/NY-results.png" alt="Table and map of the average P0 probability over 10,000 inference models, ranking the top-10 source counties led by Richmond and Putnam">
+      <figcaption>Fig 3. Average \(P_0\) probability over the 10,000 inference models. The table ranks the top-10 candidate source counties and the choropleth shades every county by its \(P_0\), with the downstate metro region carrying nearly all of the probability mass.</figcaption>
+    </figure>
+
+    <h2>How does it compare to the news?</h2>
+    <p>
+      According to news reports, the first officially confirmed COVID-19 patient in New York was a 52-year-old lawyer from <strong>Westchester County</strong> (New Rochelle), Lawrence Garbuz (Fig 4) <a href="#ref12">[12]</a>. Westchester appears at rank 8 in our averaged posterior. That is not a miss; it is the point. The <em>first detected</em> case is not necessarily the <em>true seed</em>: detection depends on who happened to get tested, and silent asymptomatic spread (the \(A\) compartment) means the real origin can sit elsewhere in the mobility network.
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/covid-ny/WSJ-lawyer.png" alt="Lawrence Garbuz, New York's first widely reported COVID-19 patient, seated at home" style="max-width: 420px;">
+      <figcaption>Fig 4. From <em>The Wall Street Journal</em>: "COVID-19's 'Patient Zero' in New York: What Life Is Like for the New Rochelle Lawyer." A year after being in a medically induced coma, Lawrence Garbuz says he feels deep gratitude for the joys of being alive <a href="#ref12">[12]</a>.</figcaption>
+    </figure>
+
+    <p>
+      Our single most probable prediction is <strong>Richmond County</strong> (Staten Island), about 57 miles (roughly a 75-minute drive) from Westchester (Fig 5). Given that the two counties sit at opposite ends of the same tightly coupled NYC mobility network, and that our method recovers the right <em>region</em> from nothing but sparse pre-lockdown case counts, that is a remarkably tight inference.
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/covid-ny/06-richmond.png" alt="Most probable prediction is Richmond County, 57 miles from Westchester, shown with a driving-route map">
+      <figcaption>Fig 5. Our most probable prediction is Richmond County, ~57 miles from Westchester.</figcaption>
+    </figure>
+
+    <p>
+      The second-ranked prediction, <strong>Putnam County</strong>, is even closer, about 26 miles from Westchester (Fig 6).
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/covid-ny/07-putnam.png" alt="Second most probable prediction is Putnam County, 26 miles from Westchester, shown with a driving-route map">
+      <figcaption>Fig 6. Our 2<sup>nd</sup> most probable prediction is Putnam County, ~26 miles from Westchester.</figcaption>
+    </figure>
+
+    <h2>Takeaways</h2>
+    <p>
+      The appeal of MaxEnt here is that it is <em>agnostic</em> to the model structure and parameters: it will bias any black-box simulator toward sparse observations while distorting it as little as the KL divergence allows <a href="#ref3">[3]</a>. In the paper this shows up concretely. Even when we deliberately handicap the inference, running it with a simpler SIR scheme while the ground truth was generated by the richer SEAIR model, the source is still recovered with roughly 80&ndash;90% top-1 accuracy across realistic network densities. And the model turns out to be conservatively calibrated, i.e. more accurate than its own stated confidence (expected calibration error of 0.123) <a href="#ref1">[1]</a>.
+    </p>
+    <p>
+      The most surprising result is about time. Conventional wisdom, formalized as an explicit time horizon \(t_{\text{hor}}\) for source detection, says the trail to patient-zero goes cold fast: once the epidemic saturates, the trajectories become degenerate and the origin is lost <a href="#ref8">[8</a>, <a href="#ref9">9]</a>. We instead find a <em>nonmonotonic</em> accuracy. It drops after the early outbreak, then peaks again at advanced stages, right where the epidemic curves have their steepest gradients and therefore carry the most information. In other words, even late in an outbreak the reweighted posterior can reconstruct early dynamics, including the seed, with calibrated confidence <a href="#ref1">[1]</a>.
+    </p>
+  </article>
+
+  <div class="references">
+    <h2>References</h2>
+    <ol>
+      <li id="ref1"><a href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.106.014306" target="_blank">Ansari, M., Soriano-Pa&ntilde;os, D., Ghoshal, G. and White, A.D. "Inferring spatial source of disease outbreaks using maximum entropy." <em>Physical Review E</em>, 106(1), 014306, 2022.</a></li>
+      <li id="ref2"><a href="https://www.pnas.org/doi/10.1073/pnas.1912789117" target="_blank">Cranmer, K., Brehmer, J. and Louppe, G. "The frontier of simulation-based inference." <em>Proceedings of the National Academy of Sciences</em>, 117(48), 30055&ndash;30062, 2020.</a></li>
+      <li id="ref3"><a href="https://iopscience.iop.org/article/10.1088/2632-2153/ac6286" target="_blank">Barrett, R., Ansari, M., Ghoshal, G. and White, A.D. "Simulation-based inference with approximately correct parameters via maximum entropy." <em>Machine Learning: Science and Technology</em>, 3(2), 025006, 2022.</a></li>
+      <li id="ref4"><a href="https://journals.aps.org/pr/abstract/10.1103/PhysRev.106.620" target="_blank">Jaynes, E.T. "Information theory and statistical mechanics." <em>Physical Review</em>, 106(4), 620&ndash;630, 1957.</a></li>
+      <li id="ref5"><a href="https://pubs.acs.org/doi/10.1021/ct300112v" target="_blank">Pitera, J.W. and Chodera, J.D. "On the use of experimental observations to bias simulated ensembles." <em>Journal of Chemical Theory and Computation</em>, 8(10), 3445&ndash;3451, 2012.</a></li>
+      <li id="ref6"><a href="https://www.nature.com/articles/s41567-017-0022-7" target="_blank">G&oacute;mez-Garde&ntilde;es, J., Soriano-Pa&ntilde;os, D. and Arenas, A. "Critical regimes driven by recurrent mobility patterns of reaction-diffusion processes in networks." <em>Nature Physics</em>, 14(4), 391&ndash;395, 2018.</a></li>
+      <li id="ref7"><a href="https://journals.aps.org/prx/abstract/10.1103/PhysRevX.10.041055" target="_blank">Arenas, A., Cota, W., G&oacute;mez-Garde&ntilde;es, J., G&oacute;mez, S., Granell, C., Matamalas, J.T., Soriano-Pa&ntilde;os, D. and Steinegger, B. "Modeling the spatiotemporal epidemic spreading of COVID-19 and the impact of mobility and social distancing interventions." <em>Physical Review X</em>, 10(4), 041055, 2020.</a></li>
+      <li id="ref8"><a href="https://arxiv.org/abs/2006.11913" target="_blank">Shah, C., Dehmamy, N., Perra, N., Chinazzi, M., Barab&aacute;si, A.-L., Vespignani, A. and Yu, R. "Finding patient zero: Learning contagion source with graph neural networks." <em>arXiv:2006.11913</em>, 2020.</a></li>
+      <li id="ref9"><a href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.109.068702" target="_blank">Pinto, P.C., Thiran, P. and Vetterli, M. "Locating the source of diffusion in large-scale networks." <em>Physical Review Letters</em>, 109(6), 068702, 2012.</a></li>
+      <li id="ref10"><a href="https://arxiv.org/abs/1412.6980" target="_blank">Kingma, D.P. and Ba, J. "Adam: A method for stochastic optimization." <em>arXiv:1412.6980</em>, 2014.</a></li>
+      <li id="ref11"><a href="https://lehd.ces.census.gov/data/lodes/LODES7/" target="_blank">U.S. Census Bureau. "LODES: LEHD Origin-Destination Employment Statistics."</a></li>
+      <li id="ref12"><a href="https://www.wsj.com/health/wellness/covid-19s-patient-zero-what-life-is-like-for-the-new-york-lawyer-11614686401" target="_blank">The Wall Street Journal. "COVID-19's 'Patient Zero' in New York: What Life Is Like for the New Rochelle Lawyer." March 5<sup>th</sup>, 2021.</a></li>
+    </ol>
+
+    <a class="back-link" href="../blog.html">Back to Latent Space</a>
+  </div>
+
+  <script>
+    (function() {
+      var toggle = document.getElementById('themeToggle');
+      var saved = localStorage.getItem('blog-theme');
+      if (saved === 'light') document.body.classList.add('light');
+      toggle.addEventListener('click', function() {
+        document.body.classList.toggle('light');
+        localStorage.setItem('blog-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+      });
+    })();
+  </script>
+</body>
+</html>
