@@ -359,6 +359,10 @@
       <strong>TL;DR.</strong> Given only the weekly-averaged number of confirmed COVID-19 cases in 20 New York counties before the March 22<sup>nd</sup>, 2020 lockdown, can we infer <em>where</em> the outbreak started? We treat an epidemic simulator as a generative prior, then use <strong>Maximum Entropy (MaxEnt) reweighting</strong> to minimally bias its trajectories so that, <em>in expectation</em>, they reproduce the observed case counts within an uncertainty budget set by a <strong>Laplace prior</strong>. Averaging the resulting posterior over 10,000 randomized observation subsets, our top prediction for patient-zero (\(P_0\)) is Richmond County, 57 miles from Westchester, the county of the first officially reported NY case.
     </div>
 
+    <p>
+      Shoutout to <a href="https://thewhitelab.org/" target="_blank">Andrew D. White</a>, <a href="http://gghoshal.pas.rochester.edu/" target="_blank">Gourab Ghoshal</a>, and David Soriano-Pa&ntilde;os.
+    </p>
+
     <h2>The question</h2>
     <p>
       Most epidemic modeling asks a forward question: given where and how a disease started, where will it go? Here we ask the much harder inverse question, <em>given where the disease is now, where did it begin?</em> Inferring the spatial origin (the "epidemic seed" or patient-zero, \(P_0\)) is notoriously fragile: compartmental models are sensitive to their parameters, and the data we get early in an outbreak (case counts, mortality rates) are noisy, sparse, and biased by uneven testing <a href="#ref1">[1]</a>. We wanted a method that is honest about that uncertainty rather than overconfident.
