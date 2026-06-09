@@ -1070,10 +1070,37 @@
     <div class="row justify-content-center">
       <div class="col-lg-10 col-md-11 col-sm-12 text-center">
         <div class="map-card">
-          <script type="text/javascript" id="mapmyvisitors" src="//mapmyvisitors.com/map.js?cl=ffffff&w=a&t=n&d=6u37amoNwkRTXBdqfsvSO0KxjszGeOUJfh2TiyxxlVg&co=0d2137"></script>
+          <div id="mmv-holder">
+            <script type="text/javascript" id="mapmyvisitors" src="//mapmyvisitors.com/map.js?cl=ffffff&w=1200&t=n&d=6u37amoNwkRTXBdqfsvSO0KxjszGeOUJfh2TiyxxlVg&co=0d2137"></script>
+          </div>
         </div>
       </div>
     </div>
+    <script>
+      (function () {
+        var BASE_W = 1200;
+        function fitMap() {
+          var holder = document.getElementById('mmv-holder');
+          var widget = document.getElementById('mapmyvisitors-widget');
+          if (!holder || !widget) return false;
+          widget.style.transform = 'none';
+          var natH = widget.offsetHeight || (BASE_W / 2.04);
+          var avail = holder.clientWidth;
+          var scale = Math.min(1, avail / BASE_W);
+          var left = Math.max(0, (avail - BASE_W * scale) / 2);
+          widget.style.transformOrigin = 'top left';
+          widget.style.transform = 'translateX(' + left + 'px) scale(' + scale + ')';
+          holder.style.height = (natH * scale) + 'px';
+          return true;
+        }
+        var tries = 0;
+        var iv = setInterval(function () {
+          tries++;
+          if (fitMap() || tries > 80) clearInterval(iv);
+        }, 200);
+        window.addEventListener('resize', fitMap);
+      })();
+    </script>
 
     <div class="social-row mt-5" id="more">
       <a href="https://www.youtube.com/@mehradans/videos" class="social-link social-youtube" target="_blank">
