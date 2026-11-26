@@ -261,7 +261,7 @@
               <span class="terminal-title">Blog Posts</span>
             </div>
             <div class="terminal-body">
-              <div class="matrix-rain" id="matrixRain"></div>
+              <div class="terminal-molecules" id="terminalMolecules" aria-hidden="true"></div>
               <p class="terminal-line"><span class="terminal-env">(latent-space)</span> <span class="terminal-user">mehrad</span><span class="terminal-prompt">:~$</span> cat posts/</p>
               <p class="terminal-line terminal-output" id="cyclingPost">&gt; <strong>Hyperparameter Tuning: Finding the Sweet Spot</strong></p>
               <p class="terminal-line"><span class="terminal-env">(latent-space)</span> <span class="terminal-user">mehrad</span><span class="terminal-prompt">:~$</span> <span class="terminal-typed">open blog<span class="terminal-cursor">|</span></span></p>
@@ -1154,26 +1154,261 @@
   <script src="js/jquery.magnific-popup.min.js"></script>
   <script src="js/creative.min.js"></script>
 
-  <!-- Matrix rain for terminal -->
+  <script src="https://cdn.jsdelivr.net/npm/smiles-drawer@2.4.2/dist/smiles-drawer.min.js"></script>
+  <!-- Molecular background for the Latent Space terminal -->
   <script>
     (function() {
-      var chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
-      var rain = document.getElementById('matrixRain');
-      if (!rain) return;
-      var cols = 30;
-      for (var i = 0; i < cols; i++) {
-        var span = document.createElement('span');
-        var text = '';
-        for (var j = 0; j < 20; j++) {
-          text += chars.charAt(Math.floor(Math.random() * chars.length)) + '\n';
+      var container = document.getElementById('terminalMolecules');
+      if (!container || !window.SmilesDrawer) return;
+
+      var rand = function(a, b) { return a + Math.random() * (b - a); };
+      var compounds = [
+        { id: 9926791, featured: true },
+        { id: 25126798, featured: true },
+        { id: 44205240, featured: true },
+        { id: 58557659, featured: true },
+        { id: 2519, featured: false },
+        { id: 2244, featured: false },
+        { id: 969516, featured: false },
+        { id: 3034034, featured: false }
+      ];
+      var canvases = {};
+      var particles = [];
+      var collisionPadding = 10;
+      var theme = {
+        dark: {
+          C: '#8eb7e8', O: '#ff6b6b', N: '#62b5ff', F: '#50d890',
+          CL: '#45c5a5', BR: '#e58a4a', I: '#bb86fc', P: '#ff9f43',
+          S: '#ffd54f', B: '#f6a15f', SI: '#f6a15f', H: '#8fa6c0',
+          BACKGROUND: 'rgba(0,0,0,0)'
         }
-        span.textContent = text;
-        span.style.left = (Math.random() * 100) + '%';
-        span.style.animationDuration = (4 + Math.random() * 8) + 's';
-        span.style.animationDelay = (Math.random() * 6) + 's';
-        span.style.fontSize = (0.6 + Math.random() * 0.4) + 'rem';
-        rain.appendChild(span);
+      };
+
+      function collisionBox(p) {
+        var scale = 0.68 * (p.currentScale || 1);
+        var w = p.w * scale;
+        var h = p.h * scale;
+        return {
+          x: p.x + (p.w - w) / 2,
+          y: p.y + (p.h - h) / 2,
+          w: w,
+          h: h
+        };
       }
+
+      function overlaps(a, b) {
+        var aa = collisionBox(a);
+        var bb = collisionBox(b);
+        return aa.x < bb.x + bb.w + collisionPadding &&
+               aa.x + aa.w + collisionPadding > bb.x &&
+               aa.y < bb.y + bb.h + collisionPadding &&
+               aa.y + aa.h + collisionPadding > bb.y;
+      }
+
+      function choosePlacement(size) {
+        var best = null;
+        for (var attempt = 0; attempt < 150; attempt++) {
+          var candidate = {
+            x: rand(3, Math.max(4, container.clientWidth - size - 3)),
+            y: rand(3, Math.max(4, container.clientHeight - size - 3)),
+            w: size,
+            h: size,
+            currentScale: 1,
+            collisions: 0
+          };
+          particles.forEach(function(p) {
+            if (overlaps(candidate, p)) candidate.collisions++;
+          });
+          if (!best || candidate.collisions < best.collisions) best = candidate;
+          if (candidate.collisions === 0) break;
+        }
+        return best;
+      }
+
+      function clampParticle(p) {
+        var maxX = Math.max(0, container.clientWidth - p.w);
+        var maxY = Math.max(0, container.clientHeight - p.h);
+        if (p.x < 0) { p.x = 0; p.vx = Math.abs(p.vx); }
+        if (p.y < 0) { p.y = 0; p.vy = Math.abs(p.vy); }
+        if (p.x > maxX) { p.x = maxX; p.vx = -Math.abs(p.vx); }
+        if (p.y > maxY) { p.y = maxY; p.vy = -Math.abs(p.vy); }
+      }
+
+      function resolveCollisions() {
+        for (var pass = 0; pass < 2; pass++) {
+          for (var i = 0; i < particles.length; i++) {
+            for (var j = i + 1; j < particles.length; j++) {
+              var a = particles[i];
+              var b = particles[j];
+              var ab = collisionBox(a);
+              var bb = collisionBox(b);
+              var dx = (a.x + a.w / 2) - (b.x + b.w / 2);
+              var dy = (a.y + a.h / 2) - (b.y + b.h / 2);
+              var overlapX = (ab.w + bb.w) / 2 + collisionPadding - Math.abs(dx);
+              var overlapY = (ab.h + bb.h) / 2 + collisionPadding - Math.abs(dy);
+              if (overlapX <= 0 || overlapY <= 0) continue;
+
+              if (overlapX < overlapY) {
+                var sx = dx >= 0 ? 1 : -1;
+                a.x += sx * overlapX / 2;
+                b.x -= sx * overlapX / 2;
+                var avx = a.vx;
+                a.vx = b.vx * 0.7;
+                b.vx = avx * 0.7;
+              } else {
+                var sy = dy >= 0 ? 1 : -1;
+                a.y += sy * overlapY / 2;
+                b.y -= sy * overlapY / 2;
+                var avy = a.vy;
+                a.vy = b.vy * 0.7;
+                b.vy = avy * 0.7;
+              }
+              clampParticle(a);
+              clampParticle(b);
+            }
+          }
+        }
+      }
+
+      function renderParticle(p, now) {
+        var z = (Math.sin(now * p.zRate + p.zPhase) + 1) / 2;
+        var scale = 0.7 + z * 1.05;
+        p.currentScale = scale;
+        p.el.style.transform = 'translate3d(' + p.x.toFixed(1) + 'px,' +
+                               p.y.toFixed(1) + 'px,0) rotate(' +
+                               p.angle.toFixed(2) + 'deg) scale(' +
+                               scale.toFixed(3) + ')';
+        p.el.style.opacity = (p.baseOpacity * (0.45 + z * 0.55)).toFixed(3);
+        p.el.style.zIndex = Math.round(z * 40);
+      }
+
+      compounds.forEach(function(compound, index) {
+        var depth = compound.featured ? rand(0.45, 1) : rand(0, 1);
+        var size = compound.featured
+          ? Math.round(72 + depth * 78)
+          : Math.round(48 + depth * 92);
+        var position = choosePlacement(size);
+        var canvas = document.createElement('canvas');
+        canvas.id = 'terminal-molecule-' + index;
+        canvas.className = 'terminal-molecule';
+        canvas.width = Math.round(size * 2);
+        canvas.height = Math.round(size * 2);
+        canvas.style.width = size + 'px';
+        canvas.style.height = size + 'px';
+        container.appendChild(canvas);
+        canvases[compound.id] = canvas;
+        particles.push({
+          el: canvas,
+          x: position.x,
+          y: position.y,
+          w: size,
+          h: size,
+          vx: rand(-0.28, 0.28),
+          vy: rand(-0.28, 0.28),
+          angle: rand(-10, 10),
+          spin: (Math.random() < 0.5 ? -1 : 1) * rand(0.04, 0.1),
+          zPhase: rand(0, Math.PI * 2),
+          zRate: rand(0.00025, 0.00055),
+          baseOpacity: 0.16 + depth * 0.30,
+          noise: 0.028,
+          maxSpeed: rand(0.38, 0.58),
+          currentScale: 1
+        });
+      });
+
+      var url = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/' +
+                compounds.map(function(compound) { return compound.id; }).join(',') +
+                '/property/IsomericSMILES/JSON';
+      fetch(url)
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          var properties = data.PropertyTable && data.PropertyTable.Properties || [];
+          properties.forEach(function(property) {
+            var canvas = canvases[property.CID];
+            var smiles = property.SMILES || property.ConnectivitySMILES ||
+                         property.IsomericSMILES || property.CanonicalSMILES;
+            if (!canvas || !smiles) return;
+            var drawer = new SmilesDrawer.Drawer({
+              width: canvas.width,
+              height: canvas.height,
+              bondThickness: 2,
+              bondLength: 38,
+              fontSizeLarge: 20,
+              fontSizeSmall: 8,
+              padding: 14,
+              explicitHydrogens: false,
+              compactDrawing: true,
+              themes: theme
+            });
+            SmilesDrawer.parse(smiles, function(tree) {
+              drawer.draw(tree, canvas.id, 'dark', false);
+            });
+          });
+        })
+        .catch(function() { /* The terminal remains usable if PubChem is unavailable. */ });
+
+      var terminalBody = container.parentElement;
+      var pointer = { active: false, x: 0, y: 0 };
+      terminalBody.addEventListener('mousemove', function(event) {
+        var rect = terminalBody.getBoundingClientRect();
+        pointer.active = true;
+        pointer.x = event.clientX - rect.left;
+        pointer.y = event.clientY - rect.top;
+      }, { passive: true });
+      terminalBody.addEventListener('mouseleave', function() {
+        pointer.active = false;
+      });
+
+      for (var settle = 0; settle < 6; settle++) resolveCollisions();
+      var reduced = window.matchMedia &&
+                    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var active = true;
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function(entries) {
+          active = entries[0].isIntersecting;
+        }, { threshold: 0.05 }).observe(container);
+      }
+
+      var last = performance.now();
+      function frame(now) {
+        var dt = Math.min(2, (now - last) / 16.667);
+        last = now;
+        if (active && !reduced) {
+          particles.forEach(function(p) {
+            p.vx = (p.vx + (Math.random() - 0.5) * p.noise * dt) * Math.pow(0.994, dt);
+            p.vy = (p.vy + (Math.random() - 0.5) * p.noise * dt) * Math.pow(0.994, dt);
+
+            if (pointer.active) {
+              var px = p.x + p.w / 2 - pointer.x;
+              var py = p.y + p.h / 2 - pointer.y;
+              var distance = Math.sqrt(px * px + py * py);
+              if (distance > 0 && distance < 145) {
+                var force = (1 - distance / 145) * 0.04 * dt;
+                p.vx += px / distance * force;
+                p.vy += py / distance * force;
+              }
+            }
+
+            var speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+            if (speed > p.maxSpeed) {
+              p.vx = p.vx / speed * p.maxSpeed;
+              p.vy = p.vy / speed * p.maxSpeed;
+            }
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.angle += p.spin * dt;
+            clampParticle(p);
+          });
+          resolveCollisions();
+        }
+        particles.forEach(function(p) { renderParticle(p, now); });
+        requestAnimationFrame(frame);
+      }
+      window.addEventListener('resize', function() {
+        particles.forEach(clampParticle);
+        for (var pass = 0; pass < 4; pass++) resolveCollisions();
+      });
+      requestAnimationFrame(frame);
     })();
   </script>
 
@@ -1181,6 +1416,8 @@
   <script>
     (function() {
       var posts = [
+        'Human-Trained and Agent-Trained Models for JAK Family Selectivity',
+        'Where Did COVID-19 Start in the State of New York?',
         'Hyperparameter Tuning: Finding the Sweet Spot',
         'Gelator Transparency Classification using KRR'
       ];
