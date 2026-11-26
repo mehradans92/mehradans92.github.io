@@ -1194,11 +1194,11 @@
       ];
       var isMobile = window.innerWidth < 576;
       var activeCompounds = isMobile
-        ? compounds.slice(0, 3).concat(compounds.slice(4, 6))
+        ? compounds.slice(0, 6)
         : compounds;
       var canvases = {};
       var particles = [];
-      var collisionPadding = isMobile ? 14 : 10;
+      var collisionPadding = isMobile ? 12 : 10;
       var theme = {
         dark: {
           C: '#8eb7e8', O: '#ff6b6b', N: '#62b5ff', F: '#50d890',
@@ -1296,7 +1296,7 @@
 
       function renderParticle(p, now) {
         var z = (Math.sin(now * p.zRate + p.zPhase) + 1) / 2;
-        var scale = isMobile ? 0.75 + z * 0.55 : 0.7 + z * 1.05;
+        var scale = isMobile ? 0.75 + z * 0.75 : 0.7 + z * 1.05;
         p.currentScale = scale;
         p.el.style.transform = 'translate3d(' + p.x.toFixed(1) + 'px,' +
                                p.y.toFixed(1) + 'px,0) rotate(' +
@@ -1310,8 +1310,8 @@
         var depth = compound.featured ? rand(0.45, 1) : rand(0, 1);
         var size = isMobile
           ? (compound.featured
-              ? Math.round(44 + depth * 30)
-              : Math.round(36 + depth * 35))
+              ? Math.round(55 + depth * 40)
+              : Math.round(42 + depth * 50))
           : (compound.featured
               ? Math.round(72 + depth * 78)
               : Math.round(48 + depth * 92));
@@ -1337,7 +1337,7 @@
           spin: (Math.random() < 0.5 ? -1 : 1) * rand(0.04, 0.1),
           zPhase: rand(0, Math.PI * 2),
           zRate: rand(0.00025, 0.00055),
-          baseOpacity: 0.16 + depth * 0.30,
+          baseOpacity: isMobile ? 0.22 + depth * 0.34 : 0.16 + depth * 0.30,
           noise: 0.028,
           maxSpeed: rand(0.38, 0.58),
           currentScale: 1
