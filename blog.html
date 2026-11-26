@@ -426,9 +426,6 @@
     }
     .blog-hero, .posts { position: relative; z-index: 1; }
 
-    @media (max-width: 900px) {
-      #mol-bg, #chem-floats, #aurora { display: none; }
-    }
     @media (prefers-reduced-motion: reduce) {
       #mol-bg .mol, #chem-floats .chem-float { transition: none; }
       #aurora span { animation: none; }
@@ -535,8 +532,6 @@
 
     /* Generate a full-page field of randomized PubChem structures. */
     (function() {
-      if (window.matchMedia && window.matchMedia('(max-width: 900px)').matches) return;
-
       var rand = function(a, b) { return a + Math.random() * (b - a); };
       var shuffle = function(arr) {
         arr = arr.slice();
