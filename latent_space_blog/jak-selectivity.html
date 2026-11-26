@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Can a Research Agent Out-Model Me on JAK Selectivity? | Latent Space</title>
+  <title>Human-Trained and Agent-Trained Models for JAK Family Selectivity | Latent Space</title>
 
   <!-- Bootstrap Core CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
@@ -20,6 +20,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/fontawesome.min.js"></script>
 
   <!-- MathJax -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.6.2/dist/chart.umd.min.js"></script>
   <script>
     MathJax = { tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] } };
   </script>
@@ -211,6 +212,297 @@
       margin-left: auto;
       margin-right: auto;
     }
+    .wide-figure {
+      width: min(1200px, calc(100vw - 2rem));
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+    @media (max-width: 576px) {
+      .wide-figure { width: calc(100vw - 1rem); }
+    }
+
+    /* Animated human-vs-agent comparison */
+    .model-comparison-figure {
+      width: min(1120px, calc(100vw - 2rem));
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+    .model-chart-grid {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .model-chart-grid.is-ready { display: grid; }
+    .model-chart-panel {
+      min-width: 0;
+      padding: 1rem 1rem 0.75rem;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      backdrop-filter: blur(8px);
+    }
+    body.light .model-chart-panel {
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: 0 8px 28px rgba(26, 42, 58, 0.08);
+    }
+    .model-chart-panel h3 {
+      margin: 0 0 0.5rem;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--heading);
+      text-align: center;
+    }
+    .model-chart-canvas {
+      position: relative;
+      height: 390px;
+    }
+    .model-chart-canvas canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+    .model-chart-legend {
+      display: none;
+      justify-content: center;
+      gap: 1.25rem;
+      margin-top: 0.85rem;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .model-chart-grid.is-ready + .model-chart-legend { display: flex; }
+    .model-chart-legend span::before {
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 8px;
+      margin-right: 0.4rem;
+      border-radius: 2px;
+      background: #376484;
+    }
+    .model-chart-legend .agent::before { background: #e67c61; }
+    @media (max-width: 900px) {
+      .model-chart-grid.is-ready { grid-template-columns: 1fr; }
+      .model-chart-canvas { height: 360px; }
+    }
+    @media (max-width: 576px) {
+      .model-comparison-figure { width: calc(100vw - 1rem); }
+      .model-chart-panel { padding: 0.75rem 0.45rem 0.5rem; }
+      .model-chart-canvas { height: 340px; }
+    }
+
+    /* Animated uncertainty calibration */
+    .calibration-figure {
+      width: min(850px, calc(100vw - 2rem));
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+    .calibration-chart-panel { display: none; }
+    .calibration-chart-panel.is-ready { display: block; }
+    .calibration-chart-canvas {
+      position: relative;
+      height: 390px;
+    }
+    .calibration-chart-canvas canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+    @media (max-width: 576px) {
+      .calibration-figure { width: calc(100vw - 1rem); }
+      .calibration-chart-canvas { height: 350px; }
+    }
+
+    /* Animated assay distributions */
+    .distribution-figure,
+    .selectivity-figure,
+    .scaffold-figure {
+      width: min(1120px, calc(100vw - 2rem));
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+    .scaffold-figure { width: min(1200px, calc(100vw - 2rem)); }
+    .scaffold-chart-grid {
+      display: none;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .scaffold-chart-grid.is-ready { display: grid; }
+    .scaffold-chart-canvas {
+      position: relative;
+      height: 310px;
+    }
+    .scaffold-chart-canvas canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+    .distribution-chart-grid {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .distribution-chart-grid.is-ready { display: grid; }
+    .distribution-chart-canvas {
+      position: relative;
+      height: 330px;
+    }
+    .distribution-chart-canvas canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+    .kinase-chart-legend {
+      display: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.65rem 1.15rem;
+      margin-top: 0.85rem;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .distribution-chart-grid.is-ready + .kinase-chart-legend { display: flex; }
+    .kinase-chart-legend span::before {
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 9px;
+      margin-right: 0.35rem;
+      border-radius: 2px;
+      background: #3b82f6;
+      vertical-align: middle;
+    }
+    .kinase-chart-legend .jak2::before { background: #f59e0b; }
+    .kinase-chart-legend .jak3::before { background: #10b981; }
+    .kinase-chart-legend .tyk2::before { background: #ef4444; }
+
+    /* Animated pairwise selectivity heatmaps */
+    .selectivity-heatmaps {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      text-align: left;
+    }
+    .selectivity-heatmaps.is-ready { display: grid; }
+    .selectivity-panel {
+      min-width: 0;
+      padding: 1rem;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      backdrop-filter: blur(8px);
+    }
+    body.light .selectivity-panel {
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: 0 8px 28px rgba(26, 42, 58, 0.08);
+    }
+    .selectivity-panel h3 {
+      margin: 0 0 0.75rem;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1rem;
+      color: var(--heading);
+      text-align: center;
+    }
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: minmax(92px, 1.25fr) repeat(6, minmax(0, 1fr));
+      min-width: 0;
+      gap: 3px;
+      align-items: stretch;
+    }
+    .heatmap-header,
+    .heatmap-row-label,
+    .heatmap-cell {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+    }
+    .heatmap-header {
+      align-self: end;
+      padding: 0.25rem 0.1rem 0.45rem;
+      font-size: 0.58rem;
+      line-height: 1.25;
+      color: var(--muted);
+      text-align: center;
+    }
+    .heatmap-row-label {
+      display: flex;
+      align-items: center;
+      padding: 0.4rem 0.35rem;
+      font-size: 0.62rem;
+      line-height: 1.25;
+      color: var(--body-text);
+    }
+    .heatmap-cell {
+      display: flex;
+      min-height: 52px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 5px;
+      color: var(--body-text);
+      line-height: 1.25;
+      cursor: default;
+      transition: transform 0.25s ease, opacity 0.55s ease, box-shadow 0.25s ease;
+      transition-delay: calc(var(--cell-index) * 35ms);
+    }
+    body.light .heatmap-cell { border-color: rgba(0, 0, 0, 0.05); }
+    .heatmap-cell strong { font-size: 0.66rem; }
+    .heatmap-cell small { font-size: 0.56rem; opacity: 0.8; }
+    .heatmap-cell.best { box-shadow: inset 0 0 0 2px var(--link); }
+    .selectivity-heatmaps.is-animated .heatmap-cell {
+      opacity: 0;
+      transform: scale(0.86);
+    }
+    .selectivity-heatmaps.is-animated.is-visible .heatmap-cell {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .heatmap-cell:hover {
+      transform: scale(1.08) !important;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+      z-index: 2;
+    }
+    .heatmap-scale {
+      display: none;
+      width: min(620px, 90%);
+      margin: 1rem auto 0;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      color: var(--muted);
+    }
+    .selectivity-heatmaps.is-ready + .heatmap-scale { display: block; }
+    .heatmap-scale-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.68rem;
+    }
+    .heatmap-gradient {
+      height: 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: linear-gradient(90deg,
+        hsl(135 50% 72%),
+        hsl(72 55% 76%),
+        hsl(10 62% 75%));
+    }
+    .heatmap-scale-label {
+      margin-top: 0.35rem;
+      font-size: 0.68rem;
+      text-align: center;
+    }
+    @media (max-width: 900px) {
+      .distribution-chart-grid.is-ready,
+      .selectivity-heatmaps.is-ready,
+      .scaffold-chart-grid.is-ready { grid-template-columns: 1fr; }
+      .distribution-chart-canvas { height: 310px; }
+      .scaffold-chart-canvas { height: 300px; }
+    }
+    @media (max-width: 576px) {
+      .distribution-figure,
+      .selectivity-figure,
+      .scaffold-figure { width: calc(100vw - 1rem); }
+      .selectivity-panel { padding: 0.75rem 0.5rem; }
+    }
 
     /* Equations */
     .post-body .MathJax { font-size: 1.05em; }
@@ -234,19 +526,6 @@
       border: 0;
       border-radius: 12px;
     }
-
-    /* Callout box */
-    .post-callout {
-      background: var(--callout-bg);
-      border-left: 3px solid var(--callout-border);
-      border-radius: 0 10px 10px 0;
-      padding: 1.2rem 1.5rem;
-      margin: 2rem 0;
-      font-size: 0.95rem;
-      color: var(--callout-text);
-      transition: background 0.4s, border-color 0.4s, color 0.4s;
-    }
-    .post-callout em { color: var(--callout-em); }
 
     /* Abstract */
     .post-abstract {
@@ -346,124 +625,216 @@
   </nav>
 
   <div class="post-header">
-    <h1>Can a Research Agent Out-Model Me on JAK Selectivity?</h1>
-    <div class="post-meta">November 2026</div>
+    <h1>Human-Trained and Agent-Trained Models for JAK Family Selectivity</h1>
+    <div class="post-meta">July 2026</div>
   </div>
 
   <article class="post-body">
-    <div class="post-callout">
-      <em>Code and the full write-up live in the <a href="https://github.com/mehradans92/JAK-family-selectivity" target="_blank">JAK-family-selectivity repo</a> (there is a detailed <a href="https://github.com/mehradans92/JAK-family-selectivity/blob/main/report.pdf" target="_blank">report PDF</a> if you want the gory details). This post is the casual version.</em>
-    </div>
+    <figure class="post-figure">
+      <img src="media/jak/jak-lock-analogy.png" alt="One inhibitor facing four similar JAK-family locks, illustrating target and collateral binding">
+      <figcaption>Fig 1. Four proteins with nearly the same keyhole. A molecule designed for one JAK can also bind the other family members, which is where selectivity and side effects enter the problem.</figcaption>
+    </figure>
 
     <div class="post-abstract">
-      <strong>TL;DR.</strong> I built models that predict pKi for the four JAK-family kinases (JAK1, JAK2, JAK3, TYK2) straight from a SMILES string, under a scaffold-shifted split so the test molecules look structurally unfamiliar. Then I built a literature-augmented ReAct research agent and asked it to beat me. It did, on raw affinity: the agent-designed multitask fingerprint MLP hit the best macro RMSE (<code>0.577</code>) and ranking (Spearman <code>0.765</code>), reproducibly. But my hand-designed objectives still won on selectivity, and the biggest lesson was not about architecture at all: it was that squeezing more out of the data (using the much larger pIC50 set as an auxiliary task) mattered more than any fancy network.
+      <strong>TL;DR.</strong> The four JAK kinases are basically four very similar locks. A molecule can fit the intended lock and still open the others, which can lead to side effects. I built models to predict affinity and selectivity directly from SMILES under a scaffold-shifted evaluation. The comparison covered text-based, graph-based, and fingerprint-based models, including a SMILES transformer, message-passing networks, AttentiveFP, and Morgan-fingerprint baselines. I then built a literature-augmented research agent and asked it to beat the human-trained models. It did on raw pKi. The best agent model reached macro RMSE <code>0.577</code> and Spearman <code>0.765</code>, and two separate refinements also beat every human-trained model on both pKi metrics. Selectivity was a different story. A pairwise pKi-difference loss gave the best margin ranking at <code>0.638</code>, while AttentiveFP gave the lowest pairwise RMSE at <code>0.429</code>. The biggest repeatable improvement was using the much larger pIC50 dataset as a separate auxiliary task, not building a fancier architecture. The fold ensembles were also overconfident, and learning molecule-specific variance improved 90% interval coverage from 50.1% to 87.3%, with wider intervals as the tradeoff.
     </div>
 
-    <h2>The setup</h2>
+    <h2>The problem</h2>
     <p>
-      JAK inhibitors are a big deal in autoimmune disease, and the hard part is rarely "does this molecule bind a JAK." It is "does it bind the <em>right</em> JAK and leave the others alone." So this is really two questions stacked on top of each other: absolute affinity (pKi per kinase) and selectivity (the gap between kinases). I set it up as a four-target regression from structure, and I evaluate on a scaffold-shifted test set, meaning the test molecules come from chemical scaffolds the model never saw in training. That is the honest version of the problem, and also the brutal one.
-    </p>
-    <p>
-      I came at it from two directions. First I designed and trained a spread of baselines and neural models by hand. Then I built a research agent, gave it the raw data and a compute budget, and told it to propose, train, and evaluate its own models in a sandbox, to see if it could out-model me.
+      JAK inhibitors are important in autoimmune disease, but potency is only half the problem. The useful molecule has to bind the intended JAK without binding the others just as strongly. One pKi unit is a ten-fold difference in Ki, so selectivity lives in the gap between predictions rather than in either prediction alone. The four ATP pockets look like nearly identical keyholes, which makes that gap harder to learn than absolute affinity.
     </p>
 
-    <h2>The data is small and lopsided</h2>
     <p>
-      There are 10,725 measurements over 4,528 unique molecules, which sounds fine until you look closer. Only 1,989 of those are pKi (the thing I actually want); the other 8,736 are pIC50. And it is lopsided across kinases: JAK2 has 804 pKi labels, TYK2 has just 163. After the scaffold split, the test set has 63 JAK1, 84 JAK2, 22 JAK3, and 12 TYK2 pKi labels. Twelve. So any single TYK2 molecule can swing the macro score, and I try not to over-read small differences because of it.
+      Affinity and selectivity were treated as separate goals from the beginning. Baselines and neural models were trained first. A research agent then received the same data, splits, evaluator, and compute budget, with the goal of finding something better.
     </p>
 
-    <figure class="post-figure">
-      <img src="media/jak/data_overview.png" alt="Distributions of pKi and pIC50 across the four JAK kinases, showing strong imbalance">
-      <figcaption>Fig 1. The raw pKi and pIC50 distributions before splitting. Both the endpoint mix (lots more pIC50 than pKi) and the per-kinase coverage are badly imbalanced, which ends up shaping every modeling decision that follows.</figcaption>
+    <h2>A sparse dataset</h2>
+    <p>
+      The dataset has 10,725 measurements over 4,528 unique molecules. That sounds comfortable until the endpoints are separated. Only 1,989 measurements are pKi, while 8,736 are pIC50. Coverage is uneven across the family too. JAK2 has 804 pKi labels and TYK2 has only 163. The final test set contains 63 JAK1 labels, 84 JAK2 labels, 22 JAK3 labels, and 12 TYK2 labels. With only twelve TYK2 examples, a few molecules can noticeably move the macro score, so small model differences should not be treated as precise.
+    </p>
+
+    <figure class="post-figure distribution-figure" id="distributionFigure">
+      <img id="distributionFallback" src="media/jak/data_overview.png" alt="Distributions of pKi and pIC50 across the four JAK kinases, showing strong imbalance">
+      <div class="distribution-chart-grid" id="distributionChartGrid">
+        <section class="model-chart-panel">
+          <h3>pKi distribution</h3>
+          <div class="distribution-chart-canvas">
+            <canvas id="pkiDistributionChart" role="img" aria-label="Distribution of pKi measurements across JAK1, JAK2, JAK3, and TYK2."></canvas>
+          </div>
+        </section>
+        <section class="model-chart-panel">
+          <h3>pIC50 distribution</h3>
+          <div class="distribution-chart-canvas">
+            <canvas id="pic50DistributionChart" role="img" aria-label="Distribution of pIC50 measurements across JAK1, JAK2, JAK3, and TYK2."></canvas>
+          </div>
+        </section>
+      </div>
+      <div class="kinase-chart-legend" aria-hidden="true">
+        <span class="jak1">JAK1</span>
+        <span class="jak2">JAK2</span>
+        <span class="jak3">JAK3</span>
+        <span class="tyk2">TYK2</span>
+      </div>
+      <figcaption>Fig 2. The raw pKi and pIC50 distributions before splitting. There is much more pIC50 than pKi data, and label coverage differs sharply across the four kinases.</figcaption>
     </figure>
 
     <p>
-      I cleaned every SMILES with RDKit (normalize functional groups, keep the largest fragment, reionize, neutralize when it is chemically reasonable, write canonical SMILES), then split molecules by Bemis-Murcko scaffold into 80/10/10 train/validation/test, so no scaffold ever appears in two splits. The rare-scaffold test labels stayed locked away: only the evaluator could read them, and only after predictions were saved. One detail that matters a lot: I kept pKi and pIC50 as <em>separate</em> endpoints and never converted one into the other. Combining Ki and IC50 from different assays is a well-documented way to inject noise <a href="#ref3">[3]</a>, and related kinase work finds that heterogeneous assay readouts are most useful when integrated in stages rather than pooled into one endpoint <a href="#ref4">[4]</a>. Only a handful of molecules even have both measurements here, so there is no reliable conversion to learn anyway.
+      Each SMILES was standardized with RDKit by normalizing functional groups, keeping the largest fragment, reionizing, neutralizing when chemically reasonable, and writing canonical SMILES. Whole Bemis-Murcko scaffold groups were then assigned to 80% train, 10% validation, and 10% test, with no scaffold shared between splits. <a href="https://practicalcheminformatics.blogspot.com/2024/11/some-thoughts-on-splitting-chemical.html" target="_blank">Pat Walters' post on splitting chemical datasets</a> is an excellent introduction to why this matters.
     </p>
-
-    <h2>The models I built by hand</h2>
     <p>
-      The lineup: a per-kinase random forest on Morgan fingerprints, a SMILES transformer, a fingerprint MLP, a residual message-passing GNN, a selectivity-aware MLP, and a multitask AttentiveFP graph network <a href="#ref1">[1</a>, <a href="#ref2">2]</a>. Four different ways of representing a molecule (sequence, fixed substructure counts, learned graph, attentive graph), all on the same sparse four-target problem.
+      The test labels were kept behind the evaluator and were read only after predictions had been saved. The validation and test molecules are also less similar to the training set than a random split would make them. That makes the score harder, but it is closer to the intended use case.
     </p>
 
-    <figure class="post-figure">
-      <img src="media/jak/manual_neural_architectures.png" alt="Four neural architectures: SMILES transformer, fingerprint MLP, residual GNN, and multitask AttentiveFP">
-      <figcaption>Fig 2. The neural architectures I compared. (a) a SMILES transformer, (b) an MLP on Morgan count fingerprints, (c) a residual bond-aware GNN, and (d) a multitask AttentiveFP with optional pIC50 auxiliary heads.</figcaption>
+    <figure class="post-figure scaffold-figure" id="scaffoldFigure">
+      <img id="scaffoldFallback" src="media/jak/scaffold-split.png" alt="Scaffold sizes, JAK2 pKi by split, and nearest-training-neighbor similarity">
+      <div class="scaffold-chart-grid" id="scaffoldChartGrid">
+        <section class="model-chart-panel">
+          <h3>Molecules per scaffold</h3>
+          <div class="scaffold-chart-canvas">
+            <canvas id="scaffoldSizeChart" role="img" aria-label="Distribution of the number of molecules per Bemis-Murcko scaffold."></canvas>
+          </div>
+        </section>
+        <section class="model-chart-panel">
+          <h3>pKi JAK2 per split</h3>
+          <div class="scaffold-chart-canvas">
+            <canvas id="splitBoxChart" role="img" aria-label="Box plots of JAK2 pKi values in train, validation, and test splits."></canvas>
+          </div>
+        </section>
+        <section class="model-chart-panel">
+          <h3>Nearest train neighbor</h3>
+          <div class="scaffold-chart-canvas">
+            <canvas id="similarityChart" role="img" aria-label="Nearest-training-neighbor Tanimoto similarity distributions for validation and test molecules."></canvas>
+          </div>
+        </section>
+      </div>
+      <figcaption>Fig 3. The scaffold split. Most scaffold groups are small, the target distribution stays reasonably aligned, and validation and test molecules sit farther from their nearest training neighbors.</figcaption>
     </figure>
 
     <p>
-      Here is the thing that surprised me: architecture barely mattered. The random forest, the fingerprint MLP, and the GNN all landed within sampling noise of each other on absolute pKi. The transformer was the one clear loser, and it fell apart specifically on JAK3, exactly what you would expect from a data-hungry sequence model with very few labels.
+      pKi and pIC50 were kept as separate endpoints and were never converted into one another. Combining Ki and IC50 values from different assays adds substantial noise <a href="#ref3">[3]</a>. Related kinase work also finds that heterogeneous readouts are more useful when integrated in stages rather than pooled into one label <a href="#ref4">[4]</a>. There are too few molecules with both measurements here to learn a trustworthy conversion anyway.
+    </p>
+
+    <h2>Human-trained models</h2>
+    <p>
+      The comparison included a per-kinase random forest on Morgan fingerprints <a href="#ref6">[6]</a>, a SMILES transformer, a fingerprint MLP, a residual message-passing GNN, a selectivity-aware MLP, and a multitask AttentiveFP graph network <a href="#ref1">[1</a>, <a href="#ref2">2]</a>. Together they cover sequence models, fixed substructure counts, learned graphs, and attentive graph representations. Comparisons on other small molecular datasets have also found that descriptor and fingerprint models remain difficult to beat, while graph models benefit more consistently from larger or multitask data <a href="#ref7">[7]</a>.
+    </p>
+
+    <figure class="post-figure wide-figure">
+      <img src="media/jak/human-trained-models-slide.png" alt="Human-trained JAK models, their molecular representations, and their affinity and selectivity objectives">
+      <figcaption>Fig 4. The human-trained models and objectives from slide 6. The top three architectures predict pKi, the fingerprint MLP also tests a direct kinase-gap loss, and AttentiveFP uses the larger pIC50 dataset through separate auxiliary heads.</figcaption>
+    </figure>
+
+    <p>
+      Figure 4 also shows how the training losses differ. The SMILES transformer, fingerprint MLP, and residual GNN use masked pKi mean-squared error. The selectivity-aware fingerprint model keeps that pKi term and adds a weighted loss on pairwise kinase differences. Multitask AttentiveFP instead uses \(\mathcal{L}_{\mathrm{pKi}} + \mathcal{L}_{\mathrm{pIC50}}\), with four separate pIC50 outputs and missing labels masked in both endpoint groups. The auxiliary heads add supervision without relabeling pIC50 as pKi.
+    </p>
+
+    <p>
+      Architecture was not the main lever. The random forest, fingerprint MLP, and GNN landed in roughly the same error range. The transformer performed worst, mostly because its JAK3 ranking collapsed. That is not too surprising for a sequence model trying to learn a representation from very few labels.
     </p>
     <p>
-      What actually moved the needle was data leverage. The cleanest win in the whole study was giving AttentiveFP extra <em>auxiliary</em> output heads for pIC50. This lets the shared encoder learn from the 8,736 pIC50 molecules without ever pretending pIC50 is pKi. That one change dropped macro pKi RMSE from 0.796 to 0.676 and pairwise error from 0.504 to 0.429. More supervision, not more layers.
+      The clear improvement came from giving AttentiveFP four additional pIC50 output heads. The encoder could learn from all 8,736 pIC50 measurements while the two assay endpoints stayed separate. With the same encoder and split, macro pKi RMSE fell from 0.796 to 0.676 and pairwise RMSE fell from 0.504 to 0.429. More supervision helped more than a more complicated encoder.
     </p>
 
     <h2>Selectivity wants a different objective</h2>
     <p>
-      Selectivity is about the <em>difference</em> between kinases, so I added a pairwise margin term directly to the fingerprint MLP's loss, keeping everything else fixed so I was isolating the objective and not the representation:
+      Selectivity depends on the difference between kinases, so a pairwise margin term was added to the fingerprint MLP loss. The architecture and input stayed fixed, isolating the objective from the molecular representation. Directly modeling affinity differences has also helped selectivity prediction for other closely related protein targets <a href="#ref8">[8]</a>.
     </p>
     \[\mathcal{L} = (1-w)\,\mathcal{L}_{\mathrm{pKi}} + w\,\mathbb{E}_{a \ne b}\!\left[\frac{(\hat{y}_a - \hat{y}_b) - (y_a - y_b)}{\sigma_{ab}}\right]^2.\]
     <p>
-      The weight \(w\) trades absolute-pKi supervision against between-kinase supervision. At \(w=1\) it collapses, because a difference-only loss does not care about the overall offset (add a constant to every prediction and the differences are unchanged), so the absolute level stops being identifiable. A moderate \(w=0.5\) gave the best selectivity-margin ranking (Spearman <code>0.638</code>) at the cost of slightly worse absolute pKi. Separately, multitask AttentiveFP gave the lowest pairwise error (<code>0.429</code>). The takeaway I keep coming back to: the best affinity model and the best selectivity model are not the same model, so I score the two capabilities separately.
+      The weight \(w\) trades absolute pKi supervision against between-kinase supervision. At \(w=1\), the absolute level is no longer identifiable because adding the same offset to every kinase prediction leaves all differences unchanged. A moderate value of \(w=0.5\) gave the best selectivity-margin ranking with Spearman <code>0.638</code>, although absolute pKi became slightly worse. Multitask AttentiveFP had the lowest pairwise RMSE at <code>0.429</code>. The best affinity model and the best selectivity model were not the same model, so the two scores were kept separate.
     </p>
 
     <h2>The research agent</h2>
     <p>
-      The second half of the project was building a ReAct-style research agent <a href="#ref5">[5]</a> and letting it loose on the same data and splits. At each step it either returns a conclusion or calls a typed tool: it keeps a persistent research plan, writes a structured hypothesis log, runs Python in an isolated process with a persistent namespace, delegates focused questions to parallel subagents, and can pull evidence from the literature.
+      The second half of the project introduced a ReAct-style research agent <a href="#ref5">[5]</a> with access to the same data and splits. It could update a persistent research plan, record hypotheses, run Python in an isolated process, delegate focused work to parallel subagents, search the web and literature, and call the label-isolated evaluator after choosing a model.
     </p>
 
     <figure class="post-figure">
       <img src="media/jak/agent_architecture.png" alt="Architecture of the ReAct research agent with memory, tools, subagents, and code execution">
-      <figcaption>Fig 3. The agent. Every decision gets one bounded prompt assembled from the fixed goal, a working plan, the recent steps, and a few memory records pulled back by relevance. It picks typed tools, stores observations externally, and leaves an auditable trail.</figcaption>
+      <figcaption>Fig 5. The research agent. Each step receives a bounded context assembled from the goal, working plan, recent steps, and recalled memory. Typed tools keep execution structured, and every action is written to an auditable record.</figcaption>
     </figure>
 
     <p>
-      The piece I am happiest with is context management. I do not replay a giant growing transcript. Instead, summaries, tool outputs, and literature excerpts go into an append-only vector memory, and before each step I rebuild the prompt from the goal, the latest observation, the persistent plan, the last few step summaries, and a handful of retrieved records. Retrieval uses cosine similarity followed by maximal marginal relevance (MMR), so a run of near-identical code outputs cannot crowd out the hypothesis list and the literature:
+      A growing transcript was not replayed. Summaries, tool outputs, literature excerpts, and results went into append-only vector memory. Before each decision, the prompt was rebuilt from the original goal, latest observation, working plan, eight recent step summaries, and eight recalled records. Cosine similarity found relevant records, then maximal marginal relevance kept near-duplicate code outputs from occupying every recall slot.
     </p>
     \[\mathrm{MMR} = \arg\max_{d_i \in R \setminus S}\left[\lambda\,\cos(d_i, q) - (1-\lambda)\max_{d_j \in S}\cos(d_i, d_j)\right].\]
     <p>
-      With \(\lambda = 0.7\), retrieval stays relevant but penalizes near-duplicates. In an earlier version without this, long code dumps literally pushed the agent's own evidence and hypotheses out of context, and the plan plus diverse recall fixed that without any task-specific hacks. The literature tool itself builds on <a href="https://huggingface.co/spaces/mehradans92/decode-elm" target="_blank">Decode ELM</a>, an earlier project of mine that searches preprint servers, parses full text, and returns cited answers.
+      A value of \(\lambda = 0.7\) balanced relevance and diversity. Earlier versions let long code outputs displace the hypothesis list and literature evidence. The working plan and MMR recall fixed that failure without adding chemistry-specific rules. The literature workflow builds on <a href="https://huggingface.co/spaces/mehradans92/decode-elm" target="_blank">Decode ELM</a>, an earlier project for searching preprint servers, parsing full text, and answering questions with citations.
     </p>
 
-    <h2>Did it beat me?</h2>
+    <h2>Did it beat the human-trained models?</h2>
     <p>
-      On affinity, yes, and not by luck. Given the data and a budget, the agent independently decided to use the larger pIC50 set as auxiliary supervision (the same lever I found by hand) and built a multitask model in every single run. Its best, an eight-task MLP on Morgan features, hit macro RMSE <code>0.577</code> and Spearman <code>0.765</code>. Two separately trained refinements also beat every human model on both direct pKi metrics, so the win did not hinge on one lucky seed.
+      On pKi, yes. The agent independently chose the larger pIC50 dataset as auxiliary supervision and built a multitask model in every discovery run. Five independent runs landed between 0.577 and 0.671 macro RMSE, all below the best hand-built result of 0.676. The strongest model was an eight-task MLP on Morgan features with macro RMSE <code>0.577</code> and Spearman <code>0.765</code>. Two later refinements also beat every hand-built model on both pKi metrics.
     </p>
 
-    <figure class="post-figure">
-      <img src="media/jak/manual_agent_comparison.png" alt="Bar charts comparing human-trained and agent-trained models on pKi RMSE and Spearman, with agent models winning">
-      <figcaption>Fig 4. Human-trained (blue) versus agent-trained (orange) on the fixed test set. All three agent variants beat every model I built by hand on both absolute error and ranking.</figcaption>
+    <figure class="post-figure model-comparison-figure" id="modelComparisonFigure">
+      <img id="modelChartFallback" src="media/jak/manual_agent_comparison.png" alt="Bar charts comparing human-trained and agent-trained models on pKi RMSE and Spearman, with agent models winning">
+      <div class="model-chart-grid" id="modelChartGrid">
+        <section class="model-chart-panel">
+          <h3>pKi prediction error</h3>
+          <div class="model-chart-canvas">
+            <canvas id="rmseChart" role="img" aria-label="Macro pKi RMSE comparison. Lower is better."></canvas>
+          </div>
+        </section>
+        <section class="model-chart-panel">
+          <h3>pKi rank correlation</h3>
+          <div class="model-chart-canvas">
+            <canvas id="spearmanChart" role="img" aria-label="Macro pKi Spearman correlation comparison. Higher is better."></canvas>
+          </div>
+        </section>
+      </div>
+      <div class="model-chart-legend" aria-hidden="true">
+        <span>Human-trained</span>
+        <span class="agent">Agent-trained</span>
+      </div>
+      <figcaption>Fig 6. Human-trained models are blue and agent-trained models are orange. All three agent variants have lower pKi error and better pKi ranking than every human-trained model.</figcaption>
     </figure>
 
     <p>
-      But "beat me" needs an asterisk. I told the agent to minimize pKi error, so it converged on the strongest absolute predictor and never explicitly optimized the between-kinase gap. My selectivity gains came from <em>deliberately</em> designing objectives around that gap, the pairwise loss and the auxiliary pIC50 heads. So when you break selectivity down pair by pair, it is a genuine split decision: an agent model has the lowest pairwise error on four of six pairs including the well-sampled JAK1-JAK2, while my hand-designed objectives still lead on margin ranking for most pairs.
+      That win does not extend cleanly to selectivity. The agent was asked to minimize pKi error, and it never searched an objective built around the between-kinase gap. An agent model has the lowest pairwise error on four of the six kinase pairs, including the well-sampled JAK1-JAK2 pair. The human-designed objectives lead margin ranking on most pairs. Five of those pairs contain only 8 to 19 test molecules, so the pair-level differences are descriptive rather than definitive.
     </p>
 
-    <figure class="post-figure">
-      <img src="media/jak/pairwise_selectivity_heatmap.png" alt="Heatmap of pairwise selectivity RMSE and margin Spearman across kinase pairs for human and agent models">
-      <figcaption>Fig 5. Selectivity broken down by kinase pair. Each cell shows pKi-difference RMSE and margin Spearman. Honestly, only JAK1-JAK2 has enough data for a stable ranking; the rest are sparse, so I read this descriptively rather than as a verdict.</figcaption>
+    <figure class="post-figure selectivity-figure" id="selectivityFigure">
+      <img id="selectivityFallback" src="media/jak/pairwise_selectivity_heatmap.png" alt="Heatmap of pairwise selectivity RMSE and margin Spearman across kinase pairs for human and agent models">
+      <div class="selectivity-heatmaps" id="selectivityHeatmaps"></div>
+      <div class="heatmap-scale" aria-label="Pairwise RMSE color scale from 0.16 to 0.89">
+        <div class="heatmap-scale-row">
+          <span>0.16</span>
+          <div class="heatmap-gradient"></div>
+          <span>0.89</span>
+        </div>
+        <div class="heatmap-scale-label">Pairwise pKi-difference RMSE (lower is better)</div>
+      </div>
+      <figcaption>Fig 7. Selectivity by kinase pair. Each cell reports pKi-difference RMSE and margin Spearman. Only JAK1-JAK2 has enough examples for a reasonably stable ranking.</figcaption>
     </figure>
 
     <h2>Where the agent hit a wall</h2>
     <p>
-      I then froze a strong model and handed it back to the agent to improve. It reliably lowered cross-validation error in every run, but none of that transferred to the rare-scaffold test beyond run-to-run noise. Part of the apparent CV gain was even selection bias (tuning on the same folds it reported). The lesson was not that the agent ran out of ideas, it was that the gap between the validation signal and genuine out-of-scaffold performance was the real ceiling. You cannot optimize your way past a metric that does not quite measure what you care about.
+      The agent MLP and random-forest baseline were frozen, then each model was handed back with one instruction to make it better. Cross-validation error fell in all four runs. Rare-scaffold test error did not move beyond the 0.589 to 0.652 scatter between ordinary reruns. Some of the cross-validation improvement was optimistic because a blend weight or tree setting had been tuned on the same folds used for reporting.
     </p>
     <p>
-      Literature grounding was similar: it changed <em>which</em> ideas got tried (and made the reasoning traceable and cite-backed, which I loved), but it did not improve out-of-scaffold accuracy. One nice moment: the literature agent caught a cross-kinase imputation experiment that was leaking held-out labels into its features and flagged it, rather than reporting the implausibly good score.
+      The agent did not run out of hypotheses. It optimized the validation signal it was given, and ordinary GroupKFold did not reproduce the rare-scaffold shift in the fixed test. Literature grounding changed which experiments were tried and made their rationale easier to audit, but it did not improve out-of-scaffold accuracy. It did help catch one cross-kinase imputation experiment that leaked held-out labels into its features.
     </p>
 
     <h2>Calibration, honestly</h2>
     <p>
-      The five-fold ensembles were badly overconfident: the nominal 90% interval from fold disagreement covered only about 26% of real pKi values for the best agent model. Fold spread is a decent <em>relative</em> warning signal, but its raw magnitude wildly understates true error. So I retrained the AttentiveFP model to predict a molecule-specific variance and combined that with seed and fold disagreement. Coverage for a nominal 90% interval jumped from 50.1% to 87.3%, cutting calibration error to 3.6 points. That honesty was not free: point RMSE rose to <code>0.799</code> and intervals widened to about 2.2 pKi units. So I keep the sharp model for point predictions and the calibrated one when I actually need to trust an interval.
+      Fold disagreement was not a calibrated uncertainty interval. A nominal 90% interval covered only 26.1% of measured pKi values for the best agent model. The same problem appeared in the hand-built ensembles. AttentiveFP with auxiliary pIC50 reached only 50.1% coverage. Broader molecular uncertainty benchmarks also find that ensemble methods do not rank errors reliably across every dataset <a href="#ref9">[9]</a>.
+    </p>
+    <p>
+      AttentiveFP was retrained to predict a molecule-specific variance, which was combined with seed and fold disagreement. Coverage rose to 87.3%, and an out-of-fold conformal check changed it very little. Better coverage came with wider intervals of about 2.2 pKi units and worse point RMSE of <code>0.799</code>. The original model remains the point predictor, while fold spread is treated as a relative warning signal rather than a prediction interval.
     </p>
 
-    <h2>Takeaways</h2>
-    <p>
-      On a small, scaffold-shifted dataset like this, architecture mattered less than data leverage: exploiting the much larger pIC50 set as a separate auxiliary task was the clearest and most reproducible win, by hand and by agent. Affinity and selectivity came from different models, so I select on them separately. And the agent genuinely earned its keep, it found better pKi models than I did and got there through the same lever I found manually, without being told to look for it. The instrumentation (the hypothesis log, the label-isolated evaluator) is what made every number here auditable after the fact, which for me is the whole point of doing it this way.
-    </p>
-    <p>
-      For the record: I designed the human-trained models and the agent architecture myself; the agent and its subagents ran on Claude Opus 4.8 through LiteLLM, with <code>text-embedding-3-small</code> for the vector memory and document indexing.
-    </p>
+    <figure class="post-figure calibration-figure" id="calibrationFigure">
+      <img id="calibrationFallback" src="media/jak/calibration-coverage.png" alt="Coverage of nominal 90 percent prediction intervals for the model ensembles">
+      <section class="model-chart-panel calibration-chart-panel" id="calibrationChartPanel">
+        <h3>Coverage of nominal 90% intervals</h3>
+        <div class="calibration-chart-canvas">
+          <canvas id="calibrationChart" role="img" aria-label="Empirical coverage of nominal 90 percent prediction intervals."></canvas>
+        </div>
+      </section>
+      <figcaption>Fig 8. Fold spread severely underestimates uncertainty. Learning molecule-specific variance brings empirical coverage close to the nominal 90% target, with substantially wider intervals.</figcaption>
+    </figure>
+
   </article>
 
   <div class="references">
@@ -474,6 +845,10 @@
       <li id="ref3"><a href="https://pubs.acs.org/doi/10.1021/acs.jcim.4c00049" target="_blank">Landrum, G.A. and Riniker, S. "Combining IC50 or Ki values from different sources is a source of significant noise." <em>Journal of Chemical Information and Modeling</em>, 64(5), 1560&ndash;1567, 2024.</a></li>
       <li id="ref4"><a href="https://www.nature.com/articles/s41467-024-52055-5" target="_blank">Theisen, R., Wang, T., Ravikumar, B., Rahman, R. and Cicho&nacute;ska, A. "Leveraging multiple data types for improved compound-kinase bioactivity prediction." <em>Nature Communications</em>, 15, 7596, 2024.</a></li>
       <li id="ref5"><a href="https://arxiv.org/abs/2210.03629" target="_blank">Yao, S. et al. "ReAct: Synergizing reasoning and acting in language models." <em>International Conference on Learning Representations (ICLR)</em>, 2023.</a></li>
+      <li id="ref6"><a href="https://doi.org/10.1021/c160017a018" target="_blank">Morgan, H.L. "The generation of a unique machine description for chemical structures." <em>Journal of Chemical Documentation</em>, 5(2), 107&ndash;113, 1965.</a></li>
+      <li id="ref7"><a href="https://doi.org/10.1186/s13321-020-00479-8" target="_blank">Jiang, D. et al. "Could graph neural networks learn better molecular representation for drug discovery? A comparison study of descriptor-based and graph-based models." <em>Journal of Cheminformatics</em>, 13, 12, 2021.</a></li>
+      <li id="ref8"><a href="https://doi.org/10.1021/acs.jcim.5c00575" target="_blank">Won, S.J. et al. "Decoding the structure&ndash;activity relationship of dopamine D3 receptor-selective ligands using machine and deep learning approaches." <em>Journal of Chemical Information and Modeling</em>, 65(11), 5495&ndash;5507, 2025.</a></li>
+      <li id="ref9"><a href="https://doi.org/10.1021/acs.jcim.0c00502" target="_blank">Hirschfeld, L., Swanson, K., Yang, K., Barzilay, R. and Coley, C.W. "Uncertainty quantification using neural networks for molecular property prediction." <em>Journal of Chemical Information and Modeling</em>, 60(8), 3770&ndash;3780, 2020.</a></li>
     </ol>
 
     <a class="back-link" href="../blog.html">Back to Latent Space</a>
@@ -487,6 +862,922 @@
       toggle.addEventListener('click', function() {
         document.body.classList.toggle('light');
         localStorage.setItem('blog-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+      });
+    })();
+
+    (function() {
+      var figure = document.getElementById('modelComparisonFigure');
+      var grid = document.getElementById('modelChartGrid');
+      var fallback = document.getElementById('modelChartFallback');
+      if (!figure || !grid || !window.Chart) return;
+
+      var shortLabels = [
+        'Random forest',
+        'SMILES transformer',
+        'FP MLP, w=0',
+        'FP MLP, w=0.5',
+        'Residual GNN',
+        'AttentiveFP + pIC50',
+        'Agent MT, discovery',
+        'Agent MT, no lit.',
+        'Agent MT, literature'
+      ];
+      var fullLabels = [
+        'Random forest',
+        'SMILES transformer (a)',
+        'Fingerprint MLP (b), w=0',
+        'Fingerprint MLP (b), w=0.5',
+        'Residual GNN (c)',
+        'AttentiveFP + pIC50 (d)',
+        'Agent MT MLP (discovery)',
+        'Agent MT refinement, no literature',
+        'Agent MT refinement, literature'
+      ];
+      var rmse = [0.689, 0.782, 0.684, 0.708, 0.744, 0.676, 0.577, 0.589, 0.600];
+      var spearman = [0.595, 0.461, 0.633, 0.559, 0.540, 0.569, 0.765, 0.730, 0.716];
+      var charts = [];
+      var visible = false;
+
+      function palette() {
+        var light = document.body.classList.contains('light');
+        return {
+          text: light ? '#35495d' : 'rgba(255,255,255,0.72)',
+          grid: light ? 'rgba(26,42,58,0.09)' : 'rgba(255,255,255,0.08)',
+          human: light ? '#376484' : '#5d8daf',
+          agent: light ? '#e67c61' : '#f08b70',
+          tooltipBg: light ? '#1f3448' : '#071523'
+        };
+      }
+
+      var valueLabels = {
+        id: 'valueLabels',
+        afterDatasetsDraw: function(chart) {
+          var colors = palette();
+          var ctx = chart.ctx;
+          var values = chart.data.datasets[0].data;
+          ctx.save();
+          ctx.fillStyle = colors.text;
+          ctx.font = '600 10px Open Sans, Arial, sans-serif';
+          ctx.textBaseline = 'middle';
+          chart.getDatasetMeta(0).data.forEach(function(bar, index) {
+            ctx.fillText(Number(values[index]).toFixed(3), bar.x + 6, bar.y);
+          });
+          ctx.restore();
+        }
+      };
+
+      function createChart(canvasId, values, max, axisTitle, tooltipLabel) {
+        var colors = palette();
+        var barColors = values.map(function(_, index) {
+          return index < 6 ? colors.human : colors.agent;
+        });
+        return new Chart(document.getElementById(canvasId), {
+          type: 'bar',
+          data: {
+            labels: shortLabels,
+            datasets: [{
+              data: values,
+              backgroundColor: barColors,
+              borderColor: barColors,
+              borderWidth: 0,
+              borderRadius: 4,
+              barPercentage: 0.72,
+              categoryPercentage: 0.82
+            }]
+          },
+          plugins: [valueLabels],
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: { right: 50 } },
+            animation: {
+              duration: 1100,
+              easing: 'easeOutQuart',
+              delay: function(context) {
+                return context.type === 'data' ? context.dataIndex * 75 : 0;
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: colors.tooltipBg,
+                titleColor: '#fff',
+                bodyColor: '#fff',
+                padding: 10,
+                callbacks: {
+                  title: function(items) {
+                    return fullLabels[items[0].dataIndex];
+                  },
+                  label: function(context) {
+                    return tooltipLabel + '  ' + Number(context.parsed.x).toFixed(3);
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                beginAtZero: true,
+                max: max,
+                grid: { color: colors.grid },
+                border: { display: false },
+                ticks: {
+                  color: colors.text,
+                  stepSize: 0.1,
+                  font: { size: 10 }
+                },
+                title: {
+                  display: true,
+                  text: axisTitle,
+                  color: colors.text,
+                  font: { size: 11, weight: '600' }
+                }
+              },
+              y: {
+                grid: { display: false },
+                border: { display: false },
+                ticks: {
+                  autoSkip: false,
+                  color: colors.text,
+                  font: { size: window.innerWidth < 576 ? 8 : 10 }
+                }
+              }
+            }
+          }
+        });
+      }
+
+      function createCharts() {
+        if (charts.length) return;
+        fallback.style.display = 'none';
+        grid.classList.add('is-ready');
+        charts = [
+          createChart('rmseChart', rmse, 0.86, 'Macro RMSE (lower is better)', 'RMSE'),
+          createChart('spearmanChart', spearman, 0.84, 'Macro Spearman \u03c1 (higher is better)', 'Spearman \u03c1')
+        ];
+      }
+
+      function replayCharts() {
+        if (!charts.length) {
+          createCharts();
+          return;
+        }
+        charts.forEach(function(chart) {
+          chart.reset();
+          chart.update();
+        });
+      }
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            visible = entry.isIntersecting;
+            if (visible) replayCharts();
+            else charts.forEach(function(chart) { chart.reset(); });
+          });
+        }, { threshold: 0.2 }).observe(figure);
+      } else {
+        visible = true;
+        createCharts();
+      }
+
+      document.getElementById('themeToggle').addEventListener('click', function() {
+        requestAnimationFrame(function() {
+          charts.forEach(function(chart) { chart.destroy(); });
+          charts = [];
+          if (visible) createCharts();
+        });
+      });
+    })();
+
+    (function() {
+      var figure = document.getElementById('distributionFigure');
+      var grid = document.getElementById('distributionChartGrid');
+      var fallback = document.getElementById('distributionFallback');
+      if (!figure || !grid || !window.Chart) return;
+
+      var pki = [
+        [8,10,6,11,10,3,12,15,16,20,43,94,148,150,45,10,9,6,17,16,11,13,5,3,4,0],
+        [64,33,31,26,33,23,33,25,24,32,73,108,146,68,55,20,9,0,0,0,0,0,0,0,1,0],
+        [50,32,38,25,21,17,16,6,10,5,6,4,3,7,6,7,7,6,17,16,12,14,5,3,4,0],
+        [22,13,21,10,24,12,14,9,12,9,3,5,2,5,2,0,0,0,0,0,0,0,0,0,0,0]
+      ];
+      var pic50 = [
+        [88,113,142,158,180,194,269,237,348,301,334,119,300,118,136,27,63,49,15,3,2,1,1,2,0,0],
+        [149,190,226,232,331,409,323,250,268,154,202,46,116,32,27,34,23,34,11,4,2,1,0,0,0,0],
+        [161,194,203,148,156,144,117,99,136,87,74,91,75,32,28,21,14,29,25,18,12,6,6,4,0,0],
+        [93,111,88,85,68,58,28,9,18,11,9,3,8,3,0,0,0,0,0,0,0,0,0,0,0,0]
+      ];
+      var kinaseNames = ['JAK1', 'JAK2', 'JAK3', 'TYK2'];
+      var groupedLabels = ['6.25','6.75','7.25','7.75','8.25','8.75','9.25',
+                           '9.75','10.25','10.75','11.25','11.75','12.25'];
+      var charts = [];
+      var visible = false;
+
+      function palette() {
+        var light = document.body.classList.contains('light');
+        return {
+          text: light ? '#35495d' : 'rgba(255,255,255,0.72)',
+          grid: light ? 'rgba(26,42,58,0.09)' : 'rgba(255,255,255,0.08)',
+          bars: ['#3b82f6','#f59e0b','#10b981','#ef4444'],
+          tooltipBg: light ? '#1f3448' : '#071523'
+        };
+      }
+
+      function aggregateBins(values) {
+        var aggregated = [];
+        for (var i = 0; i < values.length; i += 2) {
+          aggregated.push(values[i] + (values[i + 1] || 0));
+        }
+        return aggregated;
+      }
+
+      function createDistributionChart(canvasId, series, endpoint) {
+        var colors = palette();
+        var datasets = series.map(function(values, index) {
+          return {
+            label: kinaseNames[index],
+            data: aggregateBins(values),
+            backgroundColor: colors.bars[index],
+            borderColor: colors.bars[index],
+            borderWidth: 0,
+            borderRadius: 2,
+            barPercentage: 0.9,
+            categoryPercentage: 0.86
+          };
+        });
+        return new Chart(document.getElementById(canvasId), {
+          type: 'bar',
+          data: { labels: groupedLabels, datasets: datasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            animation: {
+              duration: 1000,
+              easing: 'easeOutQuart',
+              delay: function(context) {
+                return context.type === 'data'
+                  ? context.datasetIndex * 90 + context.dataIndex * 18
+                  : 0;
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: colors.tooltipBg,
+                titleColor: '#fff',
+                bodyColor: '#fff',
+                callbacks: {
+                  title: function(items) {
+                    return endpoint + ' around ' + items[0].label;
+                  },
+                  label: function(context) {
+                    return context.dataset.label + '  ' + context.parsed.y + ' measurements';
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                stacked: false,
+                grid: { display: false },
+                border: { display: false },
+                ticks: {
+                  color: colors.text,
+                  maxRotation: 0,
+                  autoSkip: true,
+                  maxTicksLimit: 7,
+                  font: { size: 9 },
+                  callback: function(value, index) { return groupedLabels[index]; }
+                },
+                title: {
+                  display: true,
+                  text: endpoint,
+                  color: colors.text,
+                  font: { size: 11, weight: '600' }
+                }
+              },
+              y: {
+                beginAtZero: true,
+                grid: { color: colors.grid },
+                border: { display: false },
+                ticks: { color: colors.text, font: { size: 9 } },
+                title: {
+                  display: true,
+                  text: 'Frequency',
+                  color: colors.text,
+                  font: { size: 11, weight: '600' }
+                }
+              }
+            }
+          }
+        });
+      }
+
+      function createCharts() {
+        if (charts.length) return;
+        fallback.style.display = 'none';
+        grid.classList.add('is-ready');
+        charts = [
+          createDistributionChart('pkiDistributionChart', pki, 'pKi'),
+          createDistributionChart('pic50DistributionChart', pic50, 'pIC50')
+        ];
+      }
+
+      function replay() {
+        if (!charts.length) createCharts();
+        else charts.forEach(function(chart) { chart.reset(); chart.update(); });
+      }
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function(entries) {
+          visible = entries[0].isIntersecting;
+          if (visible) replay();
+          else charts.forEach(function(chart) { chart.reset(); });
+        }, { threshold: 0.2 }).observe(figure);
+      } else {
+        visible = true;
+        createCharts();
+      }
+
+      document.getElementById('themeToggle').addEventListener('click', function() {
+        requestAnimationFrame(function() {
+          charts.forEach(function(chart) { chart.destroy(); });
+          charts = [];
+          if (visible) createCharts();
+        });
+      });
+    })();
+
+    (function() {
+      var figure = document.getElementById('scaffoldFigure');
+      var grid = document.getElementById('scaffoldChartGrid');
+      var fallback = document.getElementById('scaffoldFallback');
+      if (!figure || !grid || !window.Chart) return;
+
+      var charts = [];
+      var visible = false;
+      var boxStats = [
+        { label: 'train', n: 608, min: 6.000, q1: 7.400, median: 8.720, q3: 9.112, max: 10.150, outliers: [12.000] },
+        { label: 'val', n: 112, min: 6.000, q1: 7.867, median: 9.065, q3: 9.412, max: 10.220, outliers: [] },
+        { label: 'test', n: 84, min: 6.100, q1: 7.215, median: 8.610, q3: 9.092, max: 9.890, outliers: [] }
+      ];
+
+      function palette() {
+        var light = document.body.classList.contains('light');
+        return {
+          text: light ? '#35495d' : 'rgba(255,255,255,0.72)',
+          grid: light ? 'rgba(26,42,58,0.09)' : 'rgba(255,255,255,0.08)',
+          blue: light ? '#3775a3' : '#66a3ce',
+          orange: '#e9a15b',
+          box: light ? 'rgba(55,117,163,0.32)' : 'rgba(102,163,206,0.3)',
+          tooltipBg: light ? '#1f3448' : '#071523'
+        };
+      }
+
+      var boxDetails = {
+        id: 'boxDetails',
+        afterDatasetsDraw: function(chart) {
+          var c = palette();
+          var ctx = chart.ctx;
+          var y = chart.scales.y;
+          var bars = chart.getDatasetMeta(0).data;
+          ctx.save();
+          ctx.strokeStyle = c.text;
+          ctx.fillStyle = c.text;
+          ctx.lineWidth = 1.4;
+          bars.forEach(function(bar, index) {
+            var stats = boxStats[index];
+            var half = Math.max(9, bar.width * 0.35);
+            var x = bar.x;
+            var low = y.getPixelForValue(stats.min);
+            var high = y.getPixelForValue(stats.max);
+            var median = y.getPixelForValue(stats.median);
+            var q1 = y.getPixelForValue(stats.q1);
+            var q3 = y.getPixelForValue(stats.q3);
+
+            ctx.beginPath();
+            ctx.moveTo(x, high); ctx.lineTo(x, q3);
+            ctx.moveTo(x, q1); ctx.lineTo(x, low);
+            ctx.moveTo(x - half / 2, high); ctx.lineTo(x + half / 2, high);
+            ctx.moveTo(x - half / 2, low); ctx.lineTo(x + half / 2, low);
+            ctx.moveTo(x - half, median); ctx.lineTo(x + half, median);
+            ctx.stroke();
+
+            stats.outliers.forEach(function(value) {
+              ctx.beginPath();
+              ctx.arc(x, y.getPixelForValue(value), 3, 0, Math.PI * 2);
+              ctx.fill();
+            });
+          });
+          ctx.restore();
+        }
+      };
+
+      function baseOptions() {
+        var c = palette();
+        return {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: {
+            duration: 1050,
+            easing: 'easeOutQuart',
+            delay: function(context) {
+              return context.type === 'data' ? context.dataIndex * 65 : 0;
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: c.tooltipBg,
+              titleColor: '#fff',
+              bodyColor: '#fff'
+            }
+          }
+        };
+      }
+
+      function createSizeChart() {
+        var c = palette();
+        var options = baseOptions();
+        options.plugins.tooltip.callbacks = {
+          label: function(context) {
+            return context.parsed.y + ' scaffold groups';
+          }
+        };
+        options.scales = {
+          x: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: { color: c.text, maxRotation: 0, font: { size: 8 } },
+            title: {
+              display: true,
+              text: 'Molecules in scaffold group',
+              color: c.text,
+              font: { size: 10, weight: '600' }
+            }
+          },
+          y: {
+            type: 'logarithmic',
+            min: 1,
+            max: 2000,
+            grid: { color: c.grid },
+            border: { display: false },
+            ticks: {
+              color: c.text,
+              callback: function(value) {
+                return [1, 10, 100, 1000].indexOf(Number(value)) >= 0 ? value : '';
+              }
+            },
+            title: {
+              display: true,
+              text: 'Scaffold groups',
+              color: c.text,
+              font: { size: 10, weight: '600' }
+            }
+          }
+        };
+        return new Chart(document.getElementById('scaffoldSizeChart'), {
+          type: 'bar',
+          data: {
+            labels: ['1','2','3','4','5','6\u201310','11\u201320','21\u201340','41\u201380','81+'],
+            datasets: [{
+              data: [1306,252,95,44,28,76,43,14,5,3],
+              backgroundColor: c.blue,
+              borderWidth: 0,
+              borderRadius: 2
+            }]
+          },
+          options: options
+        });
+      }
+
+      function createBoxChart() {
+        var c = palette();
+        var options = baseOptions();
+        options.plugins.tooltip.callbacks = {
+          label: function(context) {
+            var stats = boxStats[context.dataIndex];
+            return [
+              'n  ' + stats.n,
+              'median  ' + stats.median.toFixed(3),
+              'IQR  ' + stats.q1.toFixed(3) + ' to ' + stats.q3.toFixed(3)
+            ];
+          }
+        };
+        options.scales = {
+          x: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: { color: c.text }
+          },
+          y: {
+            min: 5.5,
+            max: 12.5,
+            grid: { color: c.grid },
+            border: { display: false },
+            ticks: { color: c.text },
+            title: {
+              display: true,
+              text: 'pKi JAK2',
+              color: c.text,
+              font: { size: 10, weight: '600' }
+            }
+          }
+        };
+        return new Chart(document.getElementById('splitBoxChart'), {
+          type: 'bar',
+          data: {
+            labels: ['train','val','test'],
+            datasets: [{
+              data: boxStats.map(function(stats) { return [stats.q1, stats.q3]; }),
+              backgroundColor: [c.box, c.box, 'rgba(233,161,91,0.34)'],
+              borderColor: [c.blue, c.blue, c.orange],
+              borderWidth: 1.5,
+              borderRadius: 2,
+              barPercentage: 0.55
+            }]
+          },
+          plugins: [boxDetails],
+          options: options
+        });
+      }
+
+      function createSimilarityChart() {
+        var c = palette();
+        var options = baseOptions();
+        options.plugins.legend = {
+          display: true,
+          position: 'top',
+          labels: {
+            color: c.text,
+            boxWidth: 11,
+            boxHeight: 8,
+            font: { size: 9 }
+          }
+        };
+        options.plugins.tooltip.callbacks = {
+          title: function(items) { return 'Similarity around ' + items[0].label; },
+          label: function(context) {
+            return context.dataset.label + '  ' + context.parsed.y + ' molecules';
+          }
+        };
+        options.scales = {
+          x: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: {
+              color: c.text,
+              maxRotation: 0,
+              autoSkip: true,
+              maxTicksLimit: 6,
+              font: { size: 8 }
+            },
+            title: {
+              display: true,
+              text: 'Tanimoto similarity',
+              color: c.text,
+              font: { size: 10, weight: '600' }
+            }
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: c.grid },
+            border: { display: false },
+            ticks: { color: c.text, font: { size: 8 } },
+            title: {
+              display: true,
+              text: 'Molecules',
+              color: c.text,
+              font: { size: 10, weight: '600' }
+            }
+          }
+        };
+        return new Chart(document.getElementById('similarityChart'), {
+          type: 'bar',
+          data: {
+            labels: ['0.18','0.23','0.28','0.33','0.38','0.43','0.48','0.53','0.58',
+                     '0.63','0.68','0.73','0.78','0.83','0.88','0.93','0.98'],
+            datasets: [
+              {
+                label: 'validation',
+                data: [1,3,1,5,5,3,3,3,25,26,39,84,113,78,34,24,5],
+                backgroundColor: c.blue,
+                borderWidth: 0,
+                borderRadius: 1
+              },
+              {
+                label: 'test',
+                data: [1,0,5,3,8,10,4,17,21,40,42,72,92,69,48,19,3],
+                backgroundColor: c.orange,
+                borderWidth: 0,
+                borderRadius: 1
+              }
+            ]
+          },
+          options: options
+        });
+      }
+
+      function createCharts() {
+        if (charts.length) return;
+        fallback.style.display = 'none';
+        grid.classList.add('is-ready');
+        charts = [createSizeChart(), createBoxChart(), createSimilarityChart()];
+      }
+
+      function replay() {
+        if (!charts.length) createCharts();
+        else charts.forEach(function(chart) { chart.reset(); chart.update(); });
+      }
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function(entries) {
+          visible = entries[0].isIntersecting;
+          if (visible) replay();
+          else charts.forEach(function(chart) { chart.reset(); });
+        }, { threshold: 0.18 }).observe(figure);
+      } else {
+        visible = true;
+        createCharts();
+      }
+
+      document.getElementById('themeToggle').addEventListener('click', function() {
+        requestAnimationFrame(function() {
+          charts.forEach(function(chart) { chart.destroy(); });
+          charts = [];
+          if (visible) createCharts();
+        });
+      });
+    })();
+
+    (function() {
+      var figure = document.getElementById('selectivityFigure');
+      var container = document.getElementById('selectivityHeatmaps');
+      var fallback = document.getElementById('selectivityFallback');
+      if (!figure || !container) return;
+
+      var pairs = [
+        ['JAK1-JAK2', 63], ['JAK1-JAK3', 8], ['JAK1-TYK2', 9],
+        ['JAK2-JAK3', 19], ['JAK2-TYK2', 12], ['JAK3-TYK2', 10]
+      ];
+      var groups = [
+        {
+          title: 'Human-trained models',
+          rows: [
+            ['Random forest', [[0.169,0.88],[0.619,0.45],[0.535,0.08],[0.650,0.66],[0.632,0.20],[0.512,0.58]]],
+            ['SMILES transformer (a)', [[0.409,0.34],[0.682,-0.29],[0.268,0.53],[0.869,0.61],[0.799,-0.23],[0.810,-0.02]]],
+            ['Fingerprint MLP, w=0', [[0.238,0.78],[0.578,0.38],[0.408,0.28],[0.675,0.71],[0.456,0.22],[0.704,0.73]]],
+            ['Fingerprint MLP, w=0.5', [[0.182,0.85],[0.532,0.59],[0.315,0.63],[0.549,0.74],[0.429,0.29],[0.646,0.72]]],
+            ['Residual GNN (c)', [[0.258,0.74],[0.623,0.59],[0.445,0.47],[0.609,0.46],[0.597,0.04],[0.885,0.65]]],
+            ['AttentiveFP + pIC50 (d)', [[0.213,0.77],[0.615,0.76],[0.249,0.52],[0.525,0.72],[0.436,0.06],[0.539,0.79]]]
+          ]
+        },
+        {
+          title: 'Agent-trained models',
+          rows: [
+            ['Agent MT MLP', [[0.210,0.85],[0.501,0.67],[0.450,0.33],[0.547,0.74],[0.462,0.16],[0.621,0.64]]],
+            ['Improve MT, no lit.', [[0.198,0.88],[0.526,0.67],[0.439,0.05],[0.556,0.74],[0.479,0.19],[0.592,0.66]]],
+            ['Improve MT, literature', [[0.204,0.83],[0.545,0.76],[0.513,-0.42],[0.508,0.70],[0.523,0.06],[0.589,0.58]]],
+            ['Improve RF, no lit.', [[0.160,0.90],[0.590,0.57],[0.404,-0.02],[0.562,0.74],[0.562,0.05],[0.565,0.61]]],
+            ['Improve RF, literature', [[0.174,0.91],[0.599,0.64],[0.549,0.00],[0.609,0.66],[0.619,0.21],[0.503,0.59]]]
+          ]
+        }
+      ];
+      var cellIndex = 0;
+
+      function heatColor(value) {
+        var t = Math.max(0, Math.min(1, (value - 0.16) / (0.89 - 0.16)));
+        var hue = 135 - t * 125;
+        return document.body.classList.contains('light')
+          ? 'hsla(' + hue.toFixed(0) + ', 55%, 84%, 0.9)'
+          : 'hsla(' + hue.toFixed(0) + ', 60%, 52%, 0.28)';
+      }
+
+      function makeDiv(className, text) {
+        var div = document.createElement('div');
+        div.className = className;
+        if (text !== undefined) div.textContent = text;
+        return div;
+      }
+
+      groups.forEach(function(group) {
+        var panel = document.createElement('section');
+        panel.className = 'selectivity-panel';
+        var title = document.createElement('h3');
+        title.textContent = group.title;
+        panel.appendChild(title);
+
+        var grid = document.createElement('div');
+        grid.className = 'heatmap-grid';
+        grid.appendChild(makeDiv('heatmap-header', ''));
+        pairs.forEach(function(pair) {
+          var header = makeDiv('heatmap-header');
+          header.innerHTML = pair[0] + '<br><em>n = ' + pair[1] + '</em>';
+          grid.appendChild(header);
+        });
+
+        var minima = pairs.map(function(_, pairIndex) {
+          return Math.min.apply(null, group.rows.map(function(row) {
+            return row[1][pairIndex][0];
+          }));
+        });
+
+        group.rows.forEach(function(row) {
+          grid.appendChild(makeDiv('heatmap-row-label', row[0]));
+          row[1].forEach(function(metrics, pairIndex) {
+            var cell = makeDiv('heatmap-cell');
+            cell.dataset.rmse = metrics[0];
+            cell.style.backgroundColor = heatColor(metrics[0]);
+            cell.style.setProperty('--cell-index', cellIndex++);
+            if (metrics[0] === minima[pairIndex]) cell.classList.add('best');
+            cell.innerHTML = '<strong>' + metrics[0].toFixed(3) + '</strong>' +
+                             '<small>\u03c1 = ' + metrics[1].toFixed(2) + '</small>';
+            cell.title = row[0] + ' / ' + pairs[pairIndex][0] +
+                         '\nPair RMSE  ' + metrics[0].toFixed(3) +
+                         '\nMargin Spearman \u03c1  ' + metrics[1].toFixed(2);
+            grid.appendChild(cell);
+          });
+        });
+
+        panel.appendChild(grid);
+        container.appendChild(panel);
+      });
+
+      fallback.style.display = 'none';
+      container.classList.add('is-ready', 'is-animated');
+
+      function updateColors() {
+        container.querySelectorAll('.heatmap-cell').forEach(function(cell) {
+          cell.style.backgroundColor = heatColor(Number(cell.dataset.rmse));
+        });
+      }
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function(entries) {
+          container.classList.toggle('is-visible', entries[0].isIntersecting);
+        }, { threshold: 0.15 }).observe(figure);
+      } else {
+        container.classList.add('is-visible');
+      }
+
+      document.getElementById('themeToggle').addEventListener('click', function() {
+        requestAnimationFrame(updateColors);
+      });
+    })();
+
+    (function() {
+      var figure = document.getElementById('calibrationFigure');
+      var panel = document.getElementById('calibrationChartPanel');
+      var fallback = document.getElementById('calibrationFallback');
+      if (!figure || !panel || !window.Chart) return;
+
+      var chart = null;
+      var visible = false;
+      var labels = [
+        'Random forest',
+        'Agent MT MLP',
+        'Fingerprint MLP (b)',
+        'Residual GNN (c)',
+        'AttentiveFP + pIC50 (d)',
+        '(d) + learned variance',
+        '(d) + variance + conformal'
+      ];
+      var coverage = [22.7, 26.1, 39.5, 42.4, 50.1, 87.3, 86.7];
+
+      function colors() {
+        var light = document.body.classList.contains('light');
+        return {
+          text: light ? '#35495d' : 'rgba(255,255,255,0.76)',
+          grid: light ? 'rgba(26,42,58,0.09)' : 'rgba(255,255,255,0.08)',
+          target: light ? '#46596c' : 'rgba(255,255,255,0.65)'
+        };
+      }
+
+      var annotations = {
+        id: 'coverageAnnotations',
+        afterDatasetsDraw: function(instance) {
+          var c = colors();
+          var ctx = instance.ctx;
+          var meta = instance.getDatasetMeta(0);
+          ctx.save();
+          ctx.fillStyle = c.text;
+          ctx.font = '600 10px Open Sans, Arial, sans-serif';
+          ctx.textBaseline = 'middle';
+          meta.data.forEach(function(bar, index) {
+            ctx.fillText(coverage[index].toFixed(0) + '%', bar.x + 6, bar.y);
+          });
+
+          var targetX = instance.scales.x.getPixelForValue(90);
+          ctx.strokeStyle = c.target;
+          ctx.setLineDash([5, 4]);
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(targetX, instance.chartArea.top);
+          ctx.lineTo(targetX, instance.chartArea.bottom);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText('target 90%', targetX - 5, instance.chartArea.top - 4);
+          ctx.restore();
+        }
+      };
+
+      function createChart() {
+        if (chart) return;
+        var c = colors();
+        fallback.style.display = 'none';
+        panel.classList.add('is-ready');
+        chart = new Chart(document.getElementById('calibrationChart'), {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: coverage,
+              backgroundColor: ['#376484','#e67c61','#376484','#376484','#376484','#2fa393','#2fa393'],
+              borderWidth: 0,
+              borderRadius: 4,
+              barPercentage: 0.72,
+              categoryPercentage: 0.82
+            }]
+          },
+          plugins: [annotations],
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: { top: 16, right: 40 } },
+            animation: {
+              duration: 1150,
+              easing: 'easeOutQuart',
+              delay: function(context) {
+                return context.type === 'data' ? context.dataIndex * 90 : 0;
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return 'Coverage ' + Number(context.parsed.x).toFixed(1) + '%';
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                beginAtZero: true,
+                max: 100,
+                grid: { color: c.grid },
+                border: { display: false },
+                ticks: {
+                  color: c.text,
+                  callback: function(value) { return value + '%'; }
+                },
+                title: {
+                  display: true,
+                  text: 'Empirical coverage',
+                  color: c.text,
+                  font: { size: 11, weight: '600' }
+                }
+              },
+              y: {
+                grid: { display: false },
+                border: { display: false },
+                ticks: {
+                  color: c.text,
+                  font: { size: window.innerWidth < 576 ? 8 : 10 }
+                }
+              }
+            }
+          }
+        });
+      }
+
+      function replay() {
+        if (!chart) createChart();
+        else { chart.reset(); chart.update(); }
+      }
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function(entries) {
+          visible = entries[0].isIntersecting;
+          if (visible) replay();
+          else if (chart) chart.reset();
+        }, { threshold: 0.2 }).observe(figure);
+      } else {
+        visible = true;
+        createChart();
+      }
+
+      document.getElementById('themeToggle').addEventListener('click', function() {
+        requestAnimationFrame(function() {
+          if (chart) chart.destroy();
+          chart = null;
+          if (visible) createChart();
+        });
       });
     })();
   </script>
