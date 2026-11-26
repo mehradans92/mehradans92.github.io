@@ -395,6 +395,13 @@ iframe {
     padding-right: 1rem;
 }
 
+/* Preserve the complete wide lock diagram inside the standard project card. */
+#projects .jak-project-card > img {
+    object-fit: contain !important;
+    object-position: center !important;
+    background: #fff;
+}
+
 #software .portfolio-box > img,
 #software .portfolio-box > video {
     position: absolute !important;
