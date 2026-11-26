@@ -1192,9 +1192,13 @@
         { id: 969516, featured: false },
         { id: 3034034, featured: false }
       ];
+      var isMobile = window.innerWidth < 576;
+      var activeCompounds = isMobile
+        ? compounds.slice(0, 3).concat(compounds.slice(4, 6))
+        : compounds;
       var canvases = {};
       var particles = [];
-      var collisionPadding = 10;
+      var collisionPadding = isMobile ? 14 : 10;
       var theme = {
         dark: {
           C: '#8eb7e8', O: '#ff6b6b', N: '#62b5ff', F: '#50d890',
@@ -1292,7 +1296,7 @@
 
       function renderParticle(p, now) {
         var z = (Math.sin(now * p.zRate + p.zPhase) + 1) / 2;
-        var scale = 0.7 + z * 1.05;
+        var scale = isMobile ? 0.75 + z * 0.55 : 0.7 + z * 1.05;
         p.currentScale = scale;
         p.el.style.transform = 'translate3d(' + p.x.toFixed(1) + 'px,' +
                                p.y.toFixed(1) + 'px,0) rotate(' +
@@ -1302,11 +1306,15 @@
         p.el.style.zIndex = Math.round(z * 40);
       }
 
-      compounds.forEach(function(compound, index) {
+      activeCompounds.forEach(function(compound, index) {
         var depth = compound.featured ? rand(0.45, 1) : rand(0, 1);
-        var size = compound.featured
-          ? Math.round(72 + depth * 78)
-          : Math.round(48 + depth * 92);
+        var size = isMobile
+          ? (compound.featured
+              ? Math.round(44 + depth * 30)
+              : Math.round(36 + depth * 35))
+          : (compound.featured
+              ? Math.round(72 + depth * 78)
+              : Math.round(48 + depth * 92));
         var position = choosePlacement(size);
         var canvas = document.createElement('canvas');
         canvas.id = 'terminal-molecule-' + index;
@@ -1337,7 +1345,7 @@
       });
 
       var url = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/' +
-                compounds.map(function(compound) { return compound.id; }).join(',') +
+                activeCompounds.map(function(compound) { return compound.id; }).join(',') +
                 '/property/IsomericSMILES/JSON';
       fetch(url)
         .then(function(response) { return response.json(); })
