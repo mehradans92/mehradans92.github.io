@@ -35,7 +35,7 @@
       --nav-muted: rgba(255,255,255,0.4);
       --nav-link: rgba(255,255,255,0.6);
       --hero-sub: rgba(255,255,255,0.5);
-      --card-bg: rgba(255,255,255,0.04);
+      --card-bg: rgba(15, 29, 49, 0);
       --card-border: rgba(255,255,255,0.08);
       --card-hover-shadow: rgba(0,0,0,0.3);
       --card-hover-border: rgba(92,184,255,0.2);
@@ -60,7 +60,7 @@
       --nav-muted: rgba(0,0,0,0.4);
       --nav-link: rgba(0,0,0,0.55);
       --hero-sub: rgba(0,0,0,0.45);
-      --card-bg: rgba(255,255,255,0.7);
+      --card-bg: rgba(255,255,255,0.92);
       --card-border: rgba(0,0,0,0.08);
       --card-hover-shadow: rgba(0,0,0,0.1);
       --card-hover-border: rgba(42,125,225,0.25);
@@ -174,6 +174,8 @@
       display: flex;
       flex-direction: column;
       background: var(--card-bg);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
       border: 1px solid var(--card-border);
       border-radius: 16px;
       text-decoration: none;
@@ -310,10 +312,134 @@
     @keyframes blink {
       50% { opacity: 0; }
     }
+
+    /* ---- Floating chemical structure background ---- */
+    #mol-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    #mol-bg .mol {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      visibility: hidden;
+      will-change: transform, opacity;
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(130, 190, 255, 0.22));
+      transition: opacity 0.5s ease;
+    }
+    #mol-bg .mol.mol-processed {
+      visibility: visible;
+      opacity: var(--op);
+    }
+    body.light #mol-bg { opacity: 1; }
+    body.light #mol-bg .mol {
+      filter: drop-shadow(0 2px 5px rgba(28, 61, 105, 0.2));
+    }
+
+    /* Aurora color blobs drifting behind the structures */
+    #aurora {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    #aurora span {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      mix-blend-mode: screen;
+      will-change: transform;
+    }
+    #aurora span:nth-child(1) {
+      width: 42vw; height: 42vw; left: -8%; top: 4%;
+      background: radial-gradient(circle, rgba(56, 140, 220, 0.5) 0%, transparent 70%);
+      animation: auroraA 28s ease-in-out infinite;
+    }
+    #aurora span:nth-child(2) {
+      width: 38vw; height: 38vw; right: -6%; top: 28%;
+      background: radial-gradient(circle, rgba(130, 90, 230, 0.42) 0%, transparent 70%);
+      animation: auroraB 34s ease-in-out infinite;
+    }
+    #aurora span:nth-child(3) {
+      width: 46vw; height: 46vw; left: 24%; bottom: -14%;
+      background: radial-gradient(circle, rgba(60, 200, 210, 0.36) 0%, transparent 70%);
+      animation: auroraC 40s ease-in-out infinite;
+    }
+    @keyframes auroraA {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50%      { transform: translate(8vw, 6vh) scale(1.25); }
+    }
+    @keyframes auroraB {
+      0%, 100% { transform: translate(0, 0) scale(1.1); }
+      50%      { transform: translate(-7vw, 8vh) scale(0.85); }
+    }
+    @keyframes auroraC {
+      0%, 100% { transform: translate(0, 0) scale(0.95); }
+      50%      { transform: translate(5vw, -7vh) scale(1.3); }
+    }
+    body.light #aurora span {
+      mix-blend-mode: multiply;
+      filter: blur(80px);
+      opacity: 1;
+    }
+    body.light #aurora span:nth-child(1) {
+      background: radial-gradient(circle, rgba(86, 150, 225, 0.3) 0%, transparent 70%);
+    }
+    body.light #aurora span:nth-child(2) {
+      background: radial-gradient(circle, rgba(156, 116, 220, 0.24) 0%, transparent 70%);
+    }
+    body.light #aurora span:nth-child(3) {
+      background: radial-gradient(circle, rgba(66, 190, 184, 0.22) 0%, transparent 70%);
+    }
+
+    /* Floating SMILES and formulas */
+    #chem-floats {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    #chem-floats .chem-float {
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: var(--link);
+      opacity: var(--op, 0.25);
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+      will-change: transform;
+    }
+    body.light #chem-floats .chem-float {
+      color: #255f9e;
+      font-weight: 600;
+      text-shadow: 0 1px 8px rgba(255, 255, 255, 0.9);
+    }
+    .blog-hero, .posts { position: relative; z-index: 1; }
+
+    @media (max-width: 900px) {
+      #mol-bg, #chem-floats, #aurora { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #mol-bg .mol, #chem-floats .chem-float { transition: none; }
+      #aurora span { animation: none; }
+    }
   </style>
 </head>
 
 <body>
+  <div id="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div id="mol-bg" aria-hidden="true"></div>
+  <div id="chem-floats" aria-hidden="true"></div>
   <nav class="blog-nav">
     <div class="container">
       <a class="blog-nav-brand" href="index.html">← Mehrad Ansari</a>
@@ -338,6 +464,7 @@
       </div>
       <div class="blog-terminal-body">
         <div><span class="prompt-env">(latent-space)</span> <span class="prompt-user">mehrad</span><span class="prompt-sym">:~$</span> <span class="cmd">cat posts/</span></div>
+        <div class="out">&gt; Can a Research Agent Out-Model Me on JAK Selectivity?</div>
         <div class="out">&gt; Where Did COVID-19 Start in the State of New York?</div>
         <div class="out">&gt; Gelator Transparency Classification using KRR</div>
         <div class="out">&gt; Hyperparameter Tuning: Finding the Sweet Spot</div>
@@ -348,6 +475,17 @@
 
   <div class="container posts">
     <div class="posts-grid">
+      <a class="post-card" href="latent_space_blog/jak-selectivity.html">
+        <div class="post-card-text">
+          <h2>Can a Research Agent Out-Model Me on JAK Selectivity?</h2>
+          <div class="post-meta">November 2026</div>
+          <p>Predicting JAK-family affinity and selectivity from SMILES under a scaffold-shifted split, then building a literature-augmented ReAct agent and asking it to beat my hand-designed models. It did, on affinity.</p>
+        </div>
+        <div class="post-card-thumb">
+          <img src="latent_space_blog/media/jak/manual_agent_comparison.png" alt="Human-trained versus agent-trained JAK model comparison" style="padding: 0.5rem 0.25rem; background: #fff; border-radius: 12px;">
+        </div>
+      </a>
+
       <a class="post-card" href="latent_space_blog/hyperparameter-tuning.html">
         <div class="post-card-text">
           <h2>Hyperparameter Tuning: Finding the Sweet Spot</h2>
@@ -383,6 +521,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/smiles-drawer@2.4.2/dist/smiles-drawer.min.js"></script>
   <script>
     (function() {
       var toggle = document.getElementById('themeToggle');
@@ -392,6 +531,343 @@
         document.body.classList.toggle('light');
         localStorage.setItem('blog-theme', document.body.classList.contains('light') ? 'light' : 'dark');
       });
+    })();
+
+    /* Generate a full-page field of randomized PubChem structures. */
+    (function() {
+      if (window.matchMedia && window.matchMedia('(max-width: 900px)').matches) return;
+
+      var rand = function(a, b) { return a + Math.random() * (b - a); };
+      var shuffle = function(arr) {
+        arr = arr.slice();
+        for (var i = arr.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+        }
+        return arr;
+      };
+
+      /* PubChem supplies molecule IDs; SmilesDrawer handles all depiction. */
+      var PUBCHEM = [2519, 2244, 3672, 5288826, 5793, 681, 5281, 241, 5957, 1983,
+                     5280343, 4927, 931, 60961, 2157, 65064, 2352, 6049, 1110,
+                     5280961, 2733526, 3385, 444899, 72, 996, 338, 1548943, 10836];
+      /* Larger or visually distinctive structures; several are guaranteed each load. */
+      var FEATURED = [36314, 14969, 123591, 12085802, 166596686, 969516, 3034034,
+                      9926791, 25126798, 44205240, 58557659];
+      var molBg = document.getElementById('mol-bg');
+      var totalCount = Math.round(rand(18, 21));
+      var featuredCount = 6;
+      var chosen = shuffle(
+        shuffle(FEATURED).slice(0, featuredCount).map(function(id) {
+          return { id: id, featured: true };
+        }).concat(
+          shuffle(PUBCHEM).slice(0, totalCount - featuredCount).map(function(id) {
+            return { id: id, featured: false };
+          })
+        )
+      );
+
+      var particles = [];
+      var collisionPadding = 10;
+
+      function collisionBox(p) {
+        var scale = p.collisionScale * (p.currentScale || 1);
+        var w = p.w * scale;
+        var h = p.h * scale;
+        return {
+          x: p.x + (p.w - w) / 2,
+          y: p.y + (p.h - h) / 2,
+          w: w,
+          h: h
+        };
+      }
+
+      function overlaps(a, b, padding) {
+        var aa = collisionBox(a);
+        var bb = collisionBox(b);
+        return aa.x < bb.x + bb.w + padding &&
+               aa.x + aa.w + padding > bb.x &&
+               aa.y < bb.y + bb.h + padding &&
+               aa.y + aa.h + padding > bb.y;
+      }
+
+      function choosePlacement(w, h, collisionScale) {
+        var vw = window.innerWidth;
+        var vh = window.innerHeight;
+        var best = null;
+
+        for (var attempt = 0; attempt < 180; attempt++) {
+          var candidate = {
+            x: rand(4, Math.max(5, vw - w - 4)),
+            y: rand(4, Math.max(5, vh - h - 4)),
+            w: w,
+            h: h,
+            collisionScale: collisionScale,
+            currentScale: 1,
+            collisions: 0
+          };
+
+          particles.forEach(function(p) {
+            if (overlaps(candidate, p, collisionPadding)) candidate.collisions++;
+          });
+
+          if (!best || candidate.collisions < best.collisions) best = candidate;
+          if (candidate.collisions === 0) break;
+        }
+        return best;
+      }
+
+      function addParticle(el, w, h, type) {
+        var collisionScale = type === 'mol' ? 0.68 : 1;
+        var position = choosePlacement(w, h, collisionScale);
+        var particle = {
+          el: el,
+          type: type,
+          x: position.x,
+          y: position.y,
+          w: w,
+          h: h,
+          collisionScale: collisionScale,
+          currentScale: 1,
+          vx: rand(-0.28, 0.28),
+          vy: rand(-0.28, 0.28),
+          angle: type === 'mol' ? rand(-10, 10) : 0,
+          spin: type === 'mol' ? (Math.random() < 0.5 ? -1 : 1) * rand(0.04, 0.1) : 0,
+          zPhase: rand(0, Math.PI * 2),
+          zRate: type === 'mol' ? rand(0.00025, 0.00055) : rand(0.00015, 0.0003),
+          baseOpacity: parseFloat(el.style.getPropertyValue('--op')) || 0.25,
+          noise: type === 'mol' ? 0.028 : 0.02,
+          maxSpeed: type === 'mol' ? rand(0.38, 0.58) : rand(0.26, 0.44)
+        };
+        particles.push(particle);
+        return particle;
+      }
+
+      function clampParticle(p) {
+        var maxX = Math.max(0, window.innerWidth - p.w);
+        var maxY = Math.max(0, window.innerHeight - p.h);
+        if (p.x < 0) { p.x = 0; p.vx = Math.abs(p.vx); }
+        if (p.y < 0) { p.y = 0; p.vy = Math.abs(p.vy); }
+        if (p.x > maxX) { p.x = maxX; p.vx = -Math.abs(p.vx); }
+        if (p.y > maxY) { p.y = maxY; p.vy = -Math.abs(p.vy); }
+      }
+
+      function resolveCollisions() {
+        for (var pass = 0; pass < 2; pass++) {
+          for (var i = 0; i < particles.length; i++) {
+            for (var j = i + 1; j < particles.length; j++) {
+              var a = particles[i];
+              var b = particles[j];
+              var ab = collisionBox(a);
+              var bb = collisionBox(b);
+              var dx = (a.x + a.w / 2) - (b.x + b.w / 2);
+              var dy = (a.y + a.h / 2) - (b.y + b.h / 2);
+              var overlapX = (ab.w + bb.w) / 2 + collisionPadding - Math.abs(dx);
+              var overlapY = (ab.h + bb.h) / 2 + collisionPadding - Math.abs(dy);
+
+              if (overlapX <= 0 || overlapY <= 0) continue;
+
+              if (overlapX < overlapY) {
+                var sx = dx >= 0 ? 1 : -1;
+                a.x += sx * overlapX / 2;
+                b.x -= sx * overlapX / 2;
+                var avx = a.vx;
+                a.vx = b.vx * 0.7;
+                b.vx = avx * 0.7;
+              } else {
+                var sy = dy >= 0 ? 1 : -1;
+                a.y += sy * overlapY / 2;
+                b.y -= sy * overlapY / 2;
+                var avy = a.vy;
+                a.vy = b.vy * 0.7;
+                b.vy = avy * 0.7;
+              }
+              clampParticle(a);
+              clampParticle(b);
+            }
+          }
+        }
+      }
+
+      function renderParticle(p, now) {
+        var z = (Math.sin(now * p.zRate + p.zPhase) + 1) / 2;
+        var scale = p.type === 'mol' ? 0.7 + z * 1.05 : 0.94 + z * 0.1;
+        var opacityScale = p.type === 'mol' ? 0.45 + z * 0.55 : 0.75 + z * 0.25;
+        p.currentScale = scale;
+        var rotation = p.type === 'mol' ? ' rotate(' + p.angle.toFixed(2) + 'deg)' : '';
+        p.el.style.transform = 'translate3d(' + p.x.toFixed(1) + 'px,' +
+                               p.y.toFixed(1) + 'px,0)' + rotation +
+                               ' scale(' + scale.toFixed(3) + ')';
+        p.el.style.opacity = (p.baseOpacity * opacityScale).toFixed(3);
+        p.el.style.zIndex = Math.round(z * 40);
+      }
+
+      function runBrownianField() {
+        var pointer = { active: false, x: 0, y: 0 };
+        var reduced = window.matchMedia &&
+                      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        var initialNow = performance.now();
+        particles.forEach(function(p) { renderParticle(p, initialNow); });
+        for (var settle = 0; settle < 6; settle++) resolveCollisions();
+        particles.forEach(function(p) { renderParticle(p, initialNow); });
+        if (reduced) return;
+
+        window.addEventListener('mousemove', function(e) {
+          pointer.active = true;
+          pointer.x = e.clientX;
+          pointer.y = e.clientY;
+        }, { passive: true });
+        document.addEventListener('mouseleave', function() {
+          pointer.active = false;
+        });
+
+        var last = performance.now();
+        function frame(now) {
+          var dt = Math.min(2, (now - last) / 16.667);
+          last = now;
+
+          particles.forEach(function(p) {
+            p.vx = (p.vx + (Math.random() - 0.5) * p.noise * dt) * Math.pow(0.994, dt);
+            p.vy = (p.vy + (Math.random() - 0.5) * p.noise * dt) * Math.pow(0.994, dt);
+
+            if (pointer.active) {
+              var px = p.x + p.w / 2 - pointer.x;
+              var py = p.y + p.h / 2 - pointer.y;
+              var distance = Math.sqrt(px * px + py * py);
+              if (distance > 0 && distance < 145) {
+                var force = (1 - distance / 145) * 0.04 * dt;
+                p.vx += px / distance * force;
+                p.vy += py / distance * force;
+              }
+            }
+
+            var speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+            if (speed > p.maxSpeed) {
+              p.vx = p.vx / speed * p.maxSpeed;
+              p.vy = p.vy / speed * p.maxSpeed;
+            }
+
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.angle += p.spin * dt;
+            clampParticle(p);
+          });
+
+          resolveCollisions();
+          particles.forEach(function(p) { renderParticle(p, now); });
+          requestAnimationFrame(frame);
+        }
+
+        window.addEventListener('resize', function() {
+          particles.forEach(clampParticle);
+          for (var pass = 0; pass < 4; pass++) resolveCollisions();
+          var resizeNow = performance.now();
+          particles.forEach(function(p) { renderParticle(p, resizeNow); });
+        });
+        requestAnimationFrame(frame);
+      }
+
+      var DRAW_THEMES = {
+        dark: {
+          C: '#b9d6ff', O: '#ff6b6b', N: '#62b5ff', F: '#50d890',
+          CL: '#45c5a5', BR: '#e58a4a', I: '#bb86fc', P: '#ff9f43',
+          S: '#ffd54f', B: '#f6a15f', SI: '#f6a15f', H: '#b8c4d6',
+          BACKGROUND: 'rgba(0,0,0,0)'
+        },
+        light: {
+          C: '#263f60', O: '#c83232', N: '#1768a6', F: '#238b57',
+          CL: '#17806f', BR: '#a84d16', I: '#71328f', P: '#a84d16',
+          S: '#a27800', B: '#ad5918', SI: '#ad5918', H: '#5d6b7c',
+          BACKGROUND: 'rgba(0,0,0,0)'
+        }
+      };
+
+      function drawMolecule(canvas) {
+        if (!canvas._smiles || !window.SmilesDrawer) return;
+        var theme = document.body.classList.contains('light') ? 'light' : 'dark';
+        var drawer = new SmilesDrawer.Drawer({
+          width: canvas.width,
+          height: canvas.height,
+          bondThickness: 2,
+          bondLength: 42,
+          shortBondLength: 0.82,
+          bondSpacing: 8,
+          fontSizeLarge: 22,
+          fontSizeSmall: 8,
+          padding: 18,
+          explicitHydrogens: false,
+          overlapResolutionIterations: 2,
+          compactDrawing: true,
+          themes: DRAW_THEMES
+        });
+        SmilesDrawer.parse(canvas._smiles, function(tree) {
+          drawer.draw(tree, canvas.id, theme, false);
+          canvas.classList.add('mol-processed');
+        });
+      }
+
+      var canvasesByCid = {};
+      chosen.forEach(function(compound, index) {
+        var depth = compound.featured ? rand(0.45, 1) : rand(0, 1);
+        var size = compound.featured
+          ? Math.round(72 + depth * 78)
+          : Math.round(48 + depth * 92);
+        var canvas = document.createElement('canvas');
+        canvas.className = 'mol';
+        canvas.id = 'molecule-canvas-' + index;
+        canvas.width = size * 2;
+        canvas.height = size * 2;
+        canvas.style.width = size + 'px';
+        canvas.style.height = size + 'px';
+        canvas.style.zIndex = Math.round(depth * 10);
+        if (compound.featured) canvas.dataset.featured = 'true';
+        canvas.style.setProperty('--op', (0.28 + depth * 0.46).toFixed(2));
+        molBg.appendChild(canvas);
+        addParticle(canvas, size, size, 'mol');
+        canvasesByCid[compound.id] = canvas;
+      });
+
+      var selectedCids = chosen.map(function(compound) { return compound.id; }).join(',');
+      var smilesUrl = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/' +
+                      selectedCids + '/property/IsomericSMILES/JSON';
+      fetch(smilesUrl)
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          var properties = data.PropertyTable && data.PropertyTable.Properties || [];
+          properties.forEach(function(property) {
+            var canvas = canvasesByCid[property.CID];
+            if (!canvas) return;
+            canvas._smiles = property.SMILES || property.ConnectivitySMILES ||
+                             property.IsomericSMILES || property.CanonicalSMILES;
+            drawMolecule(canvas);
+          });
+        })
+        .catch(function() { /* Text particles remain if PubChem is unavailable. */ });
+
+      document.getElementById('themeToggle').addEventListener('click', function() {
+        requestAnimationFrame(function() {
+          document.querySelectorAll('#mol-bg .mol').forEach(drawMolecule);
+        });
+      });
+
+      var FORMULAS = ['CC(=O)Oc1ccccc1C(=O)O', 'Cn1cnc2c1c(=O)n(C)c(=O)n2C',
+                      'C\u2086H\u2081\u2082O\u2086', 'c1ccc2cc3ccccc3cc2c1',
+                      'CC(C)Cc1ccc(cc1)C(C)C(=O)O', 'NC(Cc1ccc(O)cc1)C(=O)O',
+                      'c1ccncc1', 'C(=O)(N)N', 'OC(=O)c1ccccc1O',
+                      'CN1CCC[C@H]1c1cccnc1'];
+      var floats = document.getElementById('chem-floats');
+      shuffle(FORMULAS).slice(0, 8).forEach(function(text) {
+        var span = document.createElement('span');
+        span.className = 'chem-float';
+        span.textContent = text;
+        span.style.setProperty('--op', rand(0.16, 0.3).toFixed(2));
+        floats.appendChild(span);
+        var rect = span.getBoundingClientRect();
+        addParticle(span, Math.ceil(rect.width), Math.ceil(rect.height), 'text');
+      });
+
+      runBrownianField();
     })();
   </script>
 </body>

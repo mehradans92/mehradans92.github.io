@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Can a Research Agent Out-Model Me on JAK Selectivity? | Latent Space</title>
+
+  <!-- Bootstrap Core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+    integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+  <!-- Custom Fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,700,900' rel='stylesheet' type='text/css'>
+
+  <!-- Font Awesome -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/solid.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/brands.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/fontawesome.min.js"></script>
+
+  <!-- MathJax -->
+  <script>
+    MathJax = { tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] } };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    /* ---- Theme variables ---- */
+    :root {
+      --bg: linear-gradient(160deg, #0a1628 0%, #0f2035 40%, #091a2a 100%);
+      --text: #d0dce8;
+      --heading: #fff;
+      --link: #5cb8ff;
+      --link-hover: #8ed0ff;
+      --nav-bg: rgba(10, 22, 40, 0.85);
+      --nav-border: rgba(255,255,255,0.06);
+      --nav-brand: #fff;
+      --nav-link: rgba(255,255,255,0.6);
+      --meta: rgba(255,255,255,0.35);
+      --body-text: rgba(255,255,255,0.78);
+      --muted: rgba(255,255,255,0.55);
+      --faint: rgba(255,255,255,0.4);
+      --border: rgba(255,255,255,0.08);
+      --callout-bg: rgba(92, 184, 255, 0.06);
+      --callout-border: rgba(92, 184, 255, 0.4);
+      --callout-text: rgba(255,255,255,0.7);
+      --callout-em: rgba(255,255,255,0.85);
+      --toggle-bg: rgba(255,255,255,0.1);
+      --toggle-color: #fff;
+    }
+    body.light {
+      --bg: linear-gradient(160deg, #f0f4f8 0%, #e8eef5 40%, #f5f7fa 100%);
+      --text: #3a4a5c;
+      --heading: #1a2a3a;
+      --link: #2a7de1;
+      --link-hover: #1a5fb4;
+      --nav-bg: rgba(255, 255, 255, 0.9);
+      --nav-border: rgba(0,0,0,0.06);
+      --nav-brand: #1a2a3a;
+      --nav-link: rgba(0,0,0,0.55);
+      --meta: rgba(0,0,0,0.4);
+      --body-text: rgba(0,0,0,0.72);
+      --muted: rgba(0,0,0,0.5);
+      --faint: rgba(0,0,0,0.4);
+      --border: rgba(0,0,0,0.08);
+      --callout-bg: rgba(42, 125, 225, 0.06);
+      --callout-border: rgba(42, 125, 225, 0.35);
+      --callout-text: rgba(0,0,0,0.6);
+      --callout-em: rgba(0,0,0,0.8);
+      --toggle-bg: rgba(0,0,0,0.08);
+      --toggle-color: #1a2a3a;
+    }
+
+    body {
+      font-family: Merriweather, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      margin: 0;
+      transition: background 0.4s, color 0.4s;
+    }
+    a { color: var(--link); transition: color 0.3s; }
+    a:hover { color: var(--link-hover); text-decoration: none; }
+
+    /* Nav */
+    .blog-nav {
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--nav-border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: background 0.4s, border-color 0.4s;
+    }
+    .blog-nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .blog-nav-brand {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--nav-brand);
+      text-decoration: none;
+    }
+    .blog-nav-brand:hover { color: var(--link); }
+    .blog-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .blog-nav-link {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.85rem;
+      color: var(--nav-link);
+      text-decoration: none;
+    }
+    .blog-nav-link:hover { color: var(--heading); }
+
+    /* Theme toggle */
+    .theme-toggle {
+      background: var(--toggle-bg);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--toggle-color);
+      font-size: 1.1rem;
+      transition: background 0.3s, color 0.3s, transform 0.3s;
+    }
+    .theme-toggle:hover { transform: scale(1.1); }
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: inline; }
+    body.light .theme-toggle .icon-sun { display: inline; }
+    body.light .theme-toggle .icon-moon { display: none; }
+
+    /* Article */
+    .post-header {
+      text-align: center;
+      padding: 5rem 1rem 1rem;
+    }
+    .post-header h1 {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--heading);
+      letter-spacing: -0.02em;
+    }
+    .post-authors {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-top: 0.75rem;
+    }
+    .post-meta {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.85rem;
+      color: var(--meta);
+      margin-top: 0.5rem;
+    }
+
+    .post-body {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      font-size: 1.02rem;
+      line-height: 1.9;
+      color: var(--body-text);
+    }
+    .post-body p { margin-bottom: 1.5rem; }
+
+    /* Sub-headings */
+    .post-body h2 {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin: 2.5rem 0 1rem;
+    }
+    .post-body h3 {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--heading);
+      margin: 2rem 0 0.75rem;
+    }
+
+    /* Figures */
+    .post-figure {
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .post-figure img {
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .post-figure figcaption {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.82rem;
+      color: var(--faint);
+      margin-top: 0.75rem;
+      line-height: 1.6;
+      font-style: italic;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Equations */
+    .post-body .MathJax { font-size: 1.05em; }
+
+    /* Embedded video */
+    .post-video {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      margin: 0 0 2rem;
+      border-radius: 12px;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .post-video iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-radius: 12px;
+    }
+
+    /* Callout box */
+    .post-callout {
+      background: var(--callout-bg);
+      border-left: 3px solid var(--callout-border);
+      border-radius: 0 10px 10px 0;
+      padding: 1.2rem 1.5rem;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+      color: var(--callout-text);
+      transition: background 0.4s, border-color 0.4s, color 0.4s;
+    }
+    .post-callout em { color: var(--callout-em); }
+
+    /* Abstract */
+    .post-abstract {
+      background: var(--callout-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin: 0 0 2rem;
+      font-size: 0.95rem;
+      color: var(--body-text);
+      line-height: 1.8;
+    }
+    .post-abstract strong {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      color: var(--heading);
+    }
+
+    /* References */
+    .references {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+    .references h2 {
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin-bottom: 1.2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .references ol {
+      padding-left: 1.4rem;
+      margin: 0;
+    }
+    .references li {
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .references li a { color: var(--link); }
+
+    /* Back link */
+    .back-link {
+      display: inline-block;
+      margin-top: 2.5rem;
+      font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.75rem 2rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 300px;
+      color: var(--heading);
+      background: rgba(255,255,255,0.1);
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .back-link:hover {
+      background: var(--heading);
+      color: var(--bg);
+      text-decoration: none;
+    }
+    body.light .back-link {
+      border-color: rgba(0,0,0,0.15);
+      background: rgba(0,0,0,0.04);
+    }
+    body.light .back-link:hover {
+      background: var(--heading);
+      color: #fff;
+    }
+
+    @media (max-width: 576px) {
+      .post-header h1 { font-size: 1.7rem; }
+      .post-body { font-size: 0.95rem; padding: 1.5rem 1rem 3rem; }
+      .post-body h2 { font-size: 1.25rem; }
+      .references { padding: 0 1rem 3rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="blog-nav">
+    <div class="container">
+      <a class="blog-nav-brand" href="../blog.html">← Latent Space</a>
+      <div class="blog-nav-right">
+        <a class="blog-nav-link" href="../index.html">Home</a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+          <span class="icon-moon">&#9790;</span>
+          <span class="icon-sun">&#9788;</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="post-header">
+    <h1>Can a Research Agent Out-Model Me on JAK Selectivity?</h1>
+    <div class="post-meta">November 2026</div>
+  </div>
+
+  <article class="post-body">
+    <div class="post-callout">
+      <em>Code and the full write-up live in the <a href="https://github.com/mehradans92/JAK-family-selectivity" target="_blank">JAK-family-selectivity repo</a> (there is a detailed <a href="https://github.com/mehradans92/JAK-family-selectivity/blob/main/report.pdf" target="_blank">report PDF</a> if you want the gory details). This post is the casual version.</em>
+    </div>
+
+    <div class="post-abstract">
+      <strong>TL;DR.</strong> I built models that predict pKi for the four JAK-family kinases (JAK1, JAK2, JAK3, TYK2) straight from a SMILES string, under a scaffold-shifted split so the test molecules look structurally unfamiliar. Then I built a literature-augmented ReAct research agent and asked it to beat me. It did, on raw affinity: the agent-designed multitask fingerprint MLP hit the best macro RMSE (<code>0.577</code>) and ranking (Spearman <code>0.765</code>), reproducibly. But my hand-designed objectives still won on selectivity, and the biggest lesson was not about architecture at all: it was that squeezing more out of the data (using the much larger pIC50 set as an auxiliary task) mattered more than any fancy network.
+    </div>
+
+    <h2>The setup</h2>
+    <p>
+      JAK inhibitors are a big deal in autoimmune disease, and the hard part is rarely "does this molecule bind a JAK." It is "does it bind the <em>right</em> JAK and leave the others alone." So this is really two questions stacked on top of each other: absolute affinity (pKi per kinase) and selectivity (the gap between kinases). I set it up as a four-target regression from structure, and I evaluate on a scaffold-shifted test set, meaning the test molecules come from chemical scaffolds the model never saw in training. That is the honest version of the problem, and also the brutal one.
+    </p>
+    <p>
+      I came at it from two directions. First I designed and trained a spread of baselines and neural models by hand. Then I built a research agent, gave it the raw data and a compute budget, and told it to propose, train, and evaluate its own models in a sandbox, to see if it could out-model me.
+    </p>
+
+    <h2>The data is small and lopsided</h2>
+    <p>
+      There are 10,725 measurements over 4,528 unique molecules, which sounds fine until you look closer. Only 1,989 of those are pKi (the thing I actually want); the other 8,736 are pIC50. And it is lopsided across kinases: JAK2 has 804 pKi labels, TYK2 has just 163. After the scaffold split, the test set has 63 JAK1, 84 JAK2, 22 JAK3, and 12 TYK2 pKi labels. Twelve. So any single TYK2 molecule can swing the macro score, and I try not to over-read small differences because of it.
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/jak/data_overview.png" alt="Distributions of pKi and pIC50 across the four JAK kinases, showing strong imbalance">
+      <figcaption>Fig 1. The raw pKi and pIC50 distributions before splitting. Both the endpoint mix (lots more pIC50 than pKi) and the per-kinase coverage are badly imbalanced, which ends up shaping every modeling decision that follows.</figcaption>
+    </figure>
+
+    <p>
+      I cleaned every SMILES with RDKit (normalize functional groups, keep the largest fragment, reionize, neutralize when it is chemically reasonable, write canonical SMILES), then split molecules by Bemis-Murcko scaffold into 80/10/10 train/validation/test, so no scaffold ever appears in two splits. The rare-scaffold test labels stayed locked away: only the evaluator could read them, and only after predictions were saved. One detail that matters a lot: I kept pKi and pIC50 as <em>separate</em> endpoints and never converted one into the other. Combining Ki and IC50 from different assays is a well-documented way to inject noise <a href="#ref3">[3]</a>, and related kinase work finds that heterogeneous assay readouts are most useful when integrated in stages rather than pooled into one endpoint <a href="#ref4">[4]</a>. Only a handful of molecules even have both measurements here, so there is no reliable conversion to learn anyway.
+    </p>
+
+    <h2>The models I built by hand</h2>
+    <p>
+      The lineup: a per-kinase random forest on Morgan fingerprints, a SMILES transformer, a fingerprint MLP, a residual message-passing GNN, a selectivity-aware MLP, and a multitask AttentiveFP graph network <a href="#ref1">[1</a>, <a href="#ref2">2]</a>. Four different ways of representing a molecule (sequence, fixed substructure counts, learned graph, attentive graph), all on the same sparse four-target problem.
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/jak/manual_neural_architectures.png" alt="Four neural architectures: SMILES transformer, fingerprint MLP, residual GNN, and multitask AttentiveFP">
+      <figcaption>Fig 2. The neural architectures I compared. (a) a SMILES transformer, (b) an MLP on Morgan count fingerprints, (c) a residual bond-aware GNN, and (d) a multitask AttentiveFP with optional pIC50 auxiliary heads.</figcaption>
+    </figure>
+
+    <p>
+      Here is the thing that surprised me: architecture barely mattered. The random forest, the fingerprint MLP, and the GNN all landed within sampling noise of each other on absolute pKi. The transformer was the one clear loser, and it fell apart specifically on JAK3, exactly what you would expect from a data-hungry sequence model with very few labels.
+    </p>
+    <p>
+      What actually moved the needle was data leverage. The cleanest win in the whole study was giving AttentiveFP extra <em>auxiliary</em> output heads for pIC50. This lets the shared encoder learn from the 8,736 pIC50 molecules without ever pretending pIC50 is pKi. That one change dropped macro pKi RMSE from 0.796 to 0.676 and pairwise error from 0.504 to 0.429. More supervision, not more layers.
+    </p>
+
+    <h2>Selectivity wants a different objective</h2>
+    <p>
+      Selectivity is about the <em>difference</em> between kinases, so I added a pairwise margin term directly to the fingerprint MLP's loss, keeping everything else fixed so I was isolating the objective and not the representation:
+    </p>
+    \[\mathcal{L} = (1-w)\,\mathcal{L}_{\mathrm{pKi}} + w\,\mathbb{E}_{a \ne b}\!\left[\frac{(\hat{y}_a - \hat{y}_b) - (y_a - y_b)}{\sigma_{ab}}\right]^2.\]
+    <p>
+      The weight \(w\) trades absolute-pKi supervision against between-kinase supervision. At \(w=1\) it collapses, because a difference-only loss does not care about the overall offset (add a constant to every prediction and the differences are unchanged), so the absolute level stops being identifiable. A moderate \(w=0.5\) gave the best selectivity-margin ranking (Spearman <code>0.638</code>) at the cost of slightly worse absolute pKi. Separately, multitask AttentiveFP gave the lowest pairwise error (<code>0.429</code>). The takeaway I keep coming back to: the best affinity model and the best selectivity model are not the same model, so I score the two capabilities separately.
+    </p>
+
+    <h2>The research agent</h2>
+    <p>
+      The second half of the project was building a ReAct-style research agent <a href="#ref5">[5]</a> and letting it loose on the same data and splits. At each step it either returns a conclusion or calls a typed tool: it keeps a persistent research plan, writes a structured hypothesis log, runs Python in an isolated process with a persistent namespace, delegates focused questions to parallel subagents, and can pull evidence from the literature.
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/jak/agent_architecture.png" alt="Architecture of the ReAct research agent with memory, tools, subagents, and code execution">
+      <figcaption>Fig 3. The agent. Every decision gets one bounded prompt assembled from the fixed goal, a working plan, the recent steps, and a few memory records pulled back by relevance. It picks typed tools, stores observations externally, and leaves an auditable trail.</figcaption>
+    </figure>
+
+    <p>
+      The piece I am happiest with is context management. I do not replay a giant growing transcript. Instead, summaries, tool outputs, and literature excerpts go into an append-only vector memory, and before each step I rebuild the prompt from the goal, the latest observation, the persistent plan, the last few step summaries, and a handful of retrieved records. Retrieval uses cosine similarity followed by maximal marginal relevance (MMR), so a run of near-identical code outputs cannot crowd out the hypothesis list and the literature:
+    </p>
+    \[\mathrm{MMR} = \arg\max_{d_i \in R \setminus S}\left[\lambda\,\cos(d_i, q) - (1-\lambda)\max_{d_j \in S}\cos(d_i, d_j)\right].\]
+    <p>
+      With \(\lambda = 0.7\), retrieval stays relevant but penalizes near-duplicates. In an earlier version without this, long code dumps literally pushed the agent's own evidence and hypotheses out of context, and the plan plus diverse recall fixed that without any task-specific hacks. The literature tool itself builds on <a href="https://huggingface.co/spaces/mehradans92/decode-elm" target="_blank">Decode ELM</a>, an earlier project of mine that searches preprint servers, parses full text, and returns cited answers.
+    </p>
+
+    <h2>Did it beat me?</h2>
+    <p>
+      On affinity, yes, and not by luck. Given the data and a budget, the agent independently decided to use the larger pIC50 set as auxiliary supervision (the same lever I found by hand) and built a multitask model in every single run. Its best, an eight-task MLP on Morgan features, hit macro RMSE <code>0.577</code> and Spearman <code>0.765</code>. Two separately trained refinements also beat every human model on both direct pKi metrics, so the win did not hinge on one lucky seed.
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/jak/manual_agent_comparison.png" alt="Bar charts comparing human-trained and agent-trained models on pKi RMSE and Spearman, with agent models winning">
+      <figcaption>Fig 4. Human-trained (blue) versus agent-trained (orange) on the fixed test set. All three agent variants beat every model I built by hand on both absolute error and ranking.</figcaption>
+    </figure>
+
+    <p>
+      But "beat me" needs an asterisk. I told the agent to minimize pKi error, so it converged on the strongest absolute predictor and never explicitly optimized the between-kinase gap. My selectivity gains came from <em>deliberately</em> designing objectives around that gap, the pairwise loss and the auxiliary pIC50 heads. So when you break selectivity down pair by pair, it is a genuine split decision: an agent model has the lowest pairwise error on four of six pairs including the well-sampled JAK1-JAK2, while my hand-designed objectives still lead on margin ranking for most pairs.
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/jak/pairwise_selectivity_heatmap.png" alt="Heatmap of pairwise selectivity RMSE and margin Spearman across kinase pairs for human and agent models">
+      <figcaption>Fig 5. Selectivity broken down by kinase pair. Each cell shows pKi-difference RMSE and margin Spearman. Honestly, only JAK1-JAK2 has enough data for a stable ranking; the rest are sparse, so I read this descriptively rather than as a verdict.</figcaption>
+    </figure>
+
+    <h2>Where the agent hit a wall</h2>
+    <p>
+      I then froze a strong model and handed it back to the agent to improve. It reliably lowered cross-validation error in every run, but none of that transferred to the rare-scaffold test beyond run-to-run noise. Part of the apparent CV gain was even selection bias (tuning on the same folds it reported). The lesson was not that the agent ran out of ideas, it was that the gap between the validation signal and genuine out-of-scaffold performance was the real ceiling. You cannot optimize your way past a metric that does not quite measure what you care about.
+    </p>
+    <p>
+      Literature grounding was similar: it changed <em>which</em> ideas got tried (and made the reasoning traceable and cite-backed, which I loved), but it did not improve out-of-scaffold accuracy. One nice moment: the literature agent caught a cross-kinase imputation experiment that was leaking held-out labels into its features and flagged it, rather than reporting the implausibly good score.
+    </p>
+
+    <h2>Calibration, honestly</h2>
+    <p>
+      The five-fold ensembles were badly overconfident: the nominal 90% interval from fold disagreement covered only about 26% of real pKi values for the best agent model. Fold spread is a decent <em>relative</em> warning signal, but its raw magnitude wildly understates true error. So I retrained the AttentiveFP model to predict a molecule-specific variance and combined that with seed and fold disagreement. Coverage for a nominal 90% interval jumped from 50.1% to 87.3%, cutting calibration error to 3.6 points. That honesty was not free: point RMSE rose to <code>0.799</code> and intervals widened to about 2.2 pKi units. So I keep the sharp model for point predictions and the calibrated one when I actually need to trust an interval.
+    </p>
+
+    <h2>Takeaways</h2>
+    <p>
+      On a small, scaffold-shifted dataset like this, architecture mattered less than data leverage: exploiting the much larger pIC50 set as a separate auxiliary task was the clearest and most reproducible win, by hand and by agent. Affinity and selectivity came from different models, so I select on them separately. And the agent genuinely earned its keep, it found better pKi models than I did and got there through the same lever I found manually, without being told to look for it. The instrumentation (the hypothesis log, the label-isolated evaluator) is what made every number here auditable after the fact, which for me is the whole point of doing it this way.
+    </p>
+    <p>
+      For the record: I designed the human-trained models and the agent architecture myself; the agent and its subagents ran on Claude Opus 4.8 through LiteLLM, with <code>text-embedding-3-small</code> for the vector memory and document indexing.
+    </p>
+  </article>
+
+  <div class="references">
+    <h2>References</h2>
+    <ol>
+      <li id="ref1"><a href="https://pubs.acs.org/doi/10.1021/acs.jmedchem.9b00959" target="_blank">Xiong, Z. et al. "Pushing the boundaries of molecular representation for drug discovery with the graph attention mechanism." <em>Journal of Medicinal Chemistry</em>, 63(16), 8749&ndash;8760, 2020.</a></li>
+      <li id="ref2"><a href="https://jcheminf.biomedcentral.com/articles/10.1186/s13321-022-00593-9" target="_blank">Wang, Y. et al. "A multitask GNN-based interpretable model for discovery of selective JAK inhibitors." <em>Journal of Cheminformatics</em>, 14, 16, 2022.</a></li>
+      <li id="ref3"><a href="https://pubs.acs.org/doi/10.1021/acs.jcim.4c00049" target="_blank">Landrum, G.A. and Riniker, S. "Combining IC50 or Ki values from different sources is a source of significant noise." <em>Journal of Chemical Information and Modeling</em>, 64(5), 1560&ndash;1567, 2024.</a></li>
+      <li id="ref4"><a href="https://www.nature.com/articles/s41467-024-52055-5" target="_blank">Theisen, R., Wang, T., Ravikumar, B., Rahman, R. and Cicho&nacute;ska, A. "Leveraging multiple data types for improved compound-kinase bioactivity prediction." <em>Nature Communications</em>, 15, 7596, 2024.</a></li>
+      <li id="ref5"><a href="https://arxiv.org/abs/2210.03629" target="_blank">Yao, S. et al. "ReAct: Synergizing reasoning and acting in language models." <em>International Conference on Learning Representations (ICLR)</em>, 2023.</a></li>
+    </ol>
+
+    <a class="back-link" href="../blog.html">Back to Latent Space</a>
+  </div>
+
+  <script>
+    (function() {
+      var toggle = document.getElementById('themeToggle');
+      var saved = localStorage.getItem('blog-theme');
+      if (saved === 'light') document.body.classList.add('light');
+      toggle.addEventListener('click', function() {
+        document.body.classList.toggle('light');
+        localStorage.setItem('blog-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+      });
+    })();
+  </script>
+</body>
+</html>
