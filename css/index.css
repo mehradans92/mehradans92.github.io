@@ -43,6 +43,32 @@ section[id] {
     scroll-margin-top: 60px;
 }
 
+/* Keep Home visually consistent with the other nav links when scrollspy marks it active. */
+#mainNav .navbar-nav > li.nav-item > a.nav-home-link.active,
+#mainNav .navbar-nav > li.nav-item > a.nav-home-link:focus.active {
+    color: #212529 !important;
+}
+#mainNav .navbar-nav > li.nav-item > a.nav-home-link.active:hover {
+    color: #f05f40 !important;
+}
+
+@media (min-width: 992px) {
+    #mainNav .navbar-nav > li.nav-item > a.nav-home-link.active,
+    #mainNav .navbar-nav > li.nav-item > a.nav-home-link:focus.active {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    #mainNav .navbar-nav > li.nav-item > a.nav-home-link.active:hover {
+        color: #fff !important;
+    }
+    #mainNav.navbar-shrink .navbar-nav > li.nav-item > a.nav-home-link.active,
+    #mainNav.navbar-shrink .navbar-nav > li.nav-item > a.nav-home-link:focus.active {
+        color: #212529 !important;
+    }
+    #mainNav.navbar-shrink .navbar-nav > li.nav-item > a.nav-home-link.active:hover {
+        color: #f05f40 !important;
+    }
+}
+
 .text-small {
     font-size: 100%;
 }

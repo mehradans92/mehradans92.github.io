@@ -98,6 +98,9 @@
     }
     .blog-nav .container { display: flex; align-items: center; justify-content: space-between; }
     .blog-nav-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
       font-weight: 700;
       font-size: 1.1rem;
@@ -439,7 +442,7 @@
   <div id="chem-floats" aria-hidden="true"></div>
   <nav class="blog-nav">
     <div class="container">
-      <a class="blog-nav-brand" href="index.html">← Mehrad Ansari</a>
+      <a class="blog-nav-brand" href="index.html"><i class="fas fa-home" aria-hidden="true"></i><span>Mehrad Ansari</span></a>
       <div class="blog-nav-right">
         <span class="blog-nav-label">Latent Space</span>
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
