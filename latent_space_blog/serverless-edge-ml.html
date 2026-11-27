@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Why Run a Scientific Model in the Browser? | Latent Space</title>
+  <title>Why Run a Scientific Model in the Web Browser? | Latent Space</title>
 
   <!-- Bootstrap Core CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
@@ -280,13 +280,13 @@
   </nav>
 
   <div class="post-header">
-    <h1>Why Run a Scientific Model in the Browser?</h1>
-    <div class="post-meta">April 2024</div>
+    <h1>Why Run a Scientific Model in the Web Browser?</h1>
+    <div class="post-meta">December 2024</div>
   </div>
 
   <article class="post-body">
     <div class="post-credit">
-      <em>This post comes from work with my PhD advisor, <a href="https://x.com/andrewwhite01/" target="_blank">Andrew D. White</a>. The <a href="https://doi.org/10.1021/acs.jcim.2c01317" target="_blank">full paper</a> and <a href="https://github.com/ur-whitelab/peptide-dashboard" target="_blank">source code</a> are openly available.</em>
+      <em>This post comes from work with my PhD advisor, <a href="https://x.com/andrewwhite01/" target="_blank">Andrew D. White</a>. The <a href="https://doi.org/10.1021/acs.jcim.2c01317" target="_blank">full paper</a> and <a href="https://github.com/ur-whitelab/peptide-dashboard" target="_blank">source code</a> are publicly available.</em>
     </div>
 
     <figure class="post-figure">
@@ -296,10 +296,16 @@
 
     <h2>The server is part of the experiment</h2>
     <p>
-      One reason we cared about edge deployment was reproducibility. Sharing code should make computational work easier to reproduce, yet code and data are still missing from a large fraction of published machine learning studies. Littmann and colleagues reviewed 250 life science and medical machine learning papers. Only about half shared software and 64 percent shared data <a href="#ref2">[2]</a>.
+      One reason we cared about edge deployment was reproducibility. Reproducing a computational result depends on more than describing the model in a paper. Someone also needs the data, code, trained weights, and a working way to run them. A review of 250 life science and medical machine learning studies found that only about half shared software and 64 percent shared data <a href="#ref2">[2]</a>.
     </p>
     <p>
-      A scientific web server can make a complicated method available to anyone with a browser. It can also disappear when funding ends, a dependency breaks, or the original student leaves. In another paper, researchers checked 2396 bioinformatics tools. More than 90 percent of recently published tools were reachable, while availability fell to about 50 percent for tools that were ten years old <a href="#ref3">[3]</a>.
+      Access was the other reason. Research activity and infrastructure are distributed very unevenly between higher and lower income countries <a href="#ref13">[13]</a>. Cheminformatics often depends on compute, software expertise, and institutions with enough funding to support both. A web implementation does not remove those disparities, but it can make a complex inference method available to a much broader community. A user only needs a browser rather than the original hardware and software environment.
+    </p>
+    <p>
+      That broader access is one practical form of open science. It also supports reproducibility because everyone can interact with the same implementation. The catch is that a web interface creates a new dependency. The method works only while the server is maintained. A study of 2396 bioinformatics tools found that more than 90 percent of recently published tools were reachable, while availability fell to about 50 percent for tools that were ten years old <a href="#ref3">[3]</a>.
+    </p>
+    <p>
+      Installable software has a similar problem. Another study analyzed 36,702 omics software resources and found that almost 28 percent were no longer reachable at the URL in the original paper. Of the 98 tools tested for installation, 28 percent failed outright <a href="#ref4">[4]</a>. A later reproducibility standard made the minimum expectation clear. Data, code, and trained models should all be publicly available <a href="#ref5">[5]</a>. Together, these studies made us treat deployment and preservation as part of the scientific method rather than as an afterthought.
     </p>
 
     <figure class="post-figure">
@@ -309,40 +315,69 @@
 
     <h2>Move inference to the edge</h2>
     <p>
-      Edge computing means running computation close to where the data are produced instead of sending every input to a central server. The edge could be a phone, laptop, sensor, or nearby gateway. In our case the edge is simply the user's web browser.
+      That maintenance problem pushed us toward edge computing. Edge computing means running computation close to where the data are produced instead of sending every input to a central server. The edge could be a phone, laptop, sensor, or nearby gateway. In our case the edge is simply the user's web browser.
     </p>
     <p>
-      We kept model training on conventional compute. Only the forward pass moved to the user's device. A static host delivers the HTML, JavaScript, a TensorFlow.js model description, and binary weight files. The browser reconstructs the trained network once those files arrive.
+      The systems literature gives a useful way to think about it. Computation should happen close to the data source, which cuts latency and can keep private data local <a href="#ref6">[6]</a>. Edge computing also extends the older idea of content delivery networks and nearby cloudlets <a href="#ref7">[7]</a>. A CDN already pushes static files close to users. We simply added a trained model to those files.
     </p>
     <p>
-      The app maps each amino acid to an integer token and builds the tensors expected by the model. TensorFlow.js then calls the loaded Keras model and executes <code>model.predict</code>. The implementation registers a WebGL backend for browser acceleration and keeps a CPU backend as a fallback. The predicted score is returned directly to the page. No peptide sequence needs to be posted to an inference API.
+      A six-level framework makes that split more precise <a href="#ref8">[8]</a>. Our setup fits Level 3. Training happens in the cloud and inference runs fully on the device, so no input data are offloaded during inference. Higher levels move more work toward the device. That reduces network latency and bandwidth use and can improve privacy, but it also asks the device to spend more time and energy on computation.
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/serverless/Zhou_fig.png" alt="Six-level rating of edge intelligence with Level 3 representing cloud training and on-device inference">
+      <figcaption>Fig 3. Six levels of edge intelligence from cloud-only training and inference to fully on-device execution. Our browser predictor sits at Level 3. Figure adapted from Ref <a href="#ref8">[8]</a>.</figcaption>
+    </figure>
+
+    <p>
+      Level 3 describes the practical split we used. Model training stays on conventional compute, while only the forward pass moves to the user's device. A static host delivers the HTML, JavaScript, a TensorFlow.js model description, and binary weight files. The browser reconstructs the trained network once those files arrive.
     </p>
     <p>
-      In <a href="https://doi.org/10.1021/acs.jcim.2c01317" target="_blank">our paper</a>, this pattern powered three bidirectional LSTM models for peptide hemolysis, solubility, and resistance to nonspecific interactions <a href="#ref1">[1]</a>. We trained the models with Keras and TensorFlow, then deployed them through TensorFlow.js at <a href="https://peptide.bio/" target="_blank">peptide.bio</a>. The same static app runs on ordinary computers and phones.
+      From there, the prediction path is short. The app maps each amino acid to an integer token and builds the tensors expected by the model. TensorFlow.js calls the loaded Keras model and executes <code>model.predict</code>. The predicted score returns directly to the page, and the peptide sequence never needs to be posted to an inference API.
+    </p>
+    <p>
+      Performance still matters, so the implementation registers a WebGL backend for acceleration and keeps a CPU backend as a fallback. That ordering is deliberate. WebGL was reported to be roughly two orders of magnitude faster than the plain JavaScript CPU implementation <a href="#ref9">[9]</a>. Browser inference is also less limited than it may sound. One benchmark found TensorFlow.js on integrated graphics outperforming native TensorFlow on CPU for the same inference task <a href="#ref10">[10]</a>.
+    </p>
+    <p>
+      The same distinction appears in the edge-centric inference modes below. Our approach uses device-based inference. The device obtains the model once, then runs predictions locally without communicating with the server <a href="#ref8">[8]</a>. The other modes split each prediction across a device, edge server, or cloud.
+    </p>
+
+    <figure class="post-figure">
+      <img src="media/serverless/Zhou_edge_centric-inference_modes.png" alt="Four edge-centric inference modes">
+      <figcaption>Fig 4. Four edge-centric inference modes including edge-based, device-based, edge-device, and edge-cloud execution. peptide.bio uses the device-based mode in panel b. Figure adapted from Ref <a href="#ref8">[8]</a>.</figcaption>
+    </figure>
+    <p>
+      That systems design became <a href="https://peptide.bio/" target="_blank">peptide.bio</a>. In <a href="https://doi.org/10.1021/acs.jcim.2c01317" target="_blank">our paper</a>, it powered three bidirectional LSTM models for peptide hemolysis, solubility, and resistance to nonspecific interactions <a href="#ref1">[1]</a>. We trained the models with Keras and TensorFlow, then deployed them through TensorFlow.js. The same static app runs on ordinary computers and phones.
     </p>
 
     <h2>Serverless does not mean server free</h2>
     <p>
-      We did not remove every server. The browser still downloads static files from somewhere, so the first visit needs a web host and a network connection. What we removed was the dedicated service that receives each input and runs each prediction. Static hosting is cheap, easy to mirror, and has fewer moving parts than an application server with a model environment and API.
+      Calling this serverless needs one clarification. We did not remove every server. The browser still downloads static files from somewhere, so the first visit needs a web host and a network connection. What disappears is the dedicated service that receives every input and runs every prediction. Static hosting is cheap, easy to mirror, and has fewer moving parts than an application server with a model environment and API.
     </p>
     <p>
-      It also changes reproducibility. The trained model becomes part of the publication artifact. A reader can open the page and use the same model without recreating a Python environment or waiting for a remote queue. Inputs also do not need to leave the device for inference.
+      That simpler deployment feeds back into reproducibility. The trained model becomes part of the publication artifact. A reader can open the page and use the same model without recreating a Python environment or waiting for a remote queue. Inputs also stay on the device during inference.
+    </p>
+    <p>
+      A static site can still disappear, so this is not the end of the reproducibility story. Hosting a model only on a non-archived site such as a GitHub project is not enough <a href="#ref5">[5]</a>. The inexpensive fix is to deposit the exact HTML, JavaScript, <code>model.json</code>, and weight files in an archive such as Zenodo and assign the bundle a DOI.
     </p>
 
     <h2>Could this use PyTorch?</h2>
     <p>
-      Yes, although direct PyTorch execution in a browser is not the usual route. If we rebuilt this today, we would train in PyTorch, export the forward graph to ONNX, and run it with <a href="https://onnxruntime.ai/docs/tutorials/web/" target="_blank">ONNX Runtime Web</a>. ONNX Runtime can use WebAssembly broadly and WebGPU where supported. The JavaScript preprocessing must still match training exactly, including token IDs, padding, sequence length, and output interpretation.
+      The deployment pattern is not tied to TensorFlow. If we rebuilt this today, we could train in PyTorch, export the forward graph to ONNX, and run it with <a href="https://onnxruntime.ai/docs/tutorials/web/" target="_blank">ONNX Runtime Web</a>. ONNX Runtime can use WebAssembly broadly and WebGPU where supported. The JavaScript preprocessing would still need to match training exactly, including token IDs, padding, sequence length, and output interpretation.
     </p>
     <p>
-      A native phone application could instead use <a href="https://pytorch.org/executorch/stable/index.html" target="_blank">ExecuTorch</a>. The tricky part is usually operator support and faithful preprocessing, not whether the weights started in TensorFlow or PyTorch. The edge-computing idea stays the same.
+      A native phone application could use <a href="https://pytorch.org/executorch/stable/index.html" target="_blank">ExecuTorch</a> instead. The difficult part is usually operator support and faithful preprocessing, not whether the weights started in TensorFlow or PyTorch. The edge-computing idea stays the same.
+    </p>
+    <p>
+      This is no longer limited to small classifiers. ViralWasm runs command-line viral genomics tools inside the browser through WebAssembly with only a two to three times slowdown relative to native execution <a href="#ref11">[11]</a>. WebLLM pushes the same idea much further by running large language models in the browser while retaining up to about 80 percent of native decoding performance on the same device <a href="#ref12">[12]</a>.
     </p>
 
     <h2>Where the idea fits</h2>
     <p>
-      Browser inference works well when the trained model is modest in size and each prediction is independent. It is less attractive for very large models, expensive preprocessing, protected weights, or workflows that need centralized databases and audit logs.
+      These examples do not mean every scientific model belongs in a browser. The pattern works best when the trained model is modest in size and each prediction can run independently. It is less attractive for very large models, expensive preprocessing, protected weights, or workflows that need centralized databases and audit logs.
     </p>
     <p>
-      For us, the point was larger than one peptide predictor. A scientific model can be shipped as a durable static artifact rather than a service someone must keep alive.
+      For us, that boundary is the useful lesson. When a model fits the edge, it can be shipped as a durable scientific artifact rather than a service someone must keep alive.
     </p>
 
   </article>
@@ -353,6 +388,16 @@
       <li id="ref1"><a href="https://doi.org/10.1021/acs.jcim.2c01317" target="_blank">Ansari, M. and White, A.D. "Serverless Prediction of Peptide Properties with Recurrent Neural Networks." <em>Journal of Chemical Information and Modeling</em>, 63(8), 2546&ndash;2553, 2023.</a></li>
       <li id="ref2"><a href="https://doi.org/10.1038/s42256-019-0139-8" target="_blank">Littmann, M. et al. "Validity of machine learning in biology and medicine increased through collaborations across fields of expertise." <em>Nature Machine Intelligence</em>, 2, 18&ndash;24, 2020.</a></li>
       <li id="ref3"><a href="https://doi.org/10.1093/nar/gkaa1125" target="_blank">Kern, F., Fehlmann, T. and Keller, A. "On the lifetime of bioinformatics web services." <em>Nucleic Acids Research</em>, 48(22), 12523&ndash;12533, 2020.</a></li>
+      <li id="ref4"><a href="https://doi.org/10.1371/journal.pbio.3000333" target="_blank">Mangul, S. et al. "Challenges and recommendations to improve the installability and archival stability of omics computational tools." <em>PLOS Biology</em>, 17(6), e3000333, 2019.</a></li>
+      <li id="ref5"><a href="https://doi.org/10.1038/s41592-021-01256-7" target="_blank">Heil, B.J. et al. "Reproducibility standards for machine learning in the life sciences." <em>Nature Methods</em>, 18(10), 1132&ndash;1135, 2021.</a></li>
+      <li id="ref6"><a href="https://doi.org/10.1109/JIOT.2016.2579198" target="_blank">Shi, W., Cao, J., Zhang, Q., Li, Y. and Xu, L. "Edge Computing: Vision and Challenges." <em>IEEE Internet of Things Journal</em>, 3(5), 637&ndash;646, 2016.</a></li>
+      <li id="ref7"><a href="https://doi.org/10.1109/MC.2017.9" target="_blank">Satyanarayanan, M. "The Emergence of Edge Computing." <em>Computer</em>, 50(1), 30&ndash;39, 2017.</a></li>
+      <li id="ref8"><a href="https://doi.org/10.1109/JPROC.2019.2918951" target="_blank">Zhou, Z., Chen, X., Li, E., Zeng, L., Luo, K. and Zhang, J. "Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing." <em>Proceedings of the IEEE</em>, 107(8), 1738&ndash;1762, 2019.</a></li>
+      <li id="ref9"><a href="https://arxiv.org/abs/1901.05350" target="_blank">Smilkov, D. et al. "TensorFlow.js: Machine Learning for the Web and Beyond." <em>Proceedings of Machine Learning and Systems</em>, 1, 309&ndash;321, 2019.</a></li>
+      <li id="ref10"><a href="https://doi.org/10.1145/3308558.3313639" target="_blank">Ma, Y., Xiang, D., Zheng, S., Tian, D. and Liu, X. "Moving Deep Learning into Web Browser: How Far Can We Go?" <em>The Web Conference</em>, 1234&ndash;1244, 2019.</a></li>
+      <li id="ref11"><a href="https://doi.org/10.1093/bioinformatics/btae018" target="_blank">Ji, D., Aboukhalil, R. and Moshiri, N. "ViralWasm: A Client-Side User-Friendly Web Application Suite for Viral Genomics." <em>Bioinformatics</em>, 40(1), btae018, 2024.</a></li>
+      <li id="ref12"><a href="https://arxiv.org/abs/2412.15803" target="_blank">Ruan, C.F. et al. "WebLLM: A High-Performance In-Browser LLM Inference Engine." <em>arXiv:2412.15803</em>, 2024.</a></li>
+      <li id="ref13"><a href="https://doi.org/10.1038/522S1a" target="_blank">May, M. and Brody, H. "Nature Index 2015 Global." <em>Nature</em>, 522, S1, 2015.</a></li>
     </ol>
 
     <a class="back-link" href="../blog.html">Back to Latent Space</a>
