@@ -289,6 +289,16 @@
       <em>This post comes from work with my PhD advisor, <a href="https://x.com/andrewwhite01/" target="_blank">Andrew D. White</a>. The <a href="https://doi.org/10.1021/acs.jcim.2c01317" target="_blank">full paper</a> and <a href="https://github.com/ur-whitelab/peptide-dashboard" target="_blank">source code</a> are publicly available.</em>
     </div>
 
+    <p>
+      A trained model is more than a file of weights. Reproducing a prediction requires the architecture, serialized parameters, exact preprocessing, vocabulary and token IDs, sequence-length rules, padding behavior, and a compatible tensor runtime. A small mismatch can change the output or prevent the model from loading at all. A conventional release therefore asks each user to recreate a software environment that the original developers already had working.
+    </p>
+    <p>
+      A typical web predictor hides that complexity behind a REST API. The browser serializes an input and sends an HTTP request. A backend validates and encodes the input, runs the model in a long-lived Python process, and sends the prediction back. This centralizes the dependencies, but every prediction now depends on network access, server uptime, compute allocation, and a maintained deployment environment. The input also leaves the user's device.
+    </p>
+    <p>
+      We wanted to move that complete inference path into the client. The model graph, weight shards, sequence encoder, and tensor runtime would ship as static web assets. The browser would become the model server. The technical question was whether the bidirectional LSTM and its preprocessing could fit within browser memory, use supported operations, and run quickly enough on ordinary laptops and phones.
+    </p>
+
     <figure class="post-figure">
       <img src="../img/peptide_bio.png" alt="Comparison between hosted inference servers and serverless browser inference">
       <figcaption>Fig 1. A hosted predictor sends each sequence to a maintained backend. The edge version sends the model to the device and runs the prediction there.</figcaption>
